@@ -8,7 +8,7 @@ gem 'rack', '~> 1.5.2'
 
 gem 'mysql2'
 gem 'sqlite3'
-
+gem 'devise', '3.0.0.rc'
 
 # Gems used only for assets and not required
 # in production environments by default.
