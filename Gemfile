@@ -41,6 +41,6 @@ gem 'jquery-rails'
 
 # This version needs to be hardcoded for OpenShift compatibility
 gem 'thor', '0.18.1'
-
+gem 'devise', '3.0.0.rc'
 # This needs to be installed so we can run Rails console on OpenShift directly
 gem 'minitest'
