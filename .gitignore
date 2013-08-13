@@ -16,3 +16,4 @@ target
 .settings/*
 !.settings/.jsdtscope
 .classpath
+**.swp
