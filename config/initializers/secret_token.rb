@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Battleships::Application.config.secret_key_base = '063d23f6b5b16fa9ae0c4290995833bc8375407aaa528d62d54ea7ce1815f10342a85608feffcae64be6c8bbbd29d2fdb47e70c0b378b91816124ecb161cdb0e'
+Battleships::Application.config.secret_key_base = 'ebf406121198bfd6ad9b853901a23d0719d0a1eb42da7e439b61630347fa94ca5c0c1bdc7049e4fec6a11ed211fceea9cf2e404032d11da887c48a43857076c0'
