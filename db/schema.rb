@@ -14,50 +14,50 @@
 ActiveRecord::Schema.define(version: 20130818161527) do
 
   create_table "boards", force: true do |t|
-    t.integer  "game_id"
-    t.integer  "player_id"
+    t.integer  "game_id",    null: false
+    t.integer  "player_id",  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "games", force: true do |t|
     t.string   "statis"
-    t.integer  "width"
-    t.integer  "height"
+    t.integer  "width",      default: 10
+    t.integer  "height",     default: 10
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "players", force: true do |t|
-    t.string   "name"
-    t.string   "token"
-    t.integer  "won"
-    t.integer  "lost"
+    t.string   "name",                   null: false
+    t.string   "token",                  null: false
+    t.integer  "won",        default: 0
+    t.integer  "lost",       default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "positions", force: true do |t|
-    t.integer  "x"
-    t.integer  "y"
-    t.integer  "shop_id"
+    t.integer  "x",          null: false
+    t.integer  "y",          null: false
+    t.integer  "shop_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "ships", force: true do |t|
-    t.string   "t"
-    t.integer  "board_id"
+    t.string   "t",          null: false
+    t.integer  "board_id",   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "shoots", force: true do |t|
-    t.integer  "x"
-    t.integer  "y"
+    t.integer  "x",          null: false
+    t.integer  "y",          null: false
     t.integer  "seq"
-    t.integer  "game_id"
-    t.integer  "player_id"
+    t.integer  "game_id",    null: false
+    t.integer  "player_id",  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
