@@ -9,9 +9,17 @@ class GameTest < ActiveSupport::TestCase
 
      	g = Game.last
 
-     	assert g.width == 100
-     	assert g.height == 100
+     	assert_equal 100, g.width
+     	assert_equal 100, g.height
   	end
+
+    test "Create game with default values" do 
+      g = Game.create
+      g.save
+
+      assert_equal 10, g.width
+      assert_equal 10, g.height
+    end 
 
   	test "Creating game and adding players should create boards for them." do
   		player1 = Player.create do |p|
