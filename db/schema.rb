@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20130818161527) do
   end
 
   create_table "games", force: true do |t|
-    t.string   "statis"
+    t.string   "status",     default: "created"
     t.integer  "width",      default: 10
     t.integer  "height",     default: 10
     t.datetime "created_at"

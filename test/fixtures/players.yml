@@ -1,8 +1,14 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-player: 
+Mark: 
     id: 12345
     name: Mark
     token: 23j0f023912309r5u11fas
     won: 123
     lost: 321
+Bob: 
+    id: 12346
+    name: Bob
+    token: adflkj23kj23lkj235l;23
+    won: 0
+    lost: 0
