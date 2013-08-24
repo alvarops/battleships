@@ -10,7 +10,7 @@ class PlayerController < ApplicationController
     end
 
     def stats 
-        render json: @current_palyer
+        render json: @current_player
     end 
        
 end

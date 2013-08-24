@@ -13,7 +13,7 @@ module TokenFilter
         if @current_player then 
             yield
         else
-            redirect_to '/error' #TODO
+            redirect_to '/error' #TODO (Currently 404 or 500 - General KABOOM)
         end 
     end 
 end 

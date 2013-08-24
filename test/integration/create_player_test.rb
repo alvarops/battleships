@@ -6,7 +6,7 @@ class CreatePlayerTest < ActionDispatch::IntegrationTest
         get "/player/new?name=Bob"
          #check response
 
-        resp = JSON.parse(@response.body)
+        resp = JSON.parse @response.body
 
         assert_equal 'Bob', resp['name']
 
@@ -16,7 +16,7 @@ class CreatePlayerTest < ActionDispatch::IntegrationTest
     test 'POST player#new' do 
         post "/player/new", '{"name": "Bob"}', "CONTENT_TYPE" => 'application/json'
 
-        resp = JSON.parse(@response.body)
+        resp = JSON.parse @response.body
 
         assert_equal 'Bob', resp['name']
         refute_nil resp['token']
