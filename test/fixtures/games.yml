@@ -1,0 +1,5 @@
+open_game:
+  id: 1
+  width: 321
+  height: 123
+  status: created

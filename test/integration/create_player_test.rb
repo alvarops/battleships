@@ -1,9 +1,9 @@
-require "test_helper"
+require 'test_helper'
 
 class CreatePlayerTest < ActionDispatch::IntegrationTest
 
     test 'GET player#new' do 
-        get "/player/new?name=Bob"
+        get '/player/new?name=Bob'
          #check response
 
         resp = JSON.parse @response.body
@@ -14,7 +14,7 @@ class CreatePlayerTest < ActionDispatch::IntegrationTest
     end 
 
     test 'POST player#new' do 
-        post "/player/new", '{"name": "Bob"}', "CONTENT_TYPE" => 'application/json'
+        post '/player/new', '{"name":"Bob"}', 'CONTENT_TYPE' => 'application/json'
 
         resp = JSON.parse @response.body
 

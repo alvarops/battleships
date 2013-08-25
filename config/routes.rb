@@ -6,6 +6,7 @@ Battleships::Application.routes.draw do
   get  ':token/player/:id/stats', to: 'player#stats'
 
   get  ':token/game/new', to: 'game#new'
+  get  ':token/game/list', to: 'game#list'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

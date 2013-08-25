@@ -125,5 +125,11 @@ class GameTest < ActiveSupport::TestCase
     assert_raises ActiveRecord::RecordInvalid do       
       game.save!
     end
-  end 
+  end
+
+  test 'Should list all open games with status \'created\'' do
+    games = Game.where status: 'created'
+
+    assert_equal 1, games.size
+  end
 end
