@@ -77,7 +77,53 @@ class GameTest < ActiveSupport::TestCase
     assert_equal 'created', game.status 
   end 
 
-  test "Adding 2 users should change game status to 'ready'" do 
-    
+  test "Adding 2 users should change game status to 'ready', and removing back to 'created'" do 
+    game = Game.create do |g| 
+      g.width = 10
+      g.height = 10
+    end 
+
+    fred = Player.create do |p| 
+      p.name = 'Fred'
+    end 
+
+    joe = Player.create do |p| 
+      p.name = 'Joe'
+    end 
+
+    game.players.push fred
+    game.players.push joe 
+    game.save
+
+    assert_equal 'ready', game.status
+
+    game.players.delete(fred)
+    game.save
+
+    assert_equal 'created', game.status
+  end 
+
+  test 'Cannot add more than 2 players to the game' do 
+    players = []
+
+    for i in 0..3 do 
+      players[i] = Player.create do |p|
+        p.name = 'Name #{i}'
+      end 
+    end 
+
+    game = Game.create do |g|
+      g.width = 10
+      g.height = 10
+    end 
+
+    game.players.push players[0]
+    game.players.push players[1]
+    game.players.push players[2]
+
+    #ok so far, but now we expect... exception 
+    assert_raises ActiveRecord::RecordInvalid do       
+      game.save!
+    end
   end 
 end
