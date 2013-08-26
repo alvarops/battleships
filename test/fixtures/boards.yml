@@ -1,0 +1,8 @@
+Bobs:
+  id: 10001
+  player_id: 12345
+  game_id: 2
+Freds:
+  id: 10002
+  player_id: 12346
+  game_id: 2
