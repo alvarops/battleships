@@ -1,5 +1,6 @@
 class GameController < ApplicationController
   include TokenFilter
+  include GameHelper
 
   def new
     game = Game.create
@@ -17,9 +18,15 @@ class GameController < ApplicationController
   end
 
   def stats
-    game = Game.find(params[:id])
+    find_and_render {}
+  end
 
-    render json: game.to_json( include: [:players, :boards])
+  def set
+    find_and_render do |game|
+      player_board = game.boards.find_by player_id: @current_player.id
+
+     # ship = Ship.create
+    end
   end
 
 end 
