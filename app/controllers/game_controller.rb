@@ -16,4 +16,10 @@ class GameController < ApplicationController
     render json: games
   end
 
+  def stats
+    game = Game.find(params[:id])
+
+    render json: game.to_json( include: [:players, :boards])
+  end
+
 end 
