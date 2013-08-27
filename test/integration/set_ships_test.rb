@@ -14,5 +14,11 @@ $set_json = {
 class SetShipsTest < ActionDispatch::IntegrationTest
   test 'should set one ship on board' do
     post '23j0f023912309r5u11fas/game/2/set', data: $set_json
+
+    assert_not_nil @response.body
+
+    game = JSON.parse @response.body
+
+
   end
 end

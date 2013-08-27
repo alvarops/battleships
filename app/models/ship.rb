@@ -1,4 +1,6 @@
 class Ship < ActiveRecord::Base
+  include TimestampSuppress
+
   has_many :positions, dependent: :delete_all
 
   validates_inclusion_of :t, :in => [:carrier, :battleship, :submarine, :cruiser, :patrol]
