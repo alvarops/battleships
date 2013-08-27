@@ -6,6 +6,29 @@ gem 'rails', '4.0.0'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 
+group :development, :test do
+  gem 'rspec-rails', '2.13.1'
+  gem 'guard-rspec', '2.5.0'
+  gem 'spork-rails', :git => 'https://github.com/sporkrb/spork-rails.git'
+  gem 'guard-spork', '1.5.0'
+  gem 'childprocess', '0.3.6'
+  gem 'spork-testunit'
+  gem 'ruby-prof'
+  gem 'turn'
+  gem 'guard-minitest'
+end
+
+group :test do
+  gem 'selenium-webdriver', '2.0.0'
+  gem 'capybara', '2.1.0'
+  gem 'growl', '1.0.3'
+end
+
+group :production do
+  gem 'rails_12factor', '0.0.2'
+  gem 'libnotify', '0.8.0'
+end
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
