@@ -32,11 +32,7 @@ class GameController < ApplicationController
   def randomize
     game = Game.find(params[:id])
     board = game.boards.find_by(player_id: @current_player.id)
-
-    #puts board.inspect
-
-    #board.radomize
-
+    board.randomize
     render json: game
   end
 
