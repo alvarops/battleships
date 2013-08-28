@@ -25,7 +25,14 @@ class GameController < ApplicationController
     find_and_render do |game|
       player_board = game.boards.find_by player_id: @current_player.id
 
-     # ship = Ship.create
+      new_ships = params[:ships]
+
+      new_ships.each do |new_ship|
+        ship = Ship.new
+        ship.t = new_ship[:type]
+        player_board.ships.push ship
+        player_board.save!
+      end
     end
   end
 

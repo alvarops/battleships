@@ -8,8 +8,9 @@ Battleships::Application.routes.draw do
   get  ':token/game/new',     to: 'game#new'
   get  ':token/game/list',    to: 'game#list'
   get  ':token/game/:id',     to: 'game#stats'
-  post ':token/game/:id/set', to: 'game#set'
 
+  get  ':token/game/:id/set', to: 'game#set'  #you can do ?ships=[<json array here>]
+  post ':token/game/:id/set', to: 'game#set'
 
   get  ':token/game/:id/randomize', to: 'game#randomize'
   post ':token/game/:id/randomize', to: 'game#randomize'
