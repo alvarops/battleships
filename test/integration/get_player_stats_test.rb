@@ -2,7 +2,7 @@ require 'test_helper'
 
 class GetPlayerStatsTest < ActionDispatch::IntegrationTest
     test 'should return player statistics object' do 
-        get '/23j0f023912309r5u11fas/player/12345/stats'
+        get '/23j0f023912309r5u11fas/player/12345'
 
         resp = JSON.parse @response.body
 
