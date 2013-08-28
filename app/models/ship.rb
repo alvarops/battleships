@@ -24,12 +24,48 @@ class Ship < ActiveRecord::Base
     y_end = height
 
     no_of_points.to_i.times do
-      first_point_x= rand(x_start..x_end)
-      first_point_y = rand(y_start..y_end)
-      p = Position.new :x => first_point_x, :y => first_point_y
+      coordinates = get_random_unique_coordinates x_start, x_end, y_start, y_end, ship.positions
+      p = Position.new :x => coordinates[:point_x], :y => coordinates[:point_y]
+      x_start = coordinates[:point_x] - 1
+      x_end = coordinates[:point_x] + 1
+      y_start = coordinates[:point_y] - 1
+      y_end = coordinates[:point_y] + 1
+
       ship.positions.push p
     end
     ship
+  end
+
+  def self.get_random_unique_coordinates(x_start, x_end, y_start, y_end, positions)
+    point_x= rand(x_start..x_end)
+    point_y = rand(y_start..y_end)
+    positions.each do |p|
+      if (p.x.equal? point_x) && (p.y.equal? point_y)
+        x_start = point_x - 1
+        x_end = point_x + 1
+        y_start = point_y - 1
+        y_end = point_y + 1
+        return get_random_unique_coordinates x_start, x_end, y_start, y_end, positions
+      end
+    end
+    coordinates = {:point_x => point_x, :point_y => point_y}
+  end
+
+  def print_ship(board_width=20, board_height=20)
+    puts self.t
+    board_height.times do |y|
+      row=''
+      board_width.times do |x|
+        pixel = nil
+        self.positions.each do |p|
+          if (p.x.equal? x) && (p.y.equal? y)
+            pixel = p
+          end
+        end
+        row += pixel ? '[]' : '.^'
+      end
+      puts row
+    end
   end
 
   def valid_points?
@@ -40,4 +76,5 @@ class Ship < ActiveRecord::Base
   def self.SHIP_TYPES
     @@SHIP_TYPES
   end
+
 end

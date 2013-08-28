@@ -30,7 +30,8 @@ class ShipTest < ActiveSupport::TestCase
   test 'ships can be generated randomly' do
     Ship.SHIP_TYPES.each do |t, v|
       s = Ship.generate t, 10, 20
-      assert s.valid_points?, 'Invalid Ship ' + s.positions.to_json
+      s.print_ship
+      assert s.valid_points?, 'Invalid Ship of type ' + t.to_s + ' ' + s.to_json
     end
   end
 end
