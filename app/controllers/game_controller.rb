@@ -29,4 +29,15 @@ class GameController < ApplicationController
     end
   end
 
+  def randomize
+    game = Game.find(params[:id])
+    board = game.boards.find_by(player_id: @current_player.id)
+
+    #puts board.inspect
+
+    #board.radomize
+
+    render json: game
+  end
+
 end 

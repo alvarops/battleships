@@ -10,6 +10,10 @@ Battleships::Application.routes.draw do
   get  ':token/game/:id',     to: 'game#stats'
   post ':token/game/:id/set', to: 'game#set'
 
+
+  get  ':token/game/:id/randomize', to: 'game#randomize'
+  post ':token/game/:id/randomize', to: 'game#randomize'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

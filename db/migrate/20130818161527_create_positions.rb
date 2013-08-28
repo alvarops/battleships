@@ -3,7 +3,7 @@ class CreatePositions < ActiveRecord::Migration
     create_table :positions do |t|
       t.integer :x, null: false, unsigned: true
       t.integer :y, null: false, unsigned: true
-      t.integer :shop_id, null: false
+      t.integer :ship_id, null: false
 
       t.timestamps
     end

@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 20130818161527) do
   create_table "positions", force: true do |t|
     t.integer  "x",          null: false
     t.integer  "y",          null: false
-    t.integer  "shop_id",    null: false
+    t.integer  "ship_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
