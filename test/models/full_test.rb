@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class BoardTest < ActiveSupport::TestCase
+class FullBoardTest < ActiveSupport::TestCase
 
   test 'should play the game between models' do
 
@@ -39,8 +39,7 @@ class BoardTest < ActiveSupport::TestCase
 
     board.ships.push ship
 
-    game.save
-    board.save
+    game.save!
 
 
   end

@@ -12,5 +12,8 @@ class PlayerController < ApplicationController
     def stats 
         render json: @current_player
     end 
-       
+
+    def list
+      render json: Player.all
+    end
 end

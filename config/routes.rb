@@ -2,6 +2,7 @@ Battleships::Application.routes.draw do
 
   get  '/player/new',         to: 'player#new'
   post '/player/new',         to: 'player#new'
+  get '/player/list',         to: 'player#list'
 
   get  ':token/player/:id',   to: 'player#stats'
 

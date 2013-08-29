@@ -57,6 +57,7 @@ class GameTest < ActiveSupport::TestCase
     assert_raises ActiveRecord::RecordInvalid do 
       #trying to add the same user again to the same game    
       game.players.push player
+      game.save!
     end 
 
     game.save

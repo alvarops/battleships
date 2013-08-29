@@ -5,6 +5,7 @@ class Board < ActiveRecord::Base
   has_many :ships
 
   validates_uniqueness_of :player_id, :scope => :game_id
+  validate :valid_ships
 
   def randomize
     ships.destroy
@@ -13,10 +14,12 @@ class Board < ActiveRecord::Base
     end
   end
 
-  def valid?(board=self)
+  private
+
+  def valid_ships(board=self)
     self.ships.each do |ship1|
-      self.ships.dup.delete(ship1).each do |ship2|
-        if ship1.collide? ship2
+      self.ships.each do |ship2|
+        if (ship1 <=> ship2) && (ship1.collide? ship2)
           return false
         end
       end
@@ -24,7 +27,6 @@ class Board < ActiveRecord::Base
     true
   end
 
-  private
   def generate_new_ship(type)
     s = Ship.generate(type, self.game.width, self.game.height)
     self.ships.each do |ship|

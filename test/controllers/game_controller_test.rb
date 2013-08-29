@@ -23,16 +23,16 @@ class GameControllerTest < ActionController::TestCase
 
     player_board = current_player_board(params)
 
-    assert_equal 3, player_board.ships.size
+    assert_equal 4, player_board.ships.size
     assert_equal params[:ships][0][:type], player_board.ships.first.t.to_s
   end
-
-  test 'GET #set, ship has to have right size' do
-
-    post :set, params
-    #TODO
-
-  end
+  #
+  #test 'GET #set, ship has to have right size' do
+  #
+  #  post :set, params
+  #  #TODO
+  #
+  #end
 
   private
 

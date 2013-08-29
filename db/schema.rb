@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130828182618) do
+ActiveRecord::Schema.define(version: 20130818161527) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id",    null: false
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 20130828182618) do
 
   create_table "ships", force: true do |t|
     t.string   "t",          null: false
-    t.integer  "board_id"
+    t.integer  "board_id",   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
