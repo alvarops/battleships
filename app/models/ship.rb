@@ -56,7 +56,13 @@ class Ship < ActiveRecord::Base
   end
 
   def collide?(ship2)
-    # TODO:
+    self.positions.each do |p1|
+      ship2.positions.each do |p2|
+        if p1.collision? p2
+          return true
+        end
+      end
+    end
     false
   end
 

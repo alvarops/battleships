@@ -31,7 +31,8 @@ class GameController < ApplicationController
         ship = Ship.new
         ship.t = new_ship[:type]
         player_board.ships.push ship
-        player_board.save!
+        player_board.save
+        puts player_board.errors
       end
     end
   end

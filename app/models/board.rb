@@ -29,7 +29,7 @@ class Board < ActiveRecord::Base
     s = Ship.generate(type, self.game.width, self.game.height)
     self.ships.each do |ship|
       if ship.collide? s
-        generate_new_ship type
+        return generate_new_ship type
       end
     end
     self.ships.push s

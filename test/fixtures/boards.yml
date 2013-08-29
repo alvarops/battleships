@@ -6,3 +6,14 @@ Freds:
   id: 10002
   player_id: 12346
   game_id: 2
+
+board_with_collision_1:
+  id: 10003
+  player_id: 12345
+  game_id: 3
+
+board_with_collision_2:
+  id: 10004
+  player_id: 12346
+  game_id: 3
+

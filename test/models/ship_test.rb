@@ -12,6 +12,13 @@ class ShipTest < ActiveSupport::TestCase
     assert_not_nil ship
   end
 
+  test 'ships should not overlap on a board' do
+    sub_horizontal = Ship.find_by(:id => 1)
+    sub_vertical = Ship.find_by(:id => 2)
+    assert (sub_horizontal.collide? sub_vertical), 'Ship collision not detected'
+  end
+
+
   test 'ships can have only certain types' do
     ship = Ship.new
     ship.board_id = 1 #fake

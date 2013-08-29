@@ -18,12 +18,12 @@ class GameControllerTest < ActionController::TestCase
     assert_equal player.id, game_player.id
   end
 
-  test 'GET #set' do
+  test 'POST #set' do
     post :set, params
 
     player_board = current_player_board(params)
 
-    assert_equal 1, player_board.ships.size
+    assert_equal 3, player_board.ships.size
     assert_equal params[:ships][0][:type], player_board.ships.first.t.to_s
   end
 
@@ -45,7 +45,7 @@ class GameControllerTest < ActionController::TestCase
   def params
     {
       token: token, #current player token
-      id: 2, #game id
+      id: 3, #game id
       ships: [{
         type: 'submarine', #type of the boat
         xy: [
