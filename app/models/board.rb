@@ -8,7 +8,9 @@ class Board < ActiveRecord::Base
 
   def randomize
     ships.destroy
-    s = Ship.generate :t => :patrol, :width => self.game.width, :height => self.game.height
-    self.ships.push s
+    ShipShapes::SHIP_TYPES.keys.each do |type|
+      s = Ship.generate(type, self.game.width, self.game.height)
+      self.ships.push s
+    end
   end
 end
