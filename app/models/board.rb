@@ -9,8 +9,29 @@ class Board < ActiveRecord::Base
   def randomize
     ships.destroy
     ShipShapes::SHIP_TYPES.keys.each do |type|
-      s = Ship.generate(type, self.game.width, self.game.height)
-      self.ships.push s
+      generate_new_ship type
     end
+  end
+
+  def valid?
+    self.ships.each do |ship1|
+      self.ships.dup.remove(ship1).each do |ship2|
+        if ship1.colide? ship2
+          return false
+        end
+      end
+    end
+    true
+  end
+
+  private
+  def generate_new_ship(type)
+    s = Ship.generate(type, self.game.width, self.game.height)
+    self.ships.each do |ship|
+      if ship.colide? s
+        generate_new_ship type
+      end
+    end
+    self.ships.push s
   end
 end

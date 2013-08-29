@@ -55,15 +55,14 @@ class Ship < ActiveRecord::Base
     end
   end
 
-end
-
-private
-def max_value_in_hash(p, key)
-  max = 0
-  p.each do |pos|
-    if (pos[key.to_sym] > max)
-      max = pos[key.to_sym]
+  private
+  def self.max_value_in_hash(p, key)
+    max = 0
+    p.each do |pos|
+      if (pos[key.to_sym] > max)
+        max = pos[key.to_sym]
+      end
     end
+    max
   end
-  max
 end
