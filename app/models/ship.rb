@@ -55,6 +55,11 @@ class Ship < ActiveRecord::Base
     end
   end
 
+  def collide?(ship2)
+    # TODO:
+    false
+  end
+
   private
   def self.max_value_in_hash(p, key)
     max = 0

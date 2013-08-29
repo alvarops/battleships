@@ -13,10 +13,10 @@ class Board < ActiveRecord::Base
     end
   end
 
-  def valid?
+  def valid?(board=self)
     self.ships.each do |ship1|
-      self.ships.dup.remove(ship1).each do |ship2|
-        if ship1.colide? ship2
+      self.ships.dup.delete(ship1).each do |ship2|
+        if ship1.collide? ship2
           return false
         end
       end
@@ -28,7 +28,7 @@ class Board < ActiveRecord::Base
   def generate_new_ship(type)
     s = Ship.generate(type, self.game.width, self.game.height)
     self.ships.each do |ship|
-      if ship.colide? s
+      if ship.collide? s
         generate_new_ship type
       end
     end

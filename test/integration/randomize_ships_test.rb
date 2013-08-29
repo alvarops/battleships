@@ -8,6 +8,7 @@ class RandomizeShipsTest < ActionDispatch::IntegrationTest
     game = JSON.parse @response.body
 
     assert_not_nil game
+    puts game
   end
 
 
