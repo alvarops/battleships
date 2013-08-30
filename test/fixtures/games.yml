@@ -10,3 +10,10 @@ ready_game:
   width: 10
   height: 10
   status: ready
+
+
+game_with_ships_collision:
+  id: 3
+  width: 21
+  height: 23
+  status: created

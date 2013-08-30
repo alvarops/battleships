@@ -1,6 +1,8 @@
 require 'test_helper'
+require 'ship_shapes'
 
 class ShipTest < ActiveSupport::TestCase
+  include ShipShapes
   test 'should create ship' do
     ship = Ship.create do |s|
       s.t = 'submarine'
@@ -9,6 +11,13 @@ class ShipTest < ActiveSupport::TestCase
 
     assert_not_nil ship
   end
+
+  test 'ships should not overlap on a board' do
+    sub_horizontal = Ship.find_by(:id => 1)
+    sub_vertical = Ship.find_by(:id => 2)
+    assert (sub_horizontal.collide? sub_vertical), 'Ship collision not detected'
+  end
+
 
   test 'ships can have only certain types' do
     ship = Ship.new
@@ -28,10 +37,15 @@ class ShipTest < ActiveSupport::TestCase
   end
 
   test 'ships can be generated randomly' do
-    Ship.SHIP_TYPES.each do |t, v|
-      s = Ship.generate t, 10, 20
+    board_width = 15
+    board_height = 20
+
+    ShipShapes::SHIP_TYPES.each do |t, v|
+      s = Ship.generate t, board_width, board_height
       s.print_ship
-      assert s.valid_points?, 'Invalid Ship of type ' + t.to_s + ' ' + s.to_json
+      s.positions.each do |p|
+        assert (p.x>=0 && p.x <= board_width && p.y>=0 && p.y <= board_height), 'Ship is NOT on a board ' + t.to_s + ' ' + s.to_json
+      end
     end
   end
 end

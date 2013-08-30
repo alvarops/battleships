@@ -57,6 +57,7 @@ class GameTest < ActiveSupport::TestCase
     assert_raises ActiveRecord::RecordInvalid do 
       #trying to add the same user again to the same game    
       game.players.push player
+      game.save!
     end 
 
     game.save
@@ -130,6 +131,6 @@ class GameTest < ActiveSupport::TestCase
   test 'Should list all open games with status \'created\'' do
     games = Game.where status: 'created'
 
-    assert_equal 1, games.size
+    assert_equal 2, games.size
   end
 end

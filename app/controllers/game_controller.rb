@@ -18,7 +18,10 @@ class GameController < ApplicationController
   end
 
   def stats
-    find_and_render {}
+    @game = Game.find(params[:id])
+
+
+    render json: @game.to_json(:include => [:players, :boards => {:include => [:ships => {:include => [:positions]}] }])
   end
 
   def set
@@ -28,10 +31,12 @@ class GameController < ApplicationController
       new_ships = params[:ships]
 
       new_ships.each do |new_ship|
-        ship = Ship.new
-        ship.t = new_ship[:type]
+        ship = Ship.new t: new_ship[:type]
+
         player_board.ships.push ship
-        player_board.save!
+        ship.save
+        player_board.save
+        #puts player_board.errors
       end
     end
   end
