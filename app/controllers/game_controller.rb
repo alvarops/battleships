@@ -6,9 +6,13 @@ class GameController < ApplicationController
     game = Game.create
     game.players.push Player.find_by_token(params[:token])
     game.status = 'created'
+    if params[:secondPlayerId]
+      game.players.push Player.find_by(id: params[:secondPlayerId])
+      game.status = 'ready'
+    end
     game.save
-
-    render json: game
+    #TODO: filter out player tokens
+    render json: game.to_json(:include => [:players])
   end
 
   def list
@@ -21,7 +25,7 @@ class GameController < ApplicationController
     @game = Game.find(params[:id])
 
 
-    render json: @game.to_json(:include => [:players, :boards => {:include => [:ships => {:include => [:positions]}] }])
+    render json: @game.to_json(:include => [:players, :boards => {:include => [:ships => {:include => [:positions]}]}])
   end
 
   def set
@@ -45,7 +49,8 @@ class GameController < ApplicationController
     game = Game.find(params[:id])
     board = game.boards.find_by(player_id: @current_player.id)
     board.randomize
-    render json: game
+    #TODO: filter out player tokens
+    render json: game.to_json(:except => [:players])
   end
 
 end 
