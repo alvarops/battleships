@@ -14,6 +14,6 @@ class PlayerController < ApplicationController
     end 
 
     def list
-      render json: Player.all
+      render json: Player.all.to_json(:except => [:token])
     end
 end
