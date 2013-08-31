@@ -1,37 +1,49 @@
 require 'test_helper'
 
 class PlayerControllerTest < ActionController::TestCase
-    test 'GET #new' do
-        get :new
+  test 'GET #new' do
+    get :new
 
-        player = Player.find_by name: 'Anonymous'
+    player = Player.find_by name: 'Anonymous'
 
-        assert_equal 'Anonymous', player.name
-    end 
+    assert_equal 'Anonymous', player.name
+  end
 
-    test 'GET #new, {name}' do 
-        get :new, {name: 'Bob'}
+  test 'GET #new, {name}' do
+    get :new, {name: 'Bob'}
 
-        player = Player.find_by name: 'Bob'
+    player = Player.find_by name: 'Bob'
 
-        assert_equal 'Bob', player.name
-        assert_kind_of String, player.token
-    end 
+    assert_equal 'Bob', player.name
+    assert_kind_of String, player.token
+  end
 
-    test 'POST #new' do 
-        post :new, {name: 'Frank'}
+  test 'POST #new' do
+    post :new, {name: 'Frank'}
 
-        player = Player.find_by name: 'Frank'
+    player = Player.find_by name: 'Frank'
 
-        assert_equal 'Frank', player.name
-    end     
+    assert_equal 'Frank', player.name
+  end
 
-    test 'GET #stats' do 
-        #player defined in fixtures
-        get :stats, {id: 12345, token: '23j0f023912309r5u11fas'}
+  test 'GET #stats' do
+    #player defined in fixtures
+    get :stats, {id: 12345, token: '23j0f023912309r5u11fas'}
 
-        current_player =  assigns(:current_player)
+    current_player = assigns(:current_player)
 
-        assert_equal 12345, current_player.id
-    end 
+    assert_equal 12345, current_player.id
+  end
+
+  test 'GET #list without tokens' do
+    get :list
+    resp = JSON.parse @response.body
+    assert resp.first['token'].nil?
+  end
+
+  test 'GET #list with tokens' do
+    get :list, {showToken: 1}
+    resp = JSON.parse @response.body
+    assert_equal '23j0f023912309r5u11fas', resp.first['token']
+  end
 end

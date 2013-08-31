@@ -18,6 +18,25 @@ class GameControllerTest < ActionController::TestCase
     assert_equal player.id, game_player.id
   end
 
+  test 'GET #new Create game and join a second player with a single request' do
+    games_count_before = Game.all.size
+
+    get :new, token: token, secondPlayerId: 12346
+
+    games_count_after = Game.all.size
+
+    game_resp    = JSON.parse @response.body
+    created_game = Game.find game_resp['id']
+
+    player      = Player.find_by_token token
+    first_game_player = created_game.players.first
+    second_game_player = created_game.players.second
+
+    assert_equal 1, games_count_after - games_count_before, 'Game not created at all in db'
+    assert_equal player.id, first_game_player.id, 'First player Id incorrect'
+    assert_equal 12346, second_game_player.id, 'Second player ID incorrect'
+  end
+
   test 'POST #set' do
     post :set, params
 
