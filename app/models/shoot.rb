@@ -1,4 +1,4 @@
 class Shoot < ActiveRecord::Base
-  belongs_to :game
+  belongs_to :board
   belongs_to :player
 end
