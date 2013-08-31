@@ -66,7 +66,11 @@ class GameController < ApplicationController
       end
 
     end
-    render json: me, status: :created
+    if me.save
+      render json: me, status: :created
+    else
+      render json: me.errors, status: :ok
+    end
   end
 
 end 

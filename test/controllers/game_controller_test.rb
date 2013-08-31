@@ -49,12 +49,12 @@ class GameControllerTest < ActionController::TestCase
   test 'GET #shoot, {x, y}' do
     shoots_count_before = Shoot.all.size
 
-    get :shoot, token:token, id: 2, x: 1, y: 1
+    get :shoot, token:'i_have_no_ships', id: 4, x: 1, y: 1
 
-    puts @response.body
     shoots_count_after = Shoot.all.size
     assert_equal shoots_count_after, 1 + shoots_count_before
   end
+
   #
   #test 'GET #set, ship has to have right size' do
   #
