@@ -60,7 +60,7 @@ class GameController < ApplicationController
       s.y= params[:y]
       Game.find(params[:id]).boards.each do |b|
         if b.player_id != s.player_id
-          s.board_id= b.__id__
+          s.board_id= b.id
         end
 
       end
