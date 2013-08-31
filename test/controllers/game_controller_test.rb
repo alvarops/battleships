@@ -45,6 +45,16 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 4, player_board.ships.size
     assert_equal params[:ships][0][:type], player_board.ships.first.t.to_s
   end
+
+  test 'GET #shoot, {x, y}' do
+    shoots_count_before = Shoot.all.size
+
+    get :shoot, token:token, id: 1, x: 1, y: 1
+
+    shoots_count_after = Shoot.all.size
+
+    assert_equal shoots_count_after, 1 + shoots_count_before
+  end
   #
   #test 'GET #set, ship has to have right size' do
   #

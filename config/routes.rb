@@ -17,7 +17,6 @@ Battleships::Application.routes.draw do
   get  ':token/game/:id/randomize', to: 'game#randomize'
   post ':token/game/:id/randomize', to: 'game#randomize'
 
-  get  ':token/shoot/new', to: 'shoot#new'
   get  ':token/game/:id/shoot', to: 'game#shoot'
 
   # The priority is based upon order of creation: first created -> highest priority.
