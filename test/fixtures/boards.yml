@@ -17,3 +17,13 @@ board_with_collision_2:
   player_id: 12346
   game_id: 3
 
+board_with_no_ships:
+  id: 10005
+  player_id: 1
+  game_id: 4
+
+board_with_ships:
+  id: 10006
+  player_id: 2
+  game_id: 4
+

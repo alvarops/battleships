@@ -17,3 +17,9 @@ game_with_ships_collision:
   width: 21
   height: 23
   status: created
+
+ready_game_to_shoot:
+  id: 4
+  width: 10
+  height: 10
+  status: ready

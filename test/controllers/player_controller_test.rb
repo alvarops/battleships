@@ -44,6 +44,6 @@ class PlayerControllerTest < ActionController::TestCase
   test 'GET #list with tokens' do
     get :list, {showToken: 1}
     resp = JSON.parse @response.body
-    assert_equal '23j0f023912309r5u11fas', resp.first['token']
+    assert_equal 'i_have_no_ships', resp.first['token']
   end
 end

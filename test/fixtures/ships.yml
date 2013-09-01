@@ -13,3 +13,12 @@ submarine_vertical_10x10:
   board_id: 10003
   t: 'submarine'
 
+submarine_to_shoot:
+  id: 4
+  board_id: 10006
+  t: 'submarine'
+
+aircraft_carrier_to_sink:
+  id: 5
+  board_id: 10006
+  t: 'carrier'

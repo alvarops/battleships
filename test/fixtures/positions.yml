@@ -39,3 +39,39 @@ p4_2:
   x: 1
   y: 3
   ship_id: 2
+
+p_sub_4_1:
+  id: 8
+  x: 3
+  y: 5
+  ship_id: 4
+
+p_sub_4_2:
+  id: 9
+  x: 3
+  y: 6
+  ship_id: 4
+
+p_sub_4_3:
+  id: 10
+  x: 3
+  y: 7
+  ship_id: 4
+
+p_car_5_1:
+  id: 11
+  x: 4
+  y: 1
+  ship_id: 5
+
+p_car_5_2:
+  id: 12
+  x: 4
+  y: 2
+  ship_id: 5
+
+p_car_5_3:
+  id: 13
+  x: 4
+  y: 3
+  ship_id: 5
