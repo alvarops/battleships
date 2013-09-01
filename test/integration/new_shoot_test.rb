@@ -3,14 +3,21 @@ require 'test_helper'
 class NewShootTest < ActionDispatch::IntegrationTest
   test 'should use the right board ID' do
     get 'i_have_ships/game/3/shoot', {:x => 5, :y => 5}
-    shoot = JSON.parse @response.body
-    assert_not_nil shoot
-    assert_equal 'Is not your game', shoot['error'][0]
+    error = JSON.parse @response.body
+    assert_not_nil error
+    assert_equal 'Is not your game', error['error'][0]
 
     get 'i_have_no_ships/game/4/shoot', {:x => 5, :y => 7}
     shoot = JSON.parse @response.body
     assert_not_nil shoot
     assert_equal 10006, shoot['board_id']
+  end
+
+  test 'should shoot within the board bounds' do
+    get '23j0f023912309r5u11fas/game/2/shoot', {:x => 100, :y => 5}
+    error = JSON.parse @response.body
+    assert_not_nil error
+    assert_equal 'You shoot out of the board', error['error'][0]
   end
 
   test 'should shoot started games' do
