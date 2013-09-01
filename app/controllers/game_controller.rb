@@ -2,6 +2,8 @@ class GameController < ApplicationController
   include TokenFilter
   include GameHelper
 
+  rescue_from ActiveRecord::RecordNotUnique, :with => :rescue_duplicate
+
   def new
     game = Game.create
     game.players.push Player.find_by_token(params[:token])
@@ -54,7 +56,7 @@ class GameController < ApplicationController
   end
 
   def shoot
-    me = Shoot.create do |s|
+    shoot= Shoot.create do |s|
       s.player_id= Player.find_by_token(params[:token]).id
       s.x= params[:x]
       s.y= params[:y]
@@ -62,15 +64,19 @@ class GameController < ApplicationController
         if b.player_id != s.player_id
           s.board_id= b.id
         end
-
       end
+    end
 
-    end
-    if me.save
-      render json: me, status: :created
+    if shoot.save
+      render json: shoot, status: :created #me.to_json(:except => [:boards]), status: :created
     else
-      render json: me.errors, status: :ok
+      render json: shoot.errors, status: :ok
     end
+  end
+
+  protected
+  def rescue_duplicate
+    render json: {:error => ['Duplicate record']}, :status => :ok
   end
 
 end 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130831150629) do
+ActiveRecord::Schema.define(version: 20130901112346) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id",    null: false
@@ -61,5 +61,7 @@ ActiveRecord::Schema.define(version: 20130831150629) do
     t.datetime "updated_at"
     t.integer  "board_id"
   end
+
+  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true
 
 end

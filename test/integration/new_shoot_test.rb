@@ -7,7 +7,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_not_nil shoot
     assert_equal 'Is not your game', shoot['error'][0]
 
-    get 'i_have_no_ships/game/4/shoot', {:x => 5, :y => 5}
+    get 'i_have_no_ships/game/4/shoot', {:x => 5, :y => 7}
     shoot = JSON.parse @response.body
     assert_not_nil shoot
     assert_equal 10006, shoot['board_id']
@@ -30,8 +30,16 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_equal 'Opponent ships are not ready', error['error'][0]
   end
 
-  #test 'should get a miss if no ship found' do
-  #  get 'i_have_no_ships/game/4/shoot', {:x => 5, :y => 6}
-  #  assert_equal '404', @response.code
-  #end
+  test 'should not be duplicate' do
+    get 'i_have_no_ships/game/4/shoot', {:x => 6, :y => 5}
+    get 'i_have_no_ships/game/4/shoot', {:x => 6, :y => 5}
+    error = JSON.parse @response.body
+    assert_not_nil error
+    assert_equal 'Duplicate record', error['error'][0]
+  end
+
+  test 'should get a miss if no ship found' do
+    get 'i_have_no_ships/game/4/shoot', {:x => 1, :y => 6}
+    assert_equal '404', @response.code
+  end
 end

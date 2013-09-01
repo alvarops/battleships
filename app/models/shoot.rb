@@ -17,4 +17,6 @@ class Shoot < ActiveRecord::Base
       errors.add  :error, 'Opponent ships are not ready'
     end
   end
+
 end
+
