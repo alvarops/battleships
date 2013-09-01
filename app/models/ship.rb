@@ -66,6 +66,16 @@ class Ship < ActiveRecord::Base
     false
   end
 
+  def status
+    sunk = false
+    hit = self.positions.any? { |p| p.hit }
+    if hit
+      sunk = self.positions.all? { |p| p.hit }
+    end
+    return :sunk if sunk
+    return :hit if hit
+  end
+
   private
   def self.max_value_in_hash(p, key)
     max = 0

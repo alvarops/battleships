@@ -50,5 +50,6 @@ class NewShootTest < ActionDispatch::IntegrationTest
     puts @response.body
     assert_not_nil shoot
     assert_equal 'submarine', shoot['ship_type']
+    assert_equal 'hit', shoot['ship_status']
   end
 end

@@ -77,10 +77,12 @@ class GameController < ApplicationController
       positions.each do |p|
         if p.x == shoot.x && p.y == shoot.y
           found = p
+          p.hit = true
+          p.save
         end
       end
       if !found.nil?
-        render json: {:x => shoot.x, :y => shoot.y, :ship_type => found.ship.t}, status: :created
+        render json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created
       else
         render json: shoot, status: :not_found #shoot.to_json(:except => [:boards]), status: :not_found
       end

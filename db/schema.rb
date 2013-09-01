@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130901112346) do
+ActiveRecord::Schema.define(version: 20130901130604) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id",    null: false
@@ -38,11 +38,12 @@ ActiveRecord::Schema.define(version: 20130901112346) do
   end
 
   create_table "positions", force: true do |t|
-    t.integer  "x",          null: false
-    t.integer  "y",          null: false
-    t.integer  "ship_id",    null: false
+    t.integer  "x",                          null: false
+    t.integer  "y",                          null: false
+    t.integer  "ship_id",                    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "hit",        default: false
   end
 
   create_table "ships", force: true do |t|
