@@ -42,4 +42,13 @@ class NewShootTest < ActionDispatch::IntegrationTest
     get 'i_have_no_ships/game/4/shoot', {:x => 1, :y => 6}
     assert_equal '404', @response.code
   end
+
+  test 'should get the ship description if hit' do
+    get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 6}
+    assert_equal '201', @response.code
+    shoot = JSON.parse @response.body
+    puts @response.body
+    assert_not_nil shoot
+    assert_equal 'submarine', shoot['ship_type']
+  end
 end

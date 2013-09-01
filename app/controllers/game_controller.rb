@@ -57,7 +57,7 @@ class GameController < ApplicationController
 
   def shoot
     shoot= Shoot.create do |s|
-      s.player_id= Player.find_by_token(params[:token]).id
+      s.player_id= @current_player.id
       s.x= params[:x]
       s.y= params[:y]
       Game.find(params[:id]).boards.each do |b|
@@ -68,7 +68,22 @@ class GameController < ApplicationController
     end
 
     if shoot.save
-      render json: shoot, status: :created #me.to_json(:except => [:boards]), status: :created
+      positions = Array.new
+      shoot.board.ships.each do |s|
+        s.positions.all? { |p| positions.push p }
+      end
+      found = nil
+
+      positions.each do |p|
+        if p.x == shoot.x && p.y == shoot.y
+          found = p
+        end
+      end
+      if !found.nil?
+        render json: {:x => shoot.x, :y => shoot.y, :ship_type => found.ship.t}, status: :created
+      else
+        render json: shoot, status: :not_found #shoot.to_json(:except => [:boards]), status: :not_found
+      end
     else
       render json: shoot.errors, status: :ok
     end
