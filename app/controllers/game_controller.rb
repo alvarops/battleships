@@ -81,6 +81,7 @@ class GameController < ApplicationController
           p.save
         end
       end
+
       if !found.nil?
         render json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created
       else

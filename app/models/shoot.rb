@@ -15,6 +15,8 @@ class Shoot < ActiveRecord::Base
       errors.add  :error, 'Is not ready'
     elsif board.ships.size == 0
       errors.add  :error, 'Opponent ships are not ready'
+    elsif board.ships.all? { |s| s.status == :sunk }
+      errors.add :error, 'All your opponent ships are sunk'
     end
   end
 

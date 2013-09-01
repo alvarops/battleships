@@ -74,6 +74,7 @@ class Ship < ActiveRecord::Base
     end
     return :sunk if sunk
     return :hit if hit
+    return :clear
   end
 
   private

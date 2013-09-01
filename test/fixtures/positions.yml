@@ -57,3 +57,21 @@ p_sub_4_3:
   x: 3
   y: 7
   ship_id: 4
+
+p_car_5_1:
+  id: 11
+  x: 4
+  y: 1
+  ship_id: 5
+
+p_car_5_2:
+  id: 12
+  x: 4
+  y: 2
+  ship_id: 5
+
+p_car_5_3:
+  id: 13
+  x: 4
+  y: 3
+  ship_id: 5
