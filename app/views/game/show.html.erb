@@ -1,0 +1,28 @@
+<style>
+    .red {
+        background: red;
+    }
+</style>
+<table>
+    <% @game.height.times do |y| %>
+        <tr>
+            <%
+               @game.width.times do |x|
+                 clazz = 'white'
+                 @positions.each do |p|
+                   if p.x == x && p.y == y
+                     clazz ='red'
+                   end
+                 end
+            %>
+                <td class="<%= clazz %>">
+                    <%= x %>x<%= y %>
+                </td>
+            <%
+               end
+            %>
+        </tr>
+    <%
+       end
+    %>
+</table>

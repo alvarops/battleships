@@ -53,4 +53,14 @@ class GameController < ApplicationController
     render json: game.to_json(:except => [:players])
   end
 
+  def show
+    @game = Game.find(params[:id])
+    @board = @game.boards.find_by(player_id: @current_player.id)
+    @positions = []
+    @board.ships.each do |s|
+      s.positions.each do |p|
+        @positions.push p
+      end
+    end
+  end
 end 
