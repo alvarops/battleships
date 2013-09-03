@@ -3,7 +3,7 @@
         background: red;
     }
 </style>
-<table>
+<table data-width='<%=@game.width%>' data-height='<%=@game.height%>'>
     <% @game.height.times do |y| %>
         <tr>
             <%
