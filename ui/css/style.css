@@ -1,0 +1,29 @@
+ul,li,div,body,h1,h2,h3{padding:0; margin:0;}
+body{background-color:#effef;font-family:Arial, Helvetica, sans-serif;}
+ul li {list-style:none;}
+.clear{clear:both;}
+
+.header{background-color:#202020;}
+.header h1{padding:20px; color:#FFFFFF;font-family:Electrolize;}
+.menu li{float:left;}
+.menu a{display:block;text-decoration:none;color:#CCCCCC;padding:1em;}
+.menu a:hover{background-color:#303030;color:#FFFFFF;}
+
+.body{margin:auto; max-width:1200px; width:100%;}
+
+.playerContainer{float:left; width:40%;margin:2em;}
+
+
+.board{border-collapse: collapse;margin:1em;}
+.board td{border:1px solid #ccc;}
+.board div{width:20px; height:20px;}
+.board .hit{background-color:orange;}
+.board .miss{background-color:#ccccff;}
+.board .hitsunk{background-color:red;}
+.board .samespot{background-color:black;}
+
+.hit{color:orange;}
+.miss{color:#ccccff;}
+.hitsunk{color:red;}
+.samespot{color:black;}
+
