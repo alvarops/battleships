@@ -1,0 +1,29 @@
+Bobs:
+  id: 10001
+  player_id: 12345
+  game_id: 2
+Freds:
+  id: 10002
+  player_id: 12346
+  game_id: 2
+
+board_with_collision_1:
+  id: 10003
+  player_id: 12345
+  game_id: 3
+
+board_with_collision_2:
+  id: 10004
+  player_id: 12346
+  game_id: 3
+
+board_with_no_ships:
+  id: 10005
+  player_id: 1
+  game_id: 4
+
+board_with_ships:
+  id: 10006
+  player_id: 2
+  game_id: 4
+

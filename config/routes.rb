@@ -1,22 +1,40 @@
-RailsApp::Application.routes.draw do
-  resources :users
+Battleships::Application.routes.draw do
 
+  get  '/player/new',         to: 'player#new'
+  post '/player/new',         to: 'player#new'
+  get '/player/list',         to: 'player#list'
 
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
+  get  ':token/player/:id',   to: 'player#stats'
 
-  # Sample of regular route:
-  #   match 'products/:id' => 'catalog#view'
-  # Keep in mind you can assign values other than :controller and :action
+  get  ':token/game/new',     to: 'game#new'
+  get  ':token/game/new/:secondPlayerId',     to: 'game#new'
+  get  '/game/list',    to: 'game#list'
+  get  ':token/game/:id',     to: 'game#stats'
 
-  # Sample of named route:
-  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
-  # This route can be invoked with purchase_url(:id => product.id)
+  get  ':token/game/:id/set', to: 'game#set'  #you can do ?ships=[<json array here>]
+  post ':token/game/:id/set', to: 'game#set'
 
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
+  get  ':token/game/:id/randomize', to: 'game#randomize'
+  post ':token/game/:id/randomize', to: 'game#randomize'
+
+  get  ':token/game/:id/shoot', to: 'game#shoot'
+
+  # The priority is based upon order of creation: first created -> highest priority.
+  # See how all your routes lay out with "rake routes".
+
+  # You can have the root of your site routed with "root"
+  # root 'welcome#index'
+
+  # Example of regular route:
+  #   get 'products/:id' => 'catalog#view'
+
+  # Example of named route that can be invoked with purchase_url(id: product.id)
+  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+
+  # Example resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
-  # Sample resource route with options:
+  # Example resource route with options:
   #   resources :products do
   #     member do
   #       get 'short'
@@ -28,34 +46,31 @@ RailsApp::Application.routes.draw do
   #     end
   #   end
 
-  # Sample resource route with sub-resources:
+  # Example resource route with sub-resources:
   #   resources :products do
   #     resources :comments, :sales
   #     resource :seller
   #   end
 
-  # Sample resource route with more complex sub-resources
+  # Example resource route with more complex sub-resources:
   #   resources :products do
   #     resources :comments
   #     resources :sales do
-  #       get 'recent', :on => :collection
+  #       get 'recent', on: :collection
   #     end
   #   end
+  
+  # Example resource route with concerns:
+  #   concern :toggleable do
+  #     post 'toggle'
+  #   end
+  #   resources :posts, concerns: :toggleable
+  #   resources :photos, concerns: :toggleable
 
-  # Sample resource route within a namespace:
+  # Example resource route within a namespace:
   #   namespace :admin do
   #     # Directs /admin/products/* to Admin::ProductsController
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
-
-  # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
-
-  # See how all your routes lay out with "rake routes"
-
-  # This is a legacy wild controller route that's not recommended for RESTful applications.
-  # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id))(.:format)'
 end

@@ -11,6 +11,58 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20130901130604) do
+
+  create_table "boards", force: true do |t|
+    t.integer  "game_id",    null: false
+    t.integer  "player_id",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "games", force: true do |t|
+    t.string   "status",     default: "created"
+    t.integer  "width",      default: 10
+    t.integer  "height",     default: 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "players", force: true do |t|
+    t.string   "name",                   null: false
+    t.string   "token",                  null: false
+    t.integer  "won",        default: 0
+    t.integer  "lost",       default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "positions", force: true do |t|
+    t.integer  "x",                          null: false
+    t.integer  "y",                          null: false
+    t.integer  "ship_id",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "hit",        default: false
+  end
+
+  create_table "ships", force: true do |t|
+    t.string   "t",          null: false
+    t.integer  "board_id",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "shoots", force: true do |t|
+    t.integer  "x",          null: false
+    t.integer  "y",          null: false
+    t.integer  "seq"
+    t.integer  "player_id",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "board_id"
+  end
+
+  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true
 
 end

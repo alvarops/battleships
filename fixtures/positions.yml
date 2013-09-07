@@ -1,0 +1,77 @@
+p1:
+  id: 1
+  x: 0
+  y: 0
+  ship_id: 1
+
+p2:
+  id: 2
+  x: 1
+  y: 0
+  ship_id: 1
+
+p3:
+  id: 3
+  x: 2
+  y: 0
+  ship_id: 1
+
+p1_2:
+  id: 4
+  x: 0
+  y: 0
+  ship_id: 2
+
+p2_2:
+  id: 5
+  x: 0
+  y: 1
+  ship_id: 2
+
+p3_2:
+  id: 6
+  x: 0
+  y: 2
+  ship_id: 2
+
+p4_2:
+  id: 7
+  x: 1
+  y: 3
+  ship_id: 2
+
+p_sub_4_1:
+  id: 8
+  x: 3
+  y: 5
+  ship_id: 4
+
+p_sub_4_2:
+  id: 9
+  x: 3
+  y: 6
+  ship_id: 4
+
+p_sub_4_3:
+  id: 10
+  x: 3
+  y: 7
+  ship_id: 4
+
+p_car_5_1:
+  id: 11
+  x: 4
+  y: 1
+  ship_id: 5
+
+p_car_5_2:
+  id: 12
+  x: 4
+  y: 2
+  ship_id: 5
+
+p_car_5_3:
+  id: 13
+  x: 4
+  y: 3
+  ship_id: 5
