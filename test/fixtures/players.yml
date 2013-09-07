@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+Fred:
+    id: 12345
+    name: Fred
+    token: 23j0f023912309r5u11fas
+    won: 123
+    lost: 321
+Bob: 
+    id: 12346
+    name: Bob
+    token: adflkj23kj23lkj235l;23
+    won: 0
+    lost: 0
+
+Alvaro:
+    id: 1
+    name: Alvaro
+    token: i_have_no_ships
+    won: 2
+    lost: 1
+Slawek:
+    id: 2
+    name: Slawek
+    token: i_have_ships
+    won: 0
+    lost: 0
