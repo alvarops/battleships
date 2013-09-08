@@ -1,23 +1,28 @@
 class PlayerController < ApplicationController
-    include TokenFilter
- 
-    def new
-        me = Player.create do |p|
-            p.name = params[:name] || 'Anonymous'            
-        end
 
-        render json: me, status: :created
+  def new
+    me = Player.create do |p|
+      p.name = params[:name] || 'Anonymous'
     end
 
-    def stats 
-        render json: @current_player
-    end 
+    render json: me, status: :created
+  end
 
-    def list
-      if params[:showToken]
-        render json: Player.all.to_json
-      else
-        render json: Player.all.to_json(:except => [:token])
-      end
+  def stats
+    render json: Player.find(params[:id]).to_json(:except => [:token])
+  end
+
+  def my_stats
+    token = params[:token]
+    @current_player = Player.find_by_token(token)
+    render json: @current_player
+  end
+
+  def list
+    if params[:showToken]
+      render json: Player.all.to_json
+    else
+      render json: Player.all.to_json(:except => [:token])
     end
+  end
 end

@@ -24,9 +24,8 @@ class GameController < ApplicationController
 
   def stats
     @game = Game.find(params[:id])
-
-
-    render json: @game.to_json(:include => [:players, :boards => {:include => [:ships => {:include => [:positions]}]}])
+    render json: @game.to_json(:include => {:players => {:except => :token},
+                                            :boards => {:include => {:ships => {:include => [:positions]}}}})
   end
 
   def set
