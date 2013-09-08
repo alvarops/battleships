@@ -13,18 +13,18 @@ class GameController < ApplicationController
       game.status = 'ready'
     end
     game.save
-    #TODO: filter out player tokens
-    render json: game.to_json(:include => [:players])
+    render json: game.to_json(:include => {:players => {:except => :token}})
   end
 
   def list
     games = Game.where status: 'created'
-    render json: games
+    render json: games.to_json(:include => {:players => {:except => :token}})
   end
 
   def stats
-    @game = Game.find(params[:id])
-    render json: @game.to_json(:include => {:players => {:except => :token},
+    game = Game.find(params[:id])
+    #TODO: exclude ship positions
+    render json: game.to_json(:include => {:players => {:except => :token},
                                             :boards => {:include => {:ships => {:include => [:positions]}}}})
   end
 

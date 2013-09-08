@@ -13,6 +13,7 @@ Battleships::Application.routes.draw do
   get  '/game/:id/stats',     to: 'game#stats'
   get  ':token/game/:id/stats',     to: 'game#stats'
   get  '/game/list',    to: 'game#list'
+  get  ':token/game/list',    to: 'game#list'
   get  '/game/',    to: 'game#list'
   get  ':token/game/:id',     to: 'game#stats'
 
