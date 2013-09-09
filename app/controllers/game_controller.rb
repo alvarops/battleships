@@ -19,7 +19,6 @@ class GameController < ApplicationController
 
   def list
     games = Game.where status: 'created'
-
     render json: games
   end
 
