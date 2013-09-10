@@ -10,16 +10,18 @@ class PositionTest < ActiveSupport::TestCase
     p6 = Position.find_by :id => 6
     p7 = Position.find_by :id => 7
 
-    assert (p1.collision? p2), 'Collision not detected'
-    assert (p2.collision? p1), 'Collision not detected'
+    assert (p1.collision? p2), 'Collision should be detected'
+    assert (p2.collision? p1), 'Collision should be detected'
+    assert (p4.collision? p1), 'Collision should be detected'
+    assert (p5.collision? p6), 'Collision should be detected'
+    assert (p6.collision? p5), 'Collision should be detected'
+    assert (p7.collision? p6), 'Collision should be detected'
+    assert (p6.collision? p7), 'Collision should be detected'
 
-    assert !(p3.collision? p1), 'Incorrect Collision detection '
-    assert !(p3.collision? p1), 'Incorrect Collision detection '
+    assert !(p3.collision? p1), 'Collision should NOT be detected'
+    assert !(p3.collision? p1), 'Collision should NOT be detected'
 
-    assert (p5.collision? p6), 'Collision not detected'
-    assert (p6.collision? p5), 'Collision not detected'
-    assert (p7.collision? p6), 'Collision not detected'
-    assert (p6.collision? p7), 'Collision not detected'
+
 
   end
 end
