@@ -42,7 +42,7 @@ class GameControllerTest < ActionController::TestCase
 
     player_board = current_player_board(params)
 
-    assert_equal 4, player_board.ships.size
+    assert_equal 1, player_board.ships.size
     assert_equal params[:ships][0][:type], player_board.ships.first.t.to_s
   end
 
@@ -55,13 +55,17 @@ class GameControllerTest < ActionController::TestCase
     assert_equal shoots_count_after, 1 + shoots_count_before
   end
 
-  #
-  #test 'GET #set, ship has to have right size' do
-  #
-  #  post :set, params
-  #  #TODO
-  #
-  #end
+
+  test 'GET #set, ship has to have right size' do
+
+    post :set, params
+
+    game = Game.find(params[:id])
+
+    assert_equal 1, game.players_board(12345).ships.length
+
+
+  end
 
   private
 
@@ -74,7 +78,7 @@ class GameControllerTest < ActionController::TestCase
   def params
     {
       token: token, #current player token
-      id: 3, #game id
+      id: 2, #game id
       ships: [{
         type: 'submarine', #type of the boat
         xy: [

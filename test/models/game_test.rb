@@ -133,4 +133,37 @@ class GameTest < ActiveSupport::TestCase
 
     assert_equal 2, games.size
   end
+
+  test 'For created game, should return current player board' do
+    players = []
+
+    for i in 0..2 do
+      players[i] = Player.create do |p|
+        p.name = 'Name #{i}'
+      end
+    end
+
+    game = Game.create do |g|
+      g.width = 10
+      g.height = 10
+    end
+
+    game.players.push players[0]
+    game.players.push players[1]
+
+    players_board = game.players_board players[0].id
+    opponents_board = game.opponents_board players[0].id
+
+    assert_not_nil players_board
+    assert_equal players[0].id, players_board.player_id
+
+    assert_not_nil opponents_board
+    assert_equal players[1].id, opponents_board.player_id
+
+
+  end
+
+  test 'For created game, should return opponents board (opponent to current player)' do
+
+  end
 end

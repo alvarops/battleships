@@ -6,6 +6,15 @@ class Game < ActiveRecord::Base
 
   validate :max_two_players
 
+  def players_board current_player_id
+    Board.find_by player_id: current_player_id, game_id: self.id
+  end
+
+
+  def opponents_board current_player_id
+    self.boards.select { |b| b.player_id != current_player_id }.first
+  end
+
   private
 
   def update_state 

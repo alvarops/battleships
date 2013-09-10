@@ -24,7 +24,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     get '23j0f023912309r5u11fas/game/1/shoot', {:x => 5, :y => 5}
     error = JSON.parse @response.body
     assert_not_nil error
-    assert_equal 'There is not opponent', error['error'][0]
+    assert_equal 'There is no opponent', error['error'][0]
 
     get '23j0f023912309r5u11fas/game/3/shoot', {:x => 5, :y => 5}
     error = JSON.parse @response.body
@@ -97,7 +97,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_equal 'sunk', shoot['ship_status']
 
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 7}
-    assert_equal '200', @response.code
+    assert_equal '500', @response.code
     error = JSON.parse @response.body
     assert_not_nil error
     assert_equal 'All your opponent ships are sunk', error['error'][0]

@@ -38,9 +38,7 @@ class GameController < ApplicationController
         ship = Ship.new t: new_ship[:type]
 
         player_board.ships.push ship
-        ship.save
         player_board.save
-        #puts player_board.errors
       end
     end
   end
@@ -54,40 +52,50 @@ class GameController < ApplicationController
   end
 
   def shoot
-    shoot= Shoot.create do |s|
-      s.player_id= @current_player.id
-      s.x= params[:x]
-      s.y= params[:y]
-      Game.find(params[:id]).boards.each do |b|
-        if b.player_id != s.player_id
-          s.board_id= b.id
+    game = Game.find(params[:id])
+    opponents_board = game.opponents_board @current_player.id
+
+    if !opponents_board.nil? #is there is anything to shot at?
+
+      shoot= Shoot.create do |s|
+        s.player_id = @current_player.id
+        s.x = params[:x]
+        s.y = params[:y]
+        s.board_id = opponents_board.id
+      end
+
+      if shoot.save
+        positions = Array.new
+        shoot.board.ships.each do |s|
+          s.positions.all? { |p| positions.push p }
         end
-      end
-    end
+        found = nil
 
-    if shoot.save
-      positions = Array.new
-      shoot.board.ships.each do |s|
-        s.positions.all? { |p| positions.push p }
-      end
-      found = nil
-
-      positions.each do |p|
-        if p.x == shoot.x && p.y == shoot.y
-          found = p
-          p.hit = true
-          p.save
+        positions.each do |p|
+          if p.x == shoot.x && p.y == shoot.y
+            found = p
+            p.hit = true
+            p.save
+          end
         end
-      end
 
-      if !found.nil?
-        render json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created
+        if !found.nil?
+          @out  = { json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created }
+        else
+          @out = { json: shoot, status: :not_found }
+        end
       else
-        render json: shoot, status: :not_found #shoot.to_json(:except => [:boards]), status: :not_found
+        @out = { json: shoot.errors, status: :error }
       end
     else
-      render json: shoot.errors, status: :ok
+      @out = { json: {error: ['There is no opponent']}, status: :error }
     end
+
+
+
+    render json: @out[:json], status: @out[:status]
+
+
   end
 
   protected
