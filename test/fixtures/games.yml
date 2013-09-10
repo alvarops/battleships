@@ -7,8 +7,8 @@ created_game:
 
 ready_game:
   id: 2
-  width: 10
-  height: 10
+  width: 50
+  height: 50
   status: ready
 
 

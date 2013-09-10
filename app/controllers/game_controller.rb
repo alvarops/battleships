@@ -7,6 +7,8 @@ class GameController < ApplicationController
   def new
     game = Game.create
     game.players.push Player.find_by_token(params[:token])
+    game.width = Random.new.rand(20..50)
+    game.height = Random.new.rand(20..50)
     game.status = 'created'
     if params[:secondPlayerId]
       game.players.push Player.find_by(id: params[:secondPlayerId])
@@ -90,11 +92,6 @@ class GameController < ApplicationController
     end
   end
 
-  protected
-  def rescue_duplicate
-    render json: {:error => ['Duplicate record']}, :status => :ok
-  end
-
   def show
     @game = Game.find(params[:id])
     @board = @game.boards.find_by(player_id: @current_player.id)
@@ -105,4 +102,9 @@ class GameController < ApplicationController
       end
     end
   end
-end 
+
+  protected
+  def rescue_duplicate
+    render json: {:error => ['Duplicate record']}, :status => :ok
+  end
+end

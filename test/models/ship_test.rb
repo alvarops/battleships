@@ -46,12 +46,12 @@ class ShipTest < ActiveSupport::TestCase
   end
 
   test 'ships can be generated randomly' do
-    board_width = 15
-    board_height = 20
+    board_width = Random.new.rand(20..30)
+    board_height = Random.new.rand(20..30)
 
     ShipShapes::SHIP_TYPES.each do |t, v|
       s = Ship.generate t, board_width, board_height
-      s.print_ship
+      s.print_ship board_height, board_width
       s.positions.each do |p|
         assert (p.x>=0 && p.x <= board_width && p.y>=0 && p.y <= board_height), 'Ship is NOT on a board ' + t.to_s + ' ' + s.to_json
       end
