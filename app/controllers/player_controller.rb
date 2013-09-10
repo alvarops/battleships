@@ -19,7 +19,7 @@ class PlayerController < ApplicationController
   end
 
   def list
-    if params[:showToken]
+    if params[:showToken] #just don't tell anyone
       render json: Player.all.to_json
     else
       render json: Player.all.to_json(:except => [:token])

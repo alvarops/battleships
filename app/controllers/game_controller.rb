@@ -59,44 +59,19 @@ class GameController < ApplicationController
 
     if !opponents_board.nil? #is there is anything to shot at?
 
-      shoot= Shoot.create do |s|
-        s.player_id = @current_player.id
-        s.x = params[:x]
-        s.y = params[:y]
-        s.board_id = opponents_board.id
-      end
+      shoot = create_shoot(opponents_board)
 
       if shoot.save
-        positions = Array.new
-        shoot.board.ships.each do |s|
-          s.positions.all? { |p| positions.push p }
-        end
-        found = nil
-
-        positions.each do |p|
-          if p.x == shoot.x && p.y == shoot.y
-            found = p
-            p.hit = true
-            p.save
-          end
-        end
-
-        if !found.nil?
-          @out  = { json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created }
-        else
-          @out = { json: shoot, status: :not_found }
-        end
+        render_shoot(shoot)
       else
-        @out = { json: shoot.errors, status: :error }
+        @out = { json: shoot.errors, status: :bad_request }
       end
+
     else
-      @out = { json: {error: ['There is no opponent']}, status: :error }
+      @out = { json: {error: ['There is no opponent']}, status: :bad_request }
     end
 
-
-
     render json: @out[:json], status: @out[:status]
-
 
   end
 
@@ -112,7 +87,42 @@ class GameController < ApplicationController
   end
 
   protected
+
   def rescue_duplicate
     render json: {:error => ['Duplicate record']}, :status => :ok
   end
+
+  private
+
+  def render_shoot(shoot)
+    positions = Array.new
+    shoot.board.ships.each do |s|
+      s.positions.all? { |p| positions.push p }
+    end
+    found = nil
+
+    positions.each do |p|
+      if p.x == shoot.x && p.y == shoot.y
+        found = p
+        p.hit = true
+        p.save
+      end
+    end
+
+    if !found.nil?
+      @out = {json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created}
+    else
+      @out = {json: shoot, status: :not_found}
+    end
+  end
+
+  def create_shoot(opponents_board)
+    Shoot.create do |s|
+      s.player_id = @current_player.id
+      s.board_id = opponents_board.id
+      s.x = params[:x]
+      s.y = params[:y]
+    end
+  end
+
 end
