@@ -3,12 +3,17 @@ class GameController < ApplicationController
   include GameHelper
 
   rescue_from ActiveRecord::RecordNotUnique, :with => :rescue_duplicate
+  MAX_NUMBER_OF_PIXELS = 800
+  MAX_WIDTH = 80
+  MIN_WIDTH=10
+  VARIABLE_SIZE=1
 
   def new
     game = Game.create
     game.players.push Player.find_by_token(params[:token])
-    game.width = Random.new.rand(20..50)
-    game.height = Random.new.rand(20..50)
+    game.width = Random.new.rand(MIN_WIDTH..MAX_WIDTH)
+    max_height = MAX_NUMBER_OF_PIXELS / game.width
+    game.height = Random.new.rand((max_height-VARIABLE_SIZE)..(max_height+VARIABLE_SIZE))
     game.status = 'created'
     if params[:secondPlayerId]
       game.players.push Player.find_by(id: params[:secondPlayerId])
@@ -27,7 +32,7 @@ class GameController < ApplicationController
     game = Game.find(params[:id])
     #TODO: exclude ship positions
     render json: game.to_json(:include => {:players => {:except => :token},
-                                            :boards => {:include => {:ships => {:include => [:positions]}}}})
+                                           :boards => {:include => {:ships => {:include => [:positions]}}}})
   end
 
   def set
@@ -64,11 +69,11 @@ class GameController < ApplicationController
       if shoot.save
         render_shoot(shoot)
       else
-        @out = { json: shoot.errors, status: :bad_request }
+        @out = {json: shoot.errors, status: :bad_request}
       end
 
     else
-      @out = { json: {error: ['There is no opponent']}, status: :bad_request }
+      @out = {json: {error: ['There is no opponent']}, status: :bad_request}
     end
 
     render json: @out[:json], status: @out[:status]
