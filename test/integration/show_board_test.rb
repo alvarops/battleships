@@ -9,11 +9,11 @@ class ShowBoardTest < ActionDispatch::IntegrationTest
 
     get '23j0f023912309r5u11fas/game/2/show'
 
-    #check response
+    assert_equal 200, @response.status
 
     game = Game.find 2
 
-    b = Board.find 10001
+    b = Board.find 10002
     resp = @response.body
     numberOfPixelsOfShipsForAPlayer = 17
 

@@ -10,7 +10,7 @@ class Board < ActiveRecord::Base
 
   def randomize
     #FIXME: it's not working
-    ships.destroy
+    self.ships.destroy_all
     ShipShapes::SHIP_TYPES.keys.each do |type|
       generate_new_ship type
     end
