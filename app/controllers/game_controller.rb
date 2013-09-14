@@ -3,6 +3,7 @@ class GameController < ApplicationController
   include GameHelper
 
   rescue_from ActiveRecord::RecordNotUnique, :with => :rescue_duplicate
+
   MAX_NUMBER_OF_PIXELS = 800
   MAX_WIDTH = 80
   MIN_WIDTH=10
@@ -32,7 +33,10 @@ class GameController < ApplicationController
     game = Game.find(params[:id])
     #TODO: exclude ship positions
     render json: game.to_json(:include => {:players => {:except => :token},
-                                           :boards => {:include => {:ships => {:include => [:positions]}}}})
+                                           :boards  => {:include => {
+                                               :ships => {
+                                                   :include => [:positions]
+                                               }}}})
   end
 
   def set
@@ -43,6 +47,16 @@ class GameController < ApplicationController
 
       new_ships.each do |new_ship|
         ship = Ship.new t: new_ship[:type]
+
+        xy = new_ship[:xy]
+
+        xy.each do |coords|
+          position   = Position.new
+          position.x = coords[0]
+          position.y = coords[1]
+
+          ship.positions.push position
+        end
 
         player_board.ships.push ship
         player_board.save
@@ -60,7 +74,7 @@ class GameController < ApplicationController
 
   def shoot
     game = Game.find(params[:id])
-    opponents_board = game.opponents_board @current_player.id
+    opponents_board = game.opponent_board @current_player.id
 
     if !opponents_board.nil? #is there is anything to shot at?
 

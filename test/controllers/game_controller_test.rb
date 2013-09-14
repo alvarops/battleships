@@ -54,11 +54,21 @@ class GameControllerTest < ActionController::TestCase
   test 'POST #set' do
     post :set, params
 
-    player_board = current_player_board(params)
+    player_board = current_player_board params
 
     assert_equal 1, player_board.ships.size
+
     assert_equal params[:ships][0][:type], player_board.ships.first.t.to_s
+    assert_equal 3, player_board.ships.first.positions.size
   end
+
+  #test 'POST #set, incorrect ship data, ship all in one point' do
+  #  post :set, broken_params
+
+   # player_board = current_player_board(params)
+
+  #  assert_equal 0, player_board.ships.size
+  #end
 
   test 'GET #shoot, {x, y}' do
     shoots_count_before = Shoot.all.size
@@ -76,7 +86,7 @@ class GameControllerTest < ActionController::TestCase
 
     game = Game.find(params[:id])
 
-    assert_equal 1, game.players_board(12345).ships.length
+    assert_equal 1, game.player_board(12345).ships.size
 
 
   end
@@ -86,7 +96,7 @@ class GameControllerTest < ActionController::TestCase
   def current_player_board(params)
     current_player = assigns :current_player
     game = Game.find params[:id]
-    game.boards.find_by player_id: current_player.id
+    game.player_board current_player.id
   end
 
   def params
@@ -100,7 +110,13 @@ class GameControllerTest < ActionController::TestCase
                         [1, 2],
                         [1, 3]
                     ]
-                }]
+      }]#,{
+      ##  type: 'patrol', #type of the boat
+       # xy: [
+       #   [5, 5], #position of the boat (we assume game size is 10x10)
+       #   [5, 6]
+       # ]
+       #         }]
     }
   end
 
@@ -112,8 +128,8 @@ class GameControllerTest < ActionController::TestCase
                     type: 'submarine', #type of the boat
                     xy: [
                         [1, 1], #position of the boat (we assume game size is 10x10)
-                        [1, 2],
-                        [1, 3]
+          [1, 1],
+          [1, 1]
                     ]
                 }]
     }

@@ -134,7 +134,7 @@ class GameTest < ActiveSupport::TestCase
     assert_equal 2, games.size
   end
 
-  test 'For created game, should return current player board' do
+  test 'For created game, should return current player board and opponent\'s board too' do
     players = []
 
     for i in 0..2 do
@@ -151,8 +151,8 @@ class GameTest < ActiveSupport::TestCase
     game.players.push players[0]
     game.players.push players[1]
 
-    players_board = game.players_board players[0].id
-    opponents_board = game.opponents_board players[0].id
+    players_board = game.player_board players[0].id
+    opponents_board = game.opponent_board players[0].id
 
     assert_not_nil players_board
     assert_equal players[0].id, players_board.player_id
@@ -163,7 +163,4 @@ class GameTest < ActiveSupport::TestCase
 
   end
 
-  test 'For created game, should return opponents board (opponent to current player)' do
-
-  end
 end

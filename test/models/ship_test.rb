@@ -51,7 +51,7 @@ class ShipTest < ActiveSupport::TestCase
 
     ShipShapes::SHIP_TYPES.each do |t, v|
       s = Ship.generate t, board_width, board_height
-      s.print_ship board_height, board_width
+      #s.print_ship board_height, board_width
       s.positions.each do |p|
         assert (p.x>=0 && p.x <= board_width && p.y>=0 && p.y <= board_height), 'Ship is NOT on a board ' + t.to_s + ' ' + s.to_json
       end
