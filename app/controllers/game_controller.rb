@@ -32,11 +32,17 @@ class GameController < ApplicationController
   def stats
     game = Game.find(params[:id])
     #TODO: exclude ship positions
-    render json: game.to_json(:include => {:players => {:except => :token},
-                                           :boards  => {:include => {
-                                               :ships => {
-                                                   :include => [:positions]
-                                               }}}})
+    render json: game.to_json(:include => [:players, :boards => {:include => [:ships,:shoots] }])
+    # render json: game.to_json(:include => [:players => {:except => :token}, :boards => {:include => :ships}])
+    #render json: game.to_json(:include => {:players => {:except => :token},
+    #                                       :boards  => {:include => {
+    #                                           :ships => {
+    #                                               :include => [:positions]
+    #                                           },
+    #                                           :shoots => {
+    #                                               :include => [:x, :y]
+    #                                           }
+    #                                       }}})
   end
 
   def set
@@ -129,8 +135,16 @@ class GameController < ApplicationController
     end
 
     if !found.nil?
+      if found.ship.status==:sunk
+        shoot.result='hitsunk'
+      else
+        shoot.result='hit'
+      end
+      shoot.save
       @out = {json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created}
     else
+      shoot.result= 'miss'
+      shoot.save
       @out = {json: shoot, status: :not_found}
     end
   end
