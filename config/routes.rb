@@ -26,6 +26,9 @@ Battleships::Application.routes.draw do
 
   get  ':token/game/:id/shoot', to: 'game#shoot'
 
+
+  get  '/error', to: 'error#show'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
