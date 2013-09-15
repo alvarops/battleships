@@ -3,7 +3,7 @@ class Board < ActiveRecord::Base
   belongs_to :player
 
   has_many :ships
-  has_many :shoots, dependent: :delete_all
+  has_many :shoots, -> {order 'created_at'}
 
   validates_uniqueness_of :player_id, :scope => :game_id
   validate :valid_ships

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130901130604) do
+ActiveRecord::Schema.define(version: 20130915144105) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id",    null: false
@@ -61,8 +61,9 @@ ActiveRecord::Schema.define(version: 20130901130604) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "board_id"
+    t.string   "result"
   end
 
-  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true, using: :btree
+  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true
 
 end
