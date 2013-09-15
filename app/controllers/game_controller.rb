@@ -56,7 +56,7 @@ class GameController < ApplicationController
         x = new_ship[:xy][0]
         y = new_ship[:xy][1]
         variant = new_ship[:variant]
-        ship = Ship.set_on_board type, x, y, variant
+        ship = Ship.generate type, x, y, variant
 
         if player_board.can_place? ship
           player_board.ships.push ship

@@ -16,7 +16,7 @@ class Ship < ActiveRecord::Base
     write_attribute(:t, value.to_s)
   end
 
-  def self.generate(type, width, height)
+  def self.generate_randomly(type, width, height)
     ship = Ship.new :t => type
     variants = ShipShapes::SHIP_TYPES[type.to_sym]
     coordinates = variants.sample
@@ -31,7 +31,7 @@ class Ship < ActiveRecord::Base
     ship
   end
 
-  def self.set_on_board(type, x, y, variant = 0)
+  def self.generate(type, x, y, variant = 0)
 
     ship = Ship.new t: type.to_sym
 
