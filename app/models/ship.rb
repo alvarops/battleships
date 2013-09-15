@@ -6,7 +6,7 @@ class Ship < ActiveRecord::Base
 
   belongs_to :board
 
-  validates_inclusion_of :t, :in => [:carrier, :battleship, :submarine, :cruiser, :patrol, :worm, :uBoot]
+  validates_inclusion_of :t, :in => [:carrier, :battleship, :submarine, :cruiser, :patrol, :worm, :uBoot, :tie_fighter, :enterprise, :death_star, :s1, :kursk, :crab, :chess, :s3, :s4, :a, :o, :l]
 
   def t
     read_attribute(:t).to_sym
@@ -20,8 +20,8 @@ class Ship < ActiveRecord::Base
     ship = Ship.new :t => t
     variants = ShipShapes::SHIP_TYPES[t.to_sym]
     coordinates = variants.sample
-    start_x = Random.new.rand(0..width-(ship_width coordinates) +1)
-    start_y = Random.new.rand(0..height-(ship_height coordinates)+1)
+    start_x = Random.new.rand(0..width-(ship_width coordinates))
+    start_y = Random.new.rand(0..height-(ship_height coordinates))
 
     coordinates.each do |c|
       p = Position.new :x => c[:x] + start_x, :y => c[:y] + start_y
@@ -35,7 +35,7 @@ class Ship < ActiveRecord::Base
   end
 
   def self.ship_height(p)
-    1+ (max_value_in_hash p, 'y')
+    1 + (max_value_in_hash p, 'y')
   end
 
   def print_ship(board_width=20, board_height=20)

@@ -9,7 +9,6 @@ class Board < ActiveRecord::Base
   validate :valid_ships
 
   def randomize
-    #FIXME: it's not working
     self.ships.destroy_all
     ShipShapes::SHIP_TYPES.keys.each do |type|
       generate_new_ship type
@@ -33,6 +32,7 @@ class Board < ActiveRecord::Base
     s = Ship.generate(type, self.game.width, self.game.height)
     self.ships.each do |ship|
       if ship.collide? s
+        puts 'collision!'
         return generate_new_ship type
       end
     end

@@ -1,0 +1,190 @@
+{"boardX": 40, "boardY": 20, "status": "finished", "players": [
+    {
+        "name": "Test player 1",
+        "id": 1,
+        "shots": [
+            {
+                "x": 1,
+                "y": 0,
+                "status": "miss",
+                "shipType": "",
+                "shipId": "",
+                "game": "on"
+            },
+            {
+                "x": 1,
+                "y": 1,
+                "status": "miss",
+                "shipType": "",
+                "shipId": "",
+                "game": "on"
+            },
+            {
+                "x": 1,
+                "y": 1,
+                "status": "miss",
+                "shipType": "",
+                "shipId": "",
+                "game": "on"
+            },
+            {
+                "x": 5,
+                "y": 0,
+                "status": "hit",
+                "shipType": "Submarine",
+                "shipId": "submarine1",
+                "game": "on"
+            },
+            {
+                "x": 4,
+                "y": 0,
+                "status": "hit",
+                "shipType": "Submarine",
+                "shipId": "submarine1",
+                "game": "on"
+            },
+            {
+                "x": 3,
+                "y": 0,
+                "status": "hitsunk",
+                "shipType": "Submarine",
+                "shipId": "submarine1",
+                "game": "on"
+            },
+            {
+                "x": 0,
+                "y": 0,
+                "status": "hit",
+                "shipType": "Battleship",
+                "shipId": "battleship1",
+                "game": "on"
+            },
+            {
+                "x": 0,
+                "y": 1,
+                "status": "hit",
+                "shipType": "Battleship",
+                "shipId": "battleship1",
+                "game": "on"
+            },
+            {
+                "x": 0,
+                "y": 2,
+                "status": "hit",
+                "shipType": "Battleship",
+                "shipId": "battleship1",
+                "game": "on"
+            },
+            {
+                "x": 0,
+                "y": 3,
+                "status": "hitsunk",
+                "shipType": "Battleship",
+                "shipId": "battleship1",
+                "game": "on"
+            },
+            {
+                "x": 4,
+                "y": 5,
+                "status": "hit",
+                "shipType": "Cruser",
+                "shipId": "cruser1",
+                "game": "on"
+            },
+            {
+                "x": 5,
+                "y": 5,
+                "status": "hitsunk",
+                "shipType": "Cruser",
+                "shipId": "cruser1",
+                "game": "on"
+            },
+            {
+                "x": 5,
+                "y": 2,
+                "status": "hitsunk",
+                "shipType": "Boat",
+                "shipId": "boat1",
+                "game": "on"
+            },
+            {
+                "x": 0,
+                "y": 5,
+                "status": "hitsunk",
+                "shipType": "Boat",
+                "shipId": "boat2",
+                "game": "finished"
+            },
+            {
+                "x": 2,
+                "y": 2,
+                "status": "hit",
+                "shipType": "Carrier",
+                "shipId": "carrier1",
+                "game": "on"
+            },
+            {
+                "x": 3,
+                "y": 2,
+                "status": "miss",
+                "shipType": "",
+                "shipId": "",
+                "game": "on"
+            },
+            {
+                "x": 2,
+                "y": 1,
+                "status": "hit",
+                "shipType": "Carrier",
+                "shipId": "carrier1",
+                "game": "on"
+            },
+            {
+                "x": 2,
+                "y": 3,
+                "status": "hit",
+                "shipType": "Carrier",
+                "shipId": "carrier1",
+                "game": "on"
+            },
+            {
+                "x": 2,
+                "y": 4,
+                "status": "hit",
+                "shipType": "Carrier",
+                "shipId": "carrier1",
+                "game": "on"
+            },
+            {
+                "x": 2,
+                "y": 5,
+                "status": "hitsunk",
+                "shipType": "Carrier",
+                "shipId": "carrier1",
+                "game": "on"
+            }
+        ]
+    },
+    {
+        "name": "Test player 2",
+        "id": 2,
+        "shots": [
+            {
+                "x": 0,
+                "y": 0,
+                "status": "miss",
+                "shipType": "",
+                "shipId": "",
+                "game": "on"
+            },
+            {
+                "x": 0,
+                "y": 1,
+                "status": "miss",
+                "shipType": "",
+                "shipId": "",
+                "game": "on"
+            }
+        ]
+    }
+]}
