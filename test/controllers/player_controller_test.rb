@@ -28,7 +28,16 @@ class PlayerControllerTest < ActionController::TestCase
 
   test 'GET #stats' do
     #player defined in fixtures
-    get :stats, {id: 12345, token: '23j0f023912309r5u11fas'}
+    get :stats, {id: 12345}
+
+    resp = JSON.parse @response.body
+
+    assert_equal 12345, resp['id']
+  end
+
+  test 'GET #my_stats' do
+    #player defined in fixtures
+    get :my_stats, {id: 12345, token: '23j0f023912309r5u11fas'}
 
     current_player = assigns(:current_player)
 

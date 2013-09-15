@@ -9,7 +9,8 @@ class Board < ActiveRecord::Base
   validate :valid_ships
 
   def randomize
-    ships.destroy
+    #FIXME: it's not working
+    self.ships.destroy_all
     ShipShapes::SHIP_TYPES.keys.each do |type|
       generate_new_ship type
     end

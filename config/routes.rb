@@ -4,12 +4,19 @@ Battleships::Application.routes.draw do
   post '/player/new',         to: 'player#new'
   get '/player/list',         to: 'player#list'
 
+  get  '/player/:id',   to: 'player#stats'
   get  ':token/player/:id',   to: 'player#stats'
+  get  ':token/mystats',   to: 'player#my_stats'
 
   get  ':token/game/new',     to: 'game#new'
   get  ':token/game/new/:secondPlayerId',     to: 'game#new'
+  get  '/game/:id/stats',     to: 'game#stats'
+  get  ':token/game/:id/stats',     to: 'game#stats'
   get  '/game/list',    to: 'game#list'
+  get  ':token/game/list',    to: 'game#list'
+  get  '/game/',    to: 'game#list'
   get  ':token/game/:id',     to: 'game#stats'
+  get  ':token/game/:id/show',     to: 'game#show'
 
   get  ':token/game/:id/set', to: 'game#set'  #you can do ?ships=[<json array here>]
   post ':token/game/:id/set', to: 'game#set'

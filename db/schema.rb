@@ -63,6 +63,6 @@ ActiveRecord::Schema.define(version: 20130901130604) do
     t.integer  "board_id"
   end
 
-  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true
+  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true, using: :btree
 
 end
