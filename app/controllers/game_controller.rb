@@ -46,20 +46,19 @@ class GameController < ApplicationController
       new_ships = params[:ships]
 
       new_ships.each do |new_ship|
-        ship = Ship.new t: new_ship[:type]
+        type = new_ship[:type]
+        x = new_ship[:xy][0]
+        y = new_ship[:xy][1]
+        variant = new_ship[:variant]
+        ship = Ship.set_on_board type, x, y, variant
 
-        xy = new_ship[:xy]
-
-        xy.each do |coords|
-          position   = Position.new
-          position.x = coords[0]
-          position.y = coords[1]
-
-          ship.positions.push position
+        if player_board.can_place? ship
+          player_board.ships.push ship
+          player_board.save
+        else
+          redirect_to :error
+          return
         end
-
-        player_board.ships.push ship
-        player_board.save
       end
     end
   end

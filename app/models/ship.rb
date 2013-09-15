@@ -16,9 +16,9 @@ class Ship < ActiveRecord::Base
     write_attribute(:t, value.to_s)
   end
 
-  def self.generate(t, width, height)
-    ship = Ship.new :t => t
-    variants = ShipShapes::SHIP_TYPES[t.to_sym]
+  def self.generate(type, width, height)
+    ship = Ship.new :t => type
+    variants = ShipShapes::SHIP_TYPES[type.to_sym]
     coordinates = variants.sample
     start_x = Random.new.rand(0..width-(ship_width coordinates))
     start_y = Random.new.rand(0..height-(ship_height coordinates))
@@ -27,6 +27,22 @@ class Ship < ActiveRecord::Base
       p = Position.new :x => c[:x] + start_x, :y => c[:y] + start_y
       ship.positions.push p
     end
+
+    ship
+  end
+
+  def self.set_on_board(type, x, y, variant = 0)
+
+    ship = Ship.new t: type.to_sym
+
+    variants = ShipShapes::SHIP_TYPES[type.to_sym]
+    coordinates = variants[variant.to_i]
+
+    coordinates.each do |c|
+      p = Position.new x: (c[:x] + x.to_i), y: (c[:y] + y.to_i)
+      ship.positions.push p
+    end
+
     ship
   end
 
@@ -78,6 +94,7 @@ class Ship < ActiveRecord::Base
   end
 
   private
+
   def self.max_value_in_hash(p, key)
     max = 0
     p.each do |pos|

@@ -57,4 +57,12 @@ class ShipTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test 'place ship on board' do
+    ship = Ship.set_on_board 'cruiser', 0, 0, 0
+
+    assert_equal 3, ship.positions.size
+
+
+  end
 end

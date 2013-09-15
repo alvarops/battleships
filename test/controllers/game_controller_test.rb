@@ -54,21 +54,41 @@ class GameControllerTest < ActionController::TestCase
   test 'POST #set' do
     post :set, params
 
+    first_ship_type = params[:ships][0][:type]
+
     player_board = current_player_board params
 
     assert_equal 1, player_board.ships.size
 
-    assert_equal params[:ships][0][:type], player_board.ships.first.t.to_s
+    assert_equal first_ship_type, player_board.ships.first.t.to_s
     assert_equal 3, player_board.ships.first.positions.size
   end
 
-  #test 'POST #set, incorrect ship data, ship all in one point' do
-  #  post :set, broken_params
+  test 'POST #set, multiple ships' do
+    post :set, params_multiple
 
-   # player_board = current_player_board(params)
+    player_board = current_player_board(params)
 
-  #  assert_equal 0, player_board.ships.size
-  #end
+    assert_equal 18, player_board.ships.size
+    assert_equal 3, player_board.ships.find_by(t: :submarine).positions.size
+    assert_equal 2, player_board.ships.find_by(t: :patrol).positions.size
+    assert_equal 5, player_board.ships.find_by(t: :carrier).positions.size
+  end
+
+  test 'POST #set, after settings all required ships game changes to ready' do
+
+  end
+
+
+  test 'GET #set, ship has to have right size' do
+    post :set, params
+
+    game = Game.find(params[:id])
+
+    assert_equal 1, game.player_board(12345).ships.size
+
+
+  end
 
   test 'GET #shoot, {x, y}' do
     shoots_count_before = Shoot.all.size
@@ -77,18 +97,6 @@ class GameControllerTest < ActionController::TestCase
 
     shoots_count_after = Shoot.all.size
     assert_equal shoots_count_after, 1 + shoots_count_before
-  end
-
-
-  test 'GET #set, ship has to have right size' do
-
-    post :set, params
-
-    game = Game.find(params[:id])
-
-    assert_equal 1, game.player_board(12345).ships.size
-
-
   end
 
   private
@@ -101,37 +109,32 @@ class GameControllerTest < ActionController::TestCase
 
   def params
     {
-        token: token, #current player token
-        id: 2, #game id
-        ships: [{
-                    type: 'submarine', #type of the boat
-                    xy: [
-                        [1, 1], #position of the boat (we assume game size is 10x10)
-                        [1, 2],
-                        [1, 3]
-                    ]
-      }]#,{
-      ##  type: 'patrol', #type of the boat
-       # xy: [
-       #   [5, 5], #position of the boat (we assume game size is 10x10)
-       #   [5, 6]
-       # ]
-       #         }]
+      token: token, #current player token
+      id: 2, #game id
+      ships: [{
+        type: 'submarine', #type of the boat
+        xy: [1, 1], #position of the boat (we assume game size is 10x10)
+        variant: 0
+      }]
     }
   end
 
-  def broken_params
+  def params_multiple
+    ships = []
+    offset= 0
+    ShipShapes::SHIP_TYPES.each do |t, st|
+      ships.push ({
+        type: t.to_s,
+        xy: [offset, 1],
+        variant: 0
+      })
+      offset += 10
+    end
+
     {
-        token: token, #current player token
-        id: 2, #game id
-        ships: [{
-                    type: 'submarine', #type of the boat
-                    xy: [
-                        [1, 1], #position of the boat (we assume game size is 10x10)
-          [1, 1],
-          [1, 1]
-                    ]
-                }]
+      token: token,
+      id: 2,
+      ships: ships
     }
   end
 

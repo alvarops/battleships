@@ -15,6 +15,13 @@ class Board < ActiveRecord::Base
     end
   end
 
+  def can_place? new_ship
+    self.ships.each do |existing_ship|
+      return false if new_ship.collide? existing_ship
+    end
+    true
+  end
+
   private
 
   def valid_ships(board=self)
@@ -38,4 +45,5 @@ class Board < ActiveRecord::Base
     end
     self.ships.push s
   end
+
 end
