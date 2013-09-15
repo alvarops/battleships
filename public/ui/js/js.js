@@ -9,7 +9,7 @@ var BS = {
 		this.gameId = gameId;
 		var that = this;
 		$.ajax({
-			url: 'call.php?gameId=' + gameId,
+			url: 'call.json?gameId=' + gameId,
 			cache: false,
 			//type : 'json', 
 			success : function(data) {

@@ -6,7 +6,7 @@ class Ship < ActiveRecord::Base
 
   belongs_to :board
 
-  validates_inclusion_of :t, :in => [:carrier, :battleship, :submarine, :cruiser, :patrol, :worm, :uBoot, :tie_fighter, :enterprise, :death_star, :s1, :kursk, :crab, :chese, :s3, :s4, :a, :o, :l]
+  validates_inclusion_of :t, :in => [:carrier, :battleship, :submarine, :cruiser, :patrol, :worm, :uBoot, :tie_fighter, :enterprise, :death_star, :s1, :kursk, :crab, :chess, :s3, :s4, :a, :o, :l]
 
   def t
     read_attribute(:t).to_sym
