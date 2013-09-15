@@ -74,22 +74,18 @@ class Ship < ActiveRecord::Base
   def collide?(ship2)
     self.positions.each do |p1|
       ship2.positions.each do |p2|
-        if p1.collision? p2
-          return true
-        end
+        return true if p1.collision? p2
       end
     end
     false
   end
 
   def status
-    sunk = false
-    hit = self.positions.any? { |p| p.hit }
-    if hit
-      sunk = self.positions.all? { |p| p.hit }
-    end
+    hit  = self.positions.any? &:hit
+    sunk = self.positions.all? &:hit
+
     return :sunk if sunk
-    return :hit if hit
+    return :hit  if hit
     return :clear
   end
 
