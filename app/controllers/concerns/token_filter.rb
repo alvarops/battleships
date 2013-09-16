@@ -2,7 +2,7 @@ module TokenFilter
     extend ActiveSupport::Concern
 
     included do 
-        around_action :authenticate, except: [ :new, :list ]
+        around_action :authenticate, except: [ :new, :list, :stats ]
     end 
 
     protected

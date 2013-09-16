@@ -31,8 +31,8 @@ class GameController < ApplicationController
 
   def stats
     game = Game.find(params[:id])
-    #TODO: exclude ship positions
-    render json: game.to_json(:include => [:players, :boards => {:include => [:ships,:shoots] }])
+    #TODO: add game status
+    render json: game.to_json(:include => [:players, :boards => {:include => [:shoots] }])
     # render json: game.to_json(:include => [:players => {:except => :token}, :boards => {:include => :ships}])
     #render json: game.to_json(:include => {:players => {:except => :token},
     #                                       :boards  => {:include => {
