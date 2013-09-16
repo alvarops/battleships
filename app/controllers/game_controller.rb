@@ -71,10 +71,14 @@ class GameController < ApplicationController
 
   def randomize
     game = Game.find(params[:id])
+    if game.status == 'fight' || game.status =='fight'
+      #TODO: error msg
+      return
+    end
     board = game.boards.find_by(player_id: @current_player.id)
     board.randomize
-    #TODO: filter out player tokens
-    render json: game.to_json(:except => [:players])
+    #TODO: add a new board in response
+    render json: game.to_json(:include => {:players => {:except => :token}})
   end
 
   def shoot

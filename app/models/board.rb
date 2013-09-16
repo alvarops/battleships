@@ -39,7 +39,6 @@ class Board < ActiveRecord::Base
     s = Ship.generate_randomly(type, self.game.width, self.game.height)
     self.ships.each do |ship|
       if ship.collide? s
-        puts 'collision!'
         return generate_new_ship type
       end
     end
