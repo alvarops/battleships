@@ -1,5 +1,6 @@
 Battleships::Application.routes.draw do
 
+  get  '/ship/list',         to: 'ship#list'
   get  '/player/new',         to: 'player#new'
   post '/player/new',         to: 'player#new'
   get '/player/list',         to: 'player#list'
