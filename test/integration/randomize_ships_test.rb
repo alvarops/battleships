@@ -17,11 +17,18 @@ class RandomizeShipsTest < ActionDispatch::IntegrationTest
     get '23j0f023912309r5u11fas/game/' + id + '/randomize'
     assert_equal 200, @response.status
 
+    game = Game.find id
 
-    #TODO: return a non-html error when randomize called twice
+    board = game.player_board 12345
+    myShips = board.ships
+
+    assert_equal myShips.length, ShipShapes::SHIP_TYPES.length, 'Unexpected number of ships on the board'
 
     get '23j0f023912309r5u11fas/game/' + id + '/randomize'
-    assert_equal 403, @response.status
+
+    status = JSON.parse @response.body
+
+    assert_equal 'You are not allow to modify your board any more', status['error'], 'Expected error didnt happen'
 
   end
 
