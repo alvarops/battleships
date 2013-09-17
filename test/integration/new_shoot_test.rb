@@ -47,25 +47,55 @@ class NewShootTest < ActionDispatch::IntegrationTest
 
   test 'should get a miss if no ship found' do
     get 'i_have_no_ships/game/4/shoot', {:x => 1, :y => 6}
-    assert_equal '404', @response.code
+
+    shoot = JSON.parse @response.body
+    assert_not_nil shoot
+
+    puts shoot
+    assert_nil shoot['ship_type']
+    assert_equal 'miss', shoot['ship_status']
+    assert_equal 'fight', shoot['status']
   end
 
   test 'should get the ship description if hit' do
     get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 6}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
     shoot = JSON.parse @response.body
     assert_not_nil shoot
     assert_equal 'submarine', shoot['ship_type']
     assert_equal 'hit', shoot['ship_status']
   end
 
+  test 'should get the game status' do
+    get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 6}
+    assert_equal '200', @response.code
+    shoot = JSON.parse @response.body
+    assert_not_nil shoot
+
+    puts shoot
+    assert_equal 'submarine', shoot['ship_type']
+    assert_equal 'hit', shoot['ship_status']
+    assert_equal 'fight', shoot['status']
+  end
+
   test 'should be able to sink the ship' do
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 1}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
+    shoot = JSON.parse @response.body
+    assert_not_nil shoot
+    assert_equal 'carrier', shoot['ship_type']
+    assert_equal 'hit', shoot['ship_status']
+
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 2}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
+    shoot = JSON.parse @response.body
+    assert_not_nil shoot
+    assert_equal 'carrier', shoot['ship_type']
+    assert_equal 'hit', shoot['ship_status']
+
+
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 3}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
 
     shoot = JSON.parse @response.body
     assert_not_nil shoot
@@ -76,20 +106,20 @@ class NewShootTest < ActionDispatch::IntegrationTest
   test 'should not let me shoot if all ships are sunk' do
     get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 6}
     get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 7}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
     get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 5}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
     shoot = JSON.parse @response.body
     assert_not_nil shoot
     assert_equal 'submarine', shoot['ship_type']
     assert_equal 'sunk', shoot['ship_status']
 
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 1}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 2}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 3}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
 
     shoot = JSON.parse @response.body
     assert_not_nil shoot
@@ -101,6 +131,8 @@ class NewShootTest < ActionDispatch::IntegrationTest
     error = JSON.parse @response.body
     assert_not_nil error
     assert_equal 'All your opponent ships are sunk', error['error'][0]
+    #TODO: wait for other player?
+    assert_equal 'end', shoot['status']
   end
 
 end
