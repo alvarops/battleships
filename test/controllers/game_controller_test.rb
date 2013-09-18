@@ -25,6 +25,13 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 'Unknown Token', resp['error'], 'Incorrect error msg'
   end
 
+  test 'shoud return error when try to place a ship on board with invalid token' do
+    get :set, params_with_invalid_token
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    assert_equal 'Unknown Token', resp['error'], 'Incorrect error msg'
+  end
+
   test 'GET #new - Board size should not be bigger than expected' do
     20.times do
       games_count_before = Game.all.size
@@ -117,6 +124,18 @@ class GameControllerTest < ActionController::TestCase
   def params
     {
       token: token, #current player token
+      id: 2, #game id
+      ships: [{
+        type: 'submarine', #type of the boat
+        xy: [1, 1], #position of the boat (we assume game size is 10x10)
+        variant: 0
+      }]
+    }
+  end
+
+  def params_with_invalid_token
+    {
+      token: invalid_token,
       id: 2, #game id
       ships: [{
         type: 'submarine', #type of the boat
