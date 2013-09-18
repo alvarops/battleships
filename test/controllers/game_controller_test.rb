@@ -18,6 +18,13 @@ class GameControllerTest < ActionController::TestCase
     assert_equal player.id, game_player.id
   end
 
+  test 'shoud return error when try to create a new game with invalid token' do
+    get :new, token: invalid_token
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    assert_equal 'Unknown Token', resp['error'], 'Incorrect error msg'
+  end
+
   test 'GET #new - Board size should not be bigger than expected' do
     20.times do
       games_count_before = Game.all.size

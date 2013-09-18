@@ -18,4 +18,8 @@ class ActiveSupport::TestCase
     '23j0f023912309r5u11fas'
   end
 
+  def invalid_token
+    'INVALID_TOKEN'
+  end
+
 end
