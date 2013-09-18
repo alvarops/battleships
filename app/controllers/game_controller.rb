@@ -13,7 +13,7 @@ class GameController < ApplicationController
     game = Game.create
     player = Player.find_by_token(params[:token])
     if player.nil?
-      render json: { error: 'Unknown Token'}
+      render json: {error: 'Unknown Token'}
       return
     end
     game.players.push player
@@ -31,13 +31,32 @@ class GameController < ApplicationController
 
   def list
     games = Game.where status: 'created'
-    render json: games.to_json(:include => {:players => {:except => :token}})
+    filtered_games = []
+    current_player = Player.find_by_token(params[:token])
+
+    if current_player
+      games.each do |game|
+        my_game = false
+        game.players.each do |player|
+          if player.id == current_player.id
+            my_game=true
+          end
+        end
+        if not my_game
+          filtered_games.push game
+        end
+      end
+    else
+      filtered_games = games
+    end
+
+    render json: filtered_games.to_json(:include => {:players => {:except => :token}})
   end
 
   def stats
     game = Game.find(params[:id])
     #TODO: add game status
-    render json: game.to_json(:include => [:players, :boards => {:include => [:shoots] }])
+    render json: game.to_json(:include => [:players, :boards => {:include => [:shoots]}])
     # render json: game.to_json(:include => [:players => {:except => :token}, :boards => {:include => :ships}])
     #render json: game.to_json(:include => {:players => {:except => :token},
     #                                       :boards  => {:include => {
@@ -78,7 +97,7 @@ class GameController < ApplicationController
     game = Game.find(params[:id])
     board = game.boards.find_by(player_id: @current_player.id)
     if board.ships.length == ShipShapes::SHIP_TYPES.length
-      render json: { error: 'You are not allow to modify your board any more'}
+      render json: {error: 'You are not allow to modify your board any more'}
       return
     end
     board.randomize

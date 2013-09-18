@@ -3,7 +3,7 @@ $(function () {
 
     var CLIENT = {
         body: $(".body"),
-        token: "U4wnEEFMnP5Nfr4cIfM4oA",
+        token: "-orsGMSc789m-Jk_97jivA",
         createGame: function () {
             var that = this;
             console.log("create game");
@@ -32,7 +32,10 @@ $(function () {
                     console.log("List of available games");
                     that.body.empty();
                     $.each(response, function () {
-                        that.body.append($("<div class='game'>").append($('<input>', {value: this.id, type: 'button'})).append("<p>Players: " + this.players + "</p>"));
+                        var player1 = this.players[0].name;
+                        var player2 = typeof this.players[1] !== 'undefined' ? this.players[1].name : "Waiting ...";
+                        that.body.append($("<div class='game'>").append($('<button>', {value: this.id, text: 'Join'}))
+                            .append("<p>Players: " + player1 + " vs. " + player2 + "</p>"));
                     });
                 }
             });

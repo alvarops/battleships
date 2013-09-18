@@ -25,6 +25,35 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 'Unknown Token', resp['error'], 'Incorrect error msg'
   end
 
+  test 'should not list games created by a player' do
+    get :list, token: token
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+
+    resp.each do |game|
+      game['players'].each do |p|
+        assert_not_equal p['id'], 12345, 'game list contains games created by player with id= 12345'
+      end
+    end
+  end
+
+  test 'should list games created by a player' do
+    get :list
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    contains_players_game=false
+    resp.each do |game|
+      game['players'].each do |p|
+        puts p
+        if p['id'] == 12345
+          contains_players_game =true
+        end
+      end
+    end
+
+    assert contains_players_game, 'game list DOES NOT contain games created by player with id= 12345'
+  end
+
   test 'shoud return error when try to place a ship on board with invalid token' do
     get :set, params_with_invalid_token
     assert @response.success?, 'response failed'
@@ -123,25 +152,25 @@ class GameControllerTest < ActionController::TestCase
 
   def params
     {
-      token: token, #current player token
-      id: 2, #game id
-      ships: [{
-        type: 'submarine', #type of the boat
-        xy: [1, 1], #position of the boat (we assume game size is 10x10)
-        variant: 0
-      }]
+        token: token, #current player token
+        id: 2, #game id
+        ships: [{
+                    type: 'submarine', #type of the boat
+                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
+                    variant: 0
+                }]
     }
   end
 
   def params_with_invalid_token
     {
-      token: invalid_token,
-      id: 2, #game id
-      ships: [{
-        type: 'submarine', #type of the boat
-        xy: [1, 1], #position of the boat (we assume game size is 10x10)
-        variant: 0
-      }]
+        token: invalid_token,
+        id: 2, #game id
+        ships: [{
+                    type: 'submarine', #type of the boat
+                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
+                    variant: 0
+                }]
     }
   end
 
@@ -150,17 +179,17 @@ class GameControllerTest < ActionController::TestCase
     offset= 0
     ShipShapes::SHIP_TYPES.each do |t, st|
       ships.push ({
-        type: t.to_s,
-        xy: [offset, 1],
-        variant: 0
+          type: t.to_s,
+          xy: [offset, 1],
+          variant: 0
       })
       offset += 10
     end
 
     {
-      token: token,
-      id: 2,
-      ships: ships
+        token: token,
+        id: 2,
+        ships: ships
     }
   end
 
