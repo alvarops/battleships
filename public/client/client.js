@@ -2,12 +2,16 @@ $(function () {
     console.log("Battleship Client")
 
     var CLIENT = {
+        token: prompt("Please enter your token", "-orsGMSc789m-Jk_97jivA"),
+        serverUrl: "http://battleships/",
+        serverUrlWithToken: "",
         body: $(".body"),
-        token: "-orsGMSc789m-Jk_97jivA",
+        header: $(".header"),
+        name: 'Player',
         createGame: function () {
             var that = this;
             console.log("create game");
-            $.getJSON("/" + that.token + "/game/new?callback=?", function (response) {
+            $.getJSON(that.serverUrlWithToken + "game/new?callback=?", function (response) {
                 console.log("success");
                 console.log("response=" + response);
                 if (typeof response.error !== 'undefined') {
@@ -25,7 +29,7 @@ $(function () {
         },
         listGames: function () {
             var that = this;
-            $.getJSON("/" + this.token + "/game/list?callback=?", function (response) {
+            $.getJSON(this.serverUrlWithToken + "game/list?callback=?", function (response) {
                 if (typeof response.error !== 'undefined') {
                     console.error(response.error)
                 } else {
@@ -48,7 +52,16 @@ $(function () {
             $("#menuListGames").click(function () {
                 that.listGames();
             });
+        },
+        init: function () {
+            this.serverUrlWithToken = this.serverUrl + this.token + "/";
+            var that = this;
+            this.bindEvents();
+            $.getJSON(this.serverUrlWithToken + "mystats?callback=?", function (response) {
+                that.name = response.name;
+                that.header.find("ul.menu").append("<li><a>Logged in as " + that.name + "</a></li>");
+            });
         }
     }
-    CLIENT.bindEvents();
+    CLIENT.init();
 });
