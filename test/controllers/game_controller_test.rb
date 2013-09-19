@@ -74,17 +74,19 @@ class GameControllerTest < ActionController::TestCase
     end
   end
 
-  test 'should be able to join existing game' do
+  test 'should be able to join existing game and game status should be changed to "ready"' do
     get :join, id: 10, token: token_fred
     resp = JSON.parse @response.body
     assert @response.success?, 'unsuccessful response from GAME JOIN'
     assert_equal 'You joined the game with ID=10', resp['msg'], 'unexpected join game response'
+
     get :stats, id: 10
     resp = JSON.parse @response.body
     assert @response.success?, 'unsuccessful response from GAME SHOW'
 
     hasTwoPlayers = false
     assert_equal 2, resp['players'].length, 'number of players is not equal 2'
+    assert_equal 'ready', resp['status'], 'Game status is wrong'
 
     resp['players'].each do |p|
       if p['id']== id_fred

@@ -5,7 +5,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     get 'i_have_ships/game/3/shoot', {:x => 5, :y => 5}
     error = JSON.parse @response.body
     assert_not_nil error
-    assert_equal 'Is not your game', error['error'][0]
+    assert_equal 'This is not your game', error['error'][0]
 
     get 'i_have_no_ships/game/4/shoot', {:x => 5, :y => 7}
     shoot = JSON.parse @response.body
@@ -29,12 +29,12 @@ class NewShootTest < ActionDispatch::IntegrationTest
     get '23j0f023912309r5u11fas/game/3/shoot', {:x => 5, :y => 5}
     error = JSON.parse @response.body
     assert_not_nil error
-    assert_equal 'Is not ready', error['error'][0]
+    assert_equal 'Game is not ready', error['error'][0]
 
     get 'i_have_ships/game/4/shoot', {:x => 5, :y => 5}
     error = JSON.parse @response.body
     assert_not_nil error
-    assert_equal 'Opponent ships are not ready', error['error'][0]
+    assert_equal 'Opponent\'s ships are not ready', error['error'][0]
   end
 
   test 'should not be duplicate' do
@@ -100,7 +100,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_equal '400', @response.code
     error = JSON.parse @response.body
     assert_not_nil error
-    assert_equal 'All your opponent ships are sunk', error['error'][0]
+    assert_equal 'All your opponent\'s ships are sunk', error['error'][0]
   end
 
 end
