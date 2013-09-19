@@ -58,6 +58,10 @@ $(function () {
             var that = this;
             this.bindEvents();
             $.getJSON(this.serverUrlWithToken + "mystats?callback=?", function (response) {
+                if(response.error){
+                    alert(response.error);
+                    return
+                }
                 that.name = response.name;
                 that.header.find("ul.menu").append("<li><a>Logged in as " + that.name + "</a></li>");
             });

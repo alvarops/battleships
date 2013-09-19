@@ -14,8 +14,12 @@ class PlayerController < ApplicationController
 
   def my_stats
     token = params[:token]
-    @current_player = Player.find_by_token(token)
-    render json: @current_player
+    player = Player.find_by_token(token)
+    if player.nil?
+      render json: {error: 'Unknown Token'}
+      return
+    end
+    render json: player
   end
 
   def list
