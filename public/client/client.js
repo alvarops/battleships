@@ -13,7 +13,7 @@ $(function () {
             return this.serverUrl + this.token + "/";
         },
         shootUrl: function (x, y) {
-            return this.serverUrlWithToken() + "/game/" + this.currentGameId + "/shoot/?x=" + x + "&y=" + y;
+            return this.serverUrlWithToken() + "game/" + this.currentGameId + "/shoot/?x=" + x + "&y=" + y;
         },
         createGame: function () {
             var that = this;
@@ -143,24 +143,29 @@ $(function () {
             that.body.empty();
             that.updateActiveGameStatus(function () {
                 that.setShips(function () {
-                    //that.startShooting();
+                    that.startShooting();
                 });
             });
         },
         startShooting: function () {
             // TODO: implement your algorithm here
             var that = this;
-            this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame) + "</p>");
-            for (var y = 0; y < this.currentGame.height; y++) {
-                for (var x = 0; x < this.currentGame.width; x++) {
+            this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame.id) + "</p>");
+            for (var y = 0; y < 10; y++) {
+                for (var x = 0; x < 10; x++) {
                     var self = this;
+                    var url = that.shootUrl(x, y) + "&callback=?";
                     // SYNCHRONOUS AJAX CALL
                     $.ajax({
-                        url: that.shootUrl(self.x, self.y) + "&callback=?",
+                        url: url,
                         dataType: 'jsonp',
                         async: false,
                         success: function (data) {
-                            console.log("Shooting at: " + self.x + "x" + self.y);
+                            console.log("Shooting at: " + that.x + "x" + that.y);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error("Something went wrong while shooting at: " + that.x + "x" + that.y);
+                            console.error(textStatus + " - " + errorThrown);
                         }
                     });
                 }

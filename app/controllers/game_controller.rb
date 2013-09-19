@@ -157,11 +157,11 @@ class GameController < ApplicationController
       return
     end
     game.players.push @current_player
+    if game.players.length == 2
+      game.status = 'ready'
+    end
+    game.save!
     render json: {msg: 'You joined the game with ID=' + game.id.to_s}
-  end
-
-  def join_second_player
-    render json: {msg: 'You joined the game'}
   end
 
   protected
