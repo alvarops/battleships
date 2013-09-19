@@ -44,7 +44,6 @@ class GameControllerTest < ActionController::TestCase
     contains_players_game=false
     resp.each do |game|
       game['players'].each do |p|
-        puts p
         if p['id'] == 12345
           contains_players_game =true
         end

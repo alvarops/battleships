@@ -8,6 +8,7 @@ gem 'rails', '4.0.0'
 group :test, :development do
 # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
+  gem 'simplecov'
 end
 
 group :production do

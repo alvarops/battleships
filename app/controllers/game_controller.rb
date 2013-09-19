@@ -89,9 +89,6 @@ class GameController < ApplicationController
 
         ship = generate_ship type, x, y, variant
 
-        puts ship.positions.map(&:x).to_json
-        puts ship.positions.map(&:y).to_json
-
         if player_board.can_place? ship
           player_board.ships.push ship
           player_board.save
