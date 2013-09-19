@@ -97,6 +97,10 @@ $(function () {
             this.body.on('click', '.game button', function () {
                 that.joinGame(this.value);
             });
+            this.body.on('click', 'button.showMyGame', function () {
+                var url = that.serverUrlWithToken() + "/game/" + this.value + "/show";
+                window.open(url, '_blank');
+            });
             this.body.on('click', 'button.playGame', function () {
                 that.currentGameId = this.value;
                 that.playGame();
@@ -123,6 +127,7 @@ $(function () {
                 } else {
                     that.currentGame = response;
                     that.body.append("<p>" + JSON.stringify(response) + "</p>");
+                    that.body.append("<button class='showMyGame' value='" + that.currentGameId + "'>SHOW MY BOARD</button>");
                     callback();
                 }
             });
