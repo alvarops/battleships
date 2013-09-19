@@ -121,6 +121,7 @@ $(function () {
         setShips: function (callback) {
             var that = this;
             // SET SHIPS RANDOMLY
+            that.body.append("<p>SETTING SHIPS... WAIT</p>");
             $.getJSON(this.serverUrlWithToken() + "game/" + that.currentGameId + "/randomize?callback=?", function (response) {
                 if (response.error) {
                     alert("Unable to update info about the active game" + response.error);
