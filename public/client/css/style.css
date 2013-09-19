@@ -1,0 +1,167 @@
+ul, li, div, body, h1, h2, h3 {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: #effef;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ul li {
+    list-style: none;
+}
+
+.clear {
+    clear: both;
+}
+
+.header {
+    background-color: #5f8c2f;
+}
+
+.header h1 {
+    padding: 20px;
+    color: #FFFFFF;
+    font-family: Electrolize;
+}
+
+.menu li {
+    float: left;
+}
+
+.menu a {
+    display: block;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 1em;
+}
+
+.menu a:hover {
+    background-color: #303030;
+    color: #FFFFFF;
+}
+
+.body {
+    margin: auto;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.playerContainer {
+    float: left;
+    width: 40%;
+    margin: 2em;
+}
+
+.board {
+    border-collapse: collapse;
+    margin: 1em;
+}
+
+.board td {
+    border: 1px solid #ccc;
+}
+
+.board div {
+    width: 20px;
+    height: 20px;
+}
+
+.board .hit {
+    background-color: orange;
+}
+
+.board .miss {
+    background-color: #ccccff;
+}
+
+.board .hitsunk {
+    background-color: red;
+}
+
+.board .samespot {
+    background-color: black;
+}
+
+.hit {
+    color: orange;
+}
+
+.miss {
+    color: #ccccff;
+}
+
+.hitsunk {
+    color: red;
+}
+
+.samespot {
+    color: black;
+}
+
+.available-ships {
+    overflow: hidden;
+}
+
+.available-ships li {
+    width: 10px;
+    height: 10px;
+    background-color: #ccc;
+    float: left;
+}
+
+.available-ships li.shape {
+    background-color: black;
+}
+
+.available-ships ul {
+    width: 80px;
+    float: left;
+    margin: 5px;
+}
+
+.available-ships ul.dragging {
+    opacity: 0.3;
+}
+
+.board {
+    overflow: hidden;
+}
+
+.board ul {
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+}
+
+.board ul li {
+    width: 10px;
+    height: 10px;
+    float: left;
+    background-color: #ccc;
+    border-left: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+
+.board ul li.position {
+    background-color: black;
+}
+
+.board ul li.decision {
+    background-color: green;
+}
+
+.board ul li.impossible {
+    background-color: red;
+}
+
+ul.menu li.right {
+    float: right;
+}
+
+.body .game {
+    padding: 10px;
+    background: rgba(143, 143, 143, 0.35);
+    border-radius: 10px;
+    margin: 10px;
+}

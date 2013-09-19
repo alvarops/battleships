@@ -1,35 +1,38 @@
 $(function () {
-    console.log("Battleship Client")
+    console.log("Battleship Client");
 
     var CLIENT = {
-        token: prompt("Please enter your token", "-orsGMSc789m-Jk_97jivA"),
+        token: $.cookie('token'),
         serverUrl: "http://battleships/",
-        serverUrlWithToken: "",
         body: $(".body"),
         header: $(".header"),
         name: 'Player',
+        serverUrlWithToken: function () {
+            return this.serverUrl + this.token + "/";
+        },
         createGame: function () {
             var that = this;
             console.log("create game");
-            $.getJSON(that.serverUrlWithToken + "game/new?callback=?", function (response) {
+            $.getJSON(that.serverUrlWithToken() + "game/new?callback=?", function (response) {
                 console.log("success");
                 console.log("response=" + response);
+
                 if (typeof response.error !== 'undefined') {
                     console.error(response.error)
                 } else {
-                    console.log("New Game created ID=" + response.id);
+                    var msg = "New Game created ID=" + response.id;
+                    console.log(msg);
+                    alert(msg);
                 }
             });
         },
-        joinGame: function () {
-            console.log("join game");
+        joinGame: function (gameId) {
+            console.log("joining game " + gameId);
+
         },
-        playGame: function () {
-            console.log("play game");
-        },
-        listGames: function () {
+        listGames: function (url, callback) {
             var that = this;
-            $.getJSON(this.serverUrlWithToken + "game/list?callback=?", function (response) {
+            $.getJSON(url + "game/list?callback=?", function (response) {
                 if (typeof response.error !== 'undefined') {
                     console.error(response.error)
                 } else {
@@ -37,11 +40,39 @@ $(function () {
                     that.body.empty();
                     $.each(response, function () {
                         var player1 = this.players[0].name;
-                        var player2 = typeof this.players[1] !== 'undefined' ? this.players[1].name : "Waiting ...";
                         that.body.append($("<div class='game'>").append($('<button>', {value: this.id, text: 'Join'}))
-                            .append("<p>Players: " + player1 + " vs. " + player2 + "</p>"));
+                            .append("<p>Created by: " + player1 + "</p><p>Game Id= " + this.id + "</p><p>" + this.created_at + "</p>"));
                     });
                 }
+                if (typeof callback !== undefined) {
+                    callback();
+                }
+            });
+        },
+        listOpenGames: function () {
+            this.listGames(this.serverUrlWithToken());
+        },
+        listAllGames: function () {
+            var that = this;
+            this.listGames(this.serverUrl, function(){
+                that.body.find("button").remove();
+            });
+        },
+        logIn: function () {
+            this.token = prompt("Please enter your token", "-orsGMSc789m-Jk_97jivA");
+            $.cookie('token', this.token);
+            this.updateLoginUi();
+        },
+        updateLoginUi: function () {
+            var that = this;
+            $.getJSON(this.serverUrlWithToken() + "mystats?callback=?", function (response) {
+                if (response.error) {
+                    alert("Unable to Sign In: " + response.error);
+                    that.header.find("#menuLogIn").text("Sign In");
+                    return
+                }
+                that.name = response.name;
+                that.header.find("#menuLogIn").text("Sign out " + that.name);
             });
         },
         bindEvents: function () {
@@ -49,23 +80,25 @@ $(function () {
             $("#menuCreateGame").click(function () {
                 that.createGame();
             });
-            $("#menuListGames").click(function () {
-                that.listGames();
+            $("#menuListOpenGames").click(function () {
+                that.listOpenGames();
             });
+            $("#menuListAllGames").click(function () {
+                that.listAllGames();
+            });
+            $("#menuLogIn").click(function () {
+                that.logIn();
+            });
+            this.body.on('click', '.game button', function () {
+                that.joinGame(this.value);
+            });
+
+
         },
         init: function () {
-            this.serverUrlWithToken = this.serverUrl + this.token + "/";
-            var that = this;
             this.bindEvents();
-            $.getJSON(this.serverUrlWithToken + "mystats?callback=?", function (response) {
-                if(response.error){
-                    alert(response.error);
-                    return
-                }
-                that.name = response.name;
-                that.header.find("ul.menu").append("<li><a>Logged in as " + that.name + "</a></li>");
-            });
+            this.updateLoginUi();
         }
-    }
+    };
     CLIENT.init();
 });
