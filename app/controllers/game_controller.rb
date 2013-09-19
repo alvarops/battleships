@@ -12,7 +12,12 @@ class GameController < ApplicationController
 
   def new
     game = Game.create
-    game.players.push Player.find_by_token(params[:token])
+    player = Player.find_by_token(params[:token])
+    if player.nil?
+      render json: {error: 'Unknown Token'}
+      return
+    end
+    game.players.push player
     game.width = Random.new.rand(MIN_WIDTH..MAX_WIDTH)
     max_height = MAX_NUMBER_OF_PIXELS / game.width
     game.height = Random.new.rand((max_height-VARIABLE_SIZE)..(max_height+VARIABLE_SIZE))
@@ -27,13 +32,37 @@ class GameController < ApplicationController
 
   def list
     games = Game.where status: 'created'
-    render json: games.to_json(:include => {:players => {:except => :token}})
+    filtered_games = []
+    current_player = Player.find_by_token(params[:token])
+
+    if current_player
+      games.each do |game|
+        my_game = false
+        game.players.each do |player|
+          if player.id == current_player.id
+            my_game=true
+          end
+        end
+        if not my_game
+          filtered_games.push game
+        end
+      end
+    else
+      filtered_games = games
+    end
+
+    render json: filtered_games.to_json(:include => {:players => {:except => :token}})
   end
 
   def stats
-    game = Game.find(params[:id])
+    game = Game.find_by_id(params[:id])
+    if game.nil?
+      render json: {error: 'Unable to find game'}
+      return
+    end
+
     #TODO: add game status
-    render json: game.to_json(:include => [:players, :boards => {:include => [:shoots] }])
+    render json: game.to_json(:include => [:players, :boards => {:include => [:shoots]}])
     # render json: game.to_json(:include => [:players => {:except => :token}, :boards => {:include => :ships}])
     #render json: game.to_json(:include => {:players => {:except => :token},
     #                                       :boards  => {:include => {
@@ -79,7 +108,7 @@ class GameController < ApplicationController
     board = game.boards.find_by(player_id: @current_player.id)
 
     if board.ships.length == ShipModels::SHIP_MODELS.length
-      render json: { error: 'You are not allow to modify your board any more'}
+      render json: {error: 'You are not allow to modify your board any more'}
       return
     end
 
@@ -119,6 +148,20 @@ class GameController < ApplicationController
         @positions.push p
       end
     end
+  end
+
+  def join
+    game = Game.find_by_id(params[:id])
+    if game.nil?
+      render json: {error: 'Unable to find game'}
+      return
+    end
+    game.players.push @current_player
+    render json: {msg: 'You joined the game with ID=' + game.id.to_s}
+  end
+
+  def join_second_player
+    render json: {msg: 'You joined the game'}
   end
 
   protected

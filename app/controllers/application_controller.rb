@@ -8,4 +8,8 @@ class ApplicationController < ActionController::Base
     options = options.merge(:callback => params['callback']) if options[:json] && params['callback']
     super(options, extra_options, &block)
   end
+
+  def render_error(msg='Unknown Error')
+    redirect_to controller: 'error', action: 'show', error: {error: msg}
+  end
 end

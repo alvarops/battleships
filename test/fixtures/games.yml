@@ -28,3 +28,9 @@ big_game:
   height: 500
   status: ready
 
+
+created_game_with_one_player:
+  id: 10
+  width: 321
+  height: 123
+  status: created
