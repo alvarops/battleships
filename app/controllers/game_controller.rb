@@ -54,7 +54,12 @@ class GameController < ApplicationController
   end
 
   def stats
-    game = Game.find(params[:id])
+    game = Game.find_by_id(params[:id])
+    if game.nil?
+      render json: {error: 'Unable to find game'}
+      return
+    end
+
     #TODO: add game status
     render json: game.to_json(:include => [:players, :boards => {:include => [:shoots]}])
     # render json: game.to_json(:include => [:players => {:except => :token}, :boards => {:include => :ships}])
@@ -136,6 +141,20 @@ class GameController < ApplicationController
         @positions.push p
       end
     end
+  end
+
+  def join
+    game = Game.find_by_id(params[:id])
+    if game.nil?
+      render json: {error: 'Unable to find game'}
+      return
+    end
+    game.players.push @current_player
+    render json: {msg: 'You joined the game'}
+  end
+
+  def join_second_player
+    render json: {msg: 'You joined the game'}
   end
 
   protected

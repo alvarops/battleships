@@ -75,6 +75,39 @@ class GameControllerTest < ActionController::TestCase
     end
   end
 
+  test 'should be able to join existing game' do
+    get :join, id: 10, token: token_fred
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME JOIN'
+    assert_equal 'You joined the game', resp['msg'], 'unexpected join game response'
+    get :stats, id: 10
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME SHOW'
+
+    hasTwoPlayers = false
+    assert_equal 2, resp['players'].length, 'number of players is not equal 2'
+
+    resp['players'].each do |p|
+      if p['id']== id_fred
+        hasTwoPlayers = true
+      end
+    end
+    assert hasTwoPlayers, 'unable to find a second player'
+  end
+
+  test 'should get error when joining non-existing game' do
+    get :join, id: 666, token: token_fred
+    resp = JSON.parse @response.body
+    assert_equal 'Unable to find game', resp['error'], 'unexpected join game error response'
+  end
+
+  test 'should return error when requesting game status for non-existing game' do
+    get :stats, id: 666
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    resp = JSON.parse @response.body
+    assert_equal 'Unable to find game', resp['error'], 'Incorrect error response'
+  end
+
   test 'GET #new Create game and join a second player with a single request' do
     games_count_before = Game.all.size
 
@@ -92,6 +125,18 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 1, games_count_after - games_count_before, 'Game not created at all in db'
     assert_equal player.id, first_game_player.id, 'First player Id incorrect'
     assert_equal 12346, second_game_player.id, 'Second player ID incorrect'
+  end
+
+
+  test 'Should list all open games with status \'created\'' do
+    get :list
+    resp = JSON.parse @response.body
+    assert @response.success?, 'Game list failed'
+    game = JSON.parse @response.body
+
+    games_in_db = Game.where status: 'created'
+
+    assert_equal game.length, games_in_db.size, 'Number of games doesn\'t mach whats in db'
   end
 
   test 'POST #set' do

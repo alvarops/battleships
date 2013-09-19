@@ -27,3 +27,7 @@ board_with_ships:
   player_id: 2
   game_id: 4
 
+Bobs_created_game_waiting_for_fred:
+  id: 10007
+  player_id: 12346
+  game_id: 10

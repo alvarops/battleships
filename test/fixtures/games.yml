@@ -23,3 +23,10 @@ ready_game_to_shoot:
   width: 10
   height: 10
   status: ready
+
+
+created_game_with_one_player:
+  id: 10
+  width: 321
+  height: 123
+  status: created

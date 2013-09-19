@@ -18,8 +18,24 @@ class ActiveSupport::TestCase
     '23j0f023912309r5u11fas'
   end
 
+  def token_fred
+    '23j0f023912309r5u11fas'
+  end
+
+  def token_bob
+    'adflkj23kj23lkj235l;23'
+  end
+
   def invalid_token
     'INVALID_TOKEN'
+  end
+
+  def id_bob
+    12346
+  end
+
+  def id_fred
+    12345
   end
 
 end
