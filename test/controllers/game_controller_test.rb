@@ -79,7 +79,7 @@ class GameControllerTest < ActionController::TestCase
     get :join, id: 10, token: token_fred
     resp = JSON.parse @response.body
     assert @response.success?, 'unsuccessful response from GAME JOIN'
-    assert_equal 'You joined the game', resp['msg'], 'unexpected join game response'
+    assert_equal 'You joined the game with ID=10', resp['msg'], 'unexpected join game response'
     get :stats, id: 10
     resp = JSON.parse @response.body
     assert @response.success?, 'unsuccessful response from GAME SHOW'

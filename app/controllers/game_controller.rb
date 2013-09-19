@@ -150,7 +150,7 @@ class GameController < ApplicationController
       return
     end
     game.players.push @current_player
-    render json: {msg: 'You joined the game'}
+    render json: {msg: 'You joined the game with ID=' + game.id.to_s}
   end
 
   def join_second_player

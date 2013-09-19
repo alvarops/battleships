@@ -28,7 +28,10 @@ $(function () {
         },
         joinGame: function (gameId) {
             console.log("joining game " + gameId);
-
+            var that = this;
+            $.getJSON(that.serverUrlWithToken() + 'game/' + gameId + '/join?callback=?', function (response) {
+                that.body.empty().append('<p>' + response.msg + '</p>');
+            });
         },
         listGames: function (url, callback) {
             var that = this;
@@ -54,7 +57,7 @@ $(function () {
         },
         listAllGames: function () {
             var that = this;
-            this.listGames(this.serverUrl, function(){
+            this.listGames(this.serverUrl, function () {
                 that.body.find("button").remove();
             });
         },
