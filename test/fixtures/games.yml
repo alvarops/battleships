@@ -4,13 +4,11 @@ created_game:
   height: 123
   status: created
 
-
 ready_game:
   id: 2
   width: 50
   height: 50
   status: ready
-
 
 game_with_ships_collision:
   id: 3
@@ -23,3 +21,10 @@ ready_game_to_shoot:
   width: 10
   height: 10
   status: ready
+
+big_game:
+  id: 5
+  width: 500
+  height: 500
+  status: ready
+

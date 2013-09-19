@@ -13,6 +13,13 @@ Bob:
     won: 0
     lost: 0
 
+Magda:
+    id: 7
+    name: Magda
+    token: fpq3hjf-q39jhg-q304hgr20
+    won: 0
+    lost: 0
+
 Alvaro:
     id: 1
     name: Alvaro

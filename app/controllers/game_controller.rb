@@ -1,6 +1,7 @@
 class GameController < ApplicationController
   include TokenFilter
   include GameHelper
+  include ShipHelper
 
   rescue_from ActiveRecord::RecordNotUnique, :with => :rescue_duplicate
 
@@ -52,11 +53,15 @@ class GameController < ApplicationController
       new_ships = params[:ships]
 
       new_ships.each do |new_ship|
-        type = new_ship[:type]
-        x = new_ship[:xy][0]
-        y = new_ship[:xy][1]
+        type    = new_ship[:type]
+        x       = new_ship[:xy][0]
+        y       = new_ship[:xy][1]
         variant = new_ship[:variant]
-        ship = Ship.generate type, x, y, variant
+
+        ship = generate_ship type, x, y, variant
+
+        puts ship.positions.map(&:x).to_json
+        puts ship.positions.map(&:y).to_json
 
         if player_board.can_place? ship
           player_board.ships.push ship
@@ -70,12 +75,14 @@ class GameController < ApplicationController
   end
 
   def randomize
-    game = Game.find(params[:id])
+    game  = Game.find(params[:id])
     board = game.boards.find_by(player_id: @current_player.id)
-    if board.ships.length == ShipShapes::SHIP_TYPES.length
+
+    if board.ships.length == ShipModels::SHIP_MODELS.length
       render json: { error: 'You are not allow to modify your board any more'}
       return
     end
+
     board.randomize
     #TODO: add a new board in response
     render json: game.to_json(:include => {:players => {:except => :token}})

@@ -67,7 +67,7 @@ class GameControllerTest < ActionController::TestCase
   test 'POST #set, multiple ships' do
     post :set, params_multiple
 
-    player_board = current_player_board(params)
+    player_board = current_player_board(params_multiple)
 
     assert_equal 18, player_board.ships.size
     assert_equal 3, player_board.ships.find_by(t: :submarine).positions.size
@@ -75,19 +75,12 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 5, player_board.ships.find_by(t: :carrier).positions.size
   end
 
-  test 'POST #set, after settings all required ships game changes to ready' do
-
-  end
-
-
   test 'GET #set, ship has to have right size' do
     post :set, params
 
     game = Game.find(params[:id])
 
     assert_equal 1, game.player_board(12345).ships.size
-
-
   end
 
   test 'GET #shoot, {x, y}' do
@@ -122,7 +115,7 @@ class GameControllerTest < ActionController::TestCase
   def params_multiple
     ships = []
     offset= 0
-    ShipShapes::SHIP_TYPES.each do |t, st|
+    ShipModels::SHIP_MODELS.each do |t, st|
       ships.push ({
         type: t.to_s,
         xy: [offset, 1],
@@ -132,8 +125,8 @@ class GameControllerTest < ActionController::TestCase
     end
 
     {
-      token: token,
-      id: 2,
+      token: 'fpq3hjf-q39jhg-q304hgr20',
+      id: 5,
       ships: ships
     }
   end

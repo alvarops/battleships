@@ -7,6 +7,11 @@ Freds:
   player_id: 12346
   game_id: 2
 
+Magdas:
+  id: 19991
+  player_id: 7
+  game_id: 5
+
 board_with_collision_1:
   id: 10003
   player_id: 12345

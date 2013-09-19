@@ -21,7 +21,7 @@ class ShowBoardTest < ActionDispatch::IntegrationTest
 
 
 
-    assert_equal ShipShapes::SHIP_TYPES.length ,game.boards.first.ships.length, 'wrong number of ships on board'
+    assert_equal ShipModels::SHIP_MODELS.length ,game.boards.first.ships.length, 'wrong number of ships on board'
 
     assert resp.match(/#{game.width-1}x#{game.height-1}/), 'board size unknown'
     assert resp.match /data-width='#{game.width}'/

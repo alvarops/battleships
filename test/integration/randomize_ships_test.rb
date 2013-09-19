@@ -22,7 +22,7 @@ class RandomizeShipsTest < ActionDispatch::IntegrationTest
     board = game.player_board 12345
     myShips = board.ships
 
-    assert_equal myShips.length, ShipShapes::SHIP_TYPES.length, 'Unexpected number of ships on the board'
+    assert_equal myShips.length, ShipModels::SHIP_MODELS.length, 'Unexpected number of ships on the board'
 
     get '23j0f023912309r5u11fas/game/' + id + '/randomize'
 
