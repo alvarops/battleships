@@ -12,6 +12,9 @@ $(function () {
         serverUrlWithToken: function () {
             return this.serverUrl + this.token + "/";
         },
+        shootUrl: function (x, y) {
+            return this.serverUrlWithToken() + "/game/" + this.currentGameId + "/shoot/?x=" + x + "&y=" + y;
+        },
         createGame: function () {
             var that = this;
             console.log("create game");
@@ -25,6 +28,8 @@ $(function () {
                     var msg = "New Game created ID=" + response.id;
                     console.log(msg);
                     alert(msg);
+                    that.currentGameId = response.id;
+                    that.playGame();
                 }
             });
         },
@@ -138,13 +143,28 @@ $(function () {
             that.body.empty();
             that.updateActiveGameStatus(function () {
                 that.setShips(function () {
-                    that.startShooting();
+                    //that.startShooting();
                 });
             });
         },
         startShooting: function () {
             // TODO: implement your algorithm here
-            this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame) + "</p>")
+            var that = this;
+            this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame) + "</p>");
+            for (var y = 0; y < this.currentGame.height; y++) {
+                for (var x = 0; x < this.currentGame.width; x++) {
+                    var self = this;
+                    // SYNCHRONOUS AJAX CALL
+                    $.ajax({
+                        url: that.shootUrl(self.x, self.y) + "&callback=?",
+                        dataType: 'jsonp',
+                        async: false,
+                        success: function (data) {
+                            console.log("Shooting at: " + self.x + "x" + self.y);
+                        }
+                    });
+                }
+            }
         },
         init: function () {
             this.bindEvents();
