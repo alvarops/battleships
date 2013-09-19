@@ -7,6 +7,8 @@ $(function () {
         body: $(".body"),
         header: $(".header"),
         name: 'Player',
+        currentGame: "",
+        currentGameId: "",
         serverUrlWithToken: function () {
             return this.serverUrl + this.token + "/";
         },
@@ -30,7 +32,7 @@ $(function () {
             console.log("joining game " + gameId);
             var that = this;
             $.getJSON(that.serverUrlWithToken() + 'game/' + gameId + '/join?callback=?', function (response) {
-                that.body.empty().append('<p>' + response.msg + '</p>');
+                that.body.empty().append('<p>' + response.msg + '</p><button class="playGame" value="' + gameId + '">Play</button>');
             });
         },
         listGames: function (url, callback) {
@@ -47,7 +49,7 @@ $(function () {
                             .append("<p>Created by: " + player1 + "</p><p>Game Id= " + this.id + "</p><p>" + this.created_at + "</p>"));
                     });
                 }
-                if (typeof callback !== undefined) {
+                if (typeof callback !== 'undefined') {
                     callback();
                 }
             });
@@ -95,8 +97,48 @@ $(function () {
             this.body.on('click', '.game button', function () {
                 that.joinGame(this.value);
             });
-
-
+            this.body.on('click', 'button.playGame', function () {
+                that.currentGameId = this.value;
+                that.playGame();
+            });
+        },
+        updateActiveGameStatus: function (callback) {
+            var that = this;
+            $.getJSON(this.serverUrlWithToken() + "game/" + that.currentGameId + "/?callback=?", function (response) {
+                if (response.error) {
+                    alert("Unable to update info about the active game" + response.error);
+                } else {
+                    that.currentGame = response;
+                    that.body.append("<p>" + JSON.stringify(response) + "</p>");
+                    callback();
+                }
+            });
+        },
+        setShips: function (callback) {
+            var that = this;
+            // SET SHIPS RANDOMLY
+            $.getJSON(this.serverUrlWithToken() + "game/" + that.currentGameId + "/randomize?callback=?", function (response) {
+                if (response.error) {
+                    alert("Unable to update info about the active game" + response.error);
+                } else {
+                    that.currentGame = response;
+                    that.body.append("<p>" + JSON.stringify(response) + "</p>");
+                    callback();
+                }
+            });
+        },
+        playGame: function () {
+            var that = this;
+            that.body.empty();
+            that.updateActiveGameStatus(function () {
+                that.setShips(function () {
+                    that.startShooting();
+                });
+            });
+        },
+        startShooting: function () {
+            // TODO: implement your algorithm here
+            this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame) + "</p>")
         },
         init: function () {
             this.bindEvents();
