@@ -1,0 +1,48 @@
+1. Download the AWS ElasticBeanstalk Command Line Tools
+    * https://s3.amazonaws.com/elasticbeanstalk/cli/AWS-ElasticBeanstalk-CLI-2.5.1.zip
+    * Put the binaries directory of above archive to your system PATH, so they are executable anywhere in the system
+
+2. Go to your git repository working directory and run Elastic Beanstalk wizard
+    * run .eb init. in git repository main directory
+    * enter credentials and other configuration options:
+       * for location Ireland is available
+       * solution stack preferrably Rails 1.9.3 on 64bit Linux
+       * select yes for loadbalancing
+       * select default profile
+       * select yes for RDS database (mysql by default)
+       * Note database maste password (it will be used in database configuration)
+
+
+3. Create Elastic Beans environment
+    * run .eb branch. to associate current branch with EB environemnt
+    * run .eb start. to create EB environment (creating RDS database takes time so do yourself some coffee)
+    * After environment is created URL for the application will be displayed eg.
+       * http://battleships-frontend-tchrs8pmti.elasticbeanstalk.com
+
+
+4. Configure rails environment for application if different than production (set by default)
+    * Go to your AWS Elastic Beanstalk Web console and select your application:
+       * https://console.aws.amazon.com/elasticbeanstalk/home?region=eu-west-1#/applications
+    * Change RACK_ENV to desired Rails environment
+    * Add RAILS_ENV variable and set it the same as RACK_ENV (not sure if required)
+
+
+5. Make sure the .ebextensions/database.config file is in your working directory (if not pull the recent changes from origin/master)
+    * This file is required to create database in RDS. I don.t know what.s the case with mysql database set in default production environment but I had to set it in order to create database in development_mysql environment.
+
+
+6. Update config/database.yml with database host presented in
+    * run .eb status. to get database host
+
+
+7. Push the chnges to AWS cloud
+    * runt the .git aws.push. command in oder to update Elastic beans environment
+
+
+8. Check the application
+    * Got to the url obtained after running .eb init. in point 3 and you should see working application.
+
+
+9. When you don.t need application enymore stop the instance and delete it (it will delete the database as well):
+    * run .eb stop. to terminate instance
+    * run .eb delete. to delete AWS environment
