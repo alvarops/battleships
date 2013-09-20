@@ -104,7 +104,7 @@ $(function () {
                 that.joinGame(this.value);
             });
             this.body.on('click', 'button.showMyGame', function () {
-                var url = that.serverUrlWithToken() + "/game/" + this.value + "/show";
+                var url = that.serverUrlWithToken() + "game/" + this.value + "/show";
                 window.open(url, '_blank');
             });
             this.body.on('click', 'button.playGame', function () {

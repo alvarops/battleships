@@ -31,7 +31,13 @@ class GameController < ApplicationController
   end
 
   def list
-    games = Game.where status: 'created'
+    if params[:status]
+      status = params[:status]
+      games = Game.where status: status
+    elsif params[:forpreview] == 'true'
+      games = Game.where("status = 'fight' OR status = 'end'")
+    end
+
     filtered_games = []
     current_player = Player.find_by_token(params[:token])
 
@@ -82,9 +88,9 @@ class GameController < ApplicationController
       new_ships = params[:ships]
 
       new_ships.each do |new_ship|
-        type    = new_ship[:type]
-        x       = new_ship[:xy][0]
-        y       = new_ship[:xy][1]
+        type = new_ship[:type]
+        x = new_ship[:xy][0]
+        y = new_ship[:xy][1]
         variant = new_ship[:variant]
 
         ship = generate_ship type, x, y, variant
@@ -104,7 +110,7 @@ class GameController < ApplicationController
   end
 
   def randomize
-    game  = Game.find(params[:id])
+    game = Game.find(params[:id])
     board = game.boards.find_by(player_id: @current_player.id)
 
     if board.ships.length == ShipModels::SHIP_MODELS.length
