@@ -46,8 +46,9 @@ $(function(){
                 $('.body').append($gameList);
 
                 $('.show-game-progress').click(function () {
+                    var gameId = $(this).parent().parent().attr("id");
                     BS._fn.clearScreen(function () {
-                        BS._fn.showGameProgress();
+                        BS._fn.showGameProgress(gameId);
                     });
                 });
             },
@@ -62,8 +63,8 @@ $(function(){
 
             },
 
-            showGameProgress : function () {
-                BS._fn.game.displayGame(10);
+            showGameProgress : function (gameId) {
+                BS._fn.game.displayGame(gameId);
             },
 
             game : {
