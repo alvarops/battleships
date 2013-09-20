@@ -111,7 +111,7 @@ class GameController < ApplicationController
 
     board.randomize
     #TODO: add a new board in response
-    render json: game.to_json(:include => {:players => {:except => :token}})
+    render json: game.to_json(:include => {:players => {:except => :token}}), board: board.ships
   end
 
   def shoot
@@ -121,6 +121,10 @@ class GameController < ApplicationController
     if !opponents_board.nil? #is there is anything to shot at?
 
       shoot = create_shoot(opponents_board)
+
+      #FIXME: game status has to be known at this point
+
+      shoot.status = game.status
 
       if shoot.save
         render_shoot(shoot)
@@ -139,6 +143,10 @@ class GameController < ApplicationController
   def show
     @game = Game.find(params[:id])
     @board = @game.boards.find_by(player_id: @current_player.id)
+    if @board.nil?
+      render json: {error: 'It is not your game'}
+      return
+    end
     @positions = []
     @board.ships.each do |s|
       s.positions.each do |p|
@@ -191,11 +199,11 @@ class GameController < ApplicationController
         shoot.result='hit'
       end
       shoot.save
-      @out = {json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status}, status: :created}
+      @out = {json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status, status: shoot.status}}
     else
       shoot.result= 'miss'
       shoot.save
-      @out = {json: shoot, status: :not_found}
+      @out = {json: {board_id: shoot.board.id, x: shoot.x, y: shoot.y, ship_status: shoot.result, status: shoot.status}}
     end
   end
 

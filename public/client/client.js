@@ -83,6 +83,7 @@ $(function () {
                 }
                 that.name = response.name;
                 that.header.find("#menuLogIn").text("Sign out " + that.name);
+                that.body.empty();
             });
         },
         bindEvents: function () {
@@ -161,10 +162,10 @@ $(function () {
                         dataType: 'jsonp',
                         async: false,
                         success: function (data) {
-                            console.log("Shooting at: " + that.x + "x" + that.y);
+                            console.log("Shooting at: " + this.x + "x" + this.y);
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
-                            console.error("Something went wrong while shooting at: " + that.x + "x" + that.y);
+                            console.error("Something went wrong while shooting at: " + this.x + "x" + this.y);
                             console.error(textStatus + " - " + errorThrown);
                         }
                     });
