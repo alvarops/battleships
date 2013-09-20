@@ -50,8 +50,6 @@ class NewShootTest < ActionDispatch::IntegrationTest
 
     shoot = JSON.parse @response.body
     assert_not_nil shoot
-
-    puts shoot
     assert_nil shoot['ship_type']
     assert_equal 'miss', shoot['ship_status']
     assert_equal 'ready', shoot['status']
@@ -71,8 +69,6 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_equal '200', @response.code
     shoot = JSON.parse @response.body
     assert_not_nil shoot
-
-    puts shoot
     assert_equal 'submarine', shoot['ship_type']
     assert_equal 'hit', shoot['ship_status']
   end
