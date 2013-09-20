@@ -54,7 +54,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     puts shoot
     assert_nil shoot['ship_type']
     assert_equal 'miss', shoot['ship_status']
-    assert_equal 'fight', shoot['status']
+    assert_equal 'ready', shoot['status']
   end
 
   test 'should get the ship description if hit' do
@@ -75,7 +75,6 @@ class NewShootTest < ActionDispatch::IntegrationTest
     puts shoot
     assert_equal 'submarine', shoot['ship_type']
     assert_equal 'hit', shoot['ship_status']
-    assert_equal 'fight', shoot['status']
   end
 
   test 'should be able to sink the ship' do
@@ -131,8 +130,6 @@ class NewShootTest < ActionDispatch::IntegrationTest
     error = JSON.parse @response.body
     assert_not_nil error
     assert_equal 'All your opponent\'s ships are sunk', error['error'][0]
-    #TODO: wait for other player?
-    assert_equal 'end', shoot['status']
   end
 
 end

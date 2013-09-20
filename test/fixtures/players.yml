@@ -32,3 +32,10 @@ Slawek:
     token: i_have_ships
     won: 0
     lost: 0
+
+PLAYER1:
+    id: 666
+    name: PLAYER1
+    token: player_1_token
+    won: 123
+    lost: 321

@@ -206,6 +206,12 @@ class GameControllerTest < ActionController::TestCase
     assert_equal shoots_count_after, 1 + shoots_count_before
   end
 
+  test 'should not be possible to shoot in bord in game that is not yours' do
+    get :shoot, token: 'player_1_token', id: 4, x: 1, y: 1
+    resp = JSON.parse @response.body
+    assert_equal ['This is not your game'], resp['error'], 'Incorrect error message'
+  end
+
   private
 
   def current_player_board(params)
