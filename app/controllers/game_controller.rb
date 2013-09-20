@@ -33,10 +33,11 @@ class GameController < ApplicationController
   def list
     if params[:status]
       status = params[:status]
-    else
-      status = 'created'
+      games = Game.where status: status
+    elsif params[:forpreview] == 'true'
+      games = Game.where("status = 'fight' OR status = 'end'")
     end
-    games = Game.where status: status
+
     filtered_games = []
     current_player = Player.find_by_token(params[:token])
 

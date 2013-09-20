@@ -26,7 +26,7 @@ class GameControllerTest < ActionController::TestCase
   end
 
   test 'should not list games created by a player' do
-    get :list, token: token
+    get :list, token: token, status: 'created'
     assert @response.success?, 'response failed'
     resp = JSON.parse @response.body
 
@@ -38,7 +38,7 @@ class GameControllerTest < ActionController::TestCase
   end
 
   test 'should list games created by a player' do
-    get :list
+    get :list, status: 'created'
     assert @response.success?, 'response failed'
     resp = JSON.parse @response.body
     contains_players_game=false
@@ -155,7 +155,7 @@ class GameControllerTest < ActionController::TestCase
 
 
   test 'Should list all open games with status \'created\'' do
-    get :list
+    get :list, status: 'created'
     resp = JSON.parse @response.body
     assert @response.success?, 'Game list failed'
     game = JSON.parse @response.body
