@@ -191,25 +191,25 @@ class GameControllerTest < ActionController::TestCase
 
   def params
     {
-        token: token, #current player token
-        id: 2, #game id
-        ships: [{
-                    type: 'submarine', #type of the boat
-                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
-                    variant: 0
-                }]
-    }
+      token: token, #current player token
+      id: 2, #game id
+      ships: [{
+        type: 'submarine', #type of the boat
+        xy: [1, 1], #position of the boat (we assume game size is 10x10)
+        variant: 0
+      }]
+  }
   end
 
   def params_with_invalid_token
     {
-        token: invalid_token,
-        id: 2, #game id
-        ships: [{
-                    type: 'submarine', #type of the boat
-                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
-                    variant: 0
-                }]
+      token: invalid_token,
+      id: 2, #game id
+      ships: [{
+        type: 'submarine', #type of the boat
+        xy: [1, 1], #position of the boat (we assume game size is 10x10)
+        variant: 0
+      }]
     }
   end
 
@@ -218,9 +218,9 @@ class GameControllerTest < ActionController::TestCase
     offset= 0
     ShipModels::SHIP_MODELS.each do |t, st|
       ships.push ({
-          type: t.to_s,
-          xy: [offset, 1],
-          variant: 0
+        type: t.to_s,
+        xy: [offset, 1],
+        variant: 0
       })
       offset += 10
     end
