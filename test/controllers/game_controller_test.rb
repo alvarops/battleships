@@ -26,7 +26,7 @@ class GameControllerTest < ActionController::TestCase
   end
 
   test 'should not list games created by a player' do
-    get :list, token: token
+    get :list, token: token, status: 'created'
     assert @response.success?, 'response failed'
     resp = JSON.parse @response.body
 
@@ -38,7 +38,7 @@ class GameControllerTest < ActionController::TestCase
   end
 
   test 'should list games created by a player' do
-    get :list
+    get :list, status: 'created'
     assert @response.success?, 'response failed'
     resp = JSON.parse @response.body
     contains_players_game=false
@@ -96,6 +96,30 @@ class GameControllerTest < ActionController::TestCase
     assert hasTwoPlayers, 'unable to find a second player'
   end
 
+  test 'shoud list the finished games' do
+    get :list, status: 'end'
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    finished = Game.where status: 'end'
+    assert_equal resp.length, finished.length, 'Incorrect number of finished games'
+  end
+
+  test 'shoud list the ongoing games' do
+    get :list, status: 'fight'
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    finished = Game.where status: 'fight'
+    assert_equal resp.length, finished.length, 'Incorrect number of ongoing games'
+  end
+
+  test 'shoud list the ready games' do
+    get :list, status: 'ready'
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    finished = Game.where status: 'ready'
+    assert_equal resp.length, finished.length, 'Incorrect number of ready games'
+  end
+
   test 'should get error when joining non-existing game' do
     get :join, id: 666, token: token_fred
     resp = JSON.parse @response.body
@@ -130,7 +154,7 @@ class GameControllerTest < ActionController::TestCase
 
 
   test 'Should list all open games with status \'created\'' do
-    get :list
+    get :list, status: 'created'
     resp = JSON.parse @response.body
     assert @response.success?, 'Game list failed'
     game = JSON.parse @response.body
@@ -181,6 +205,12 @@ class GameControllerTest < ActionController::TestCase
     assert_equal shoots_count_after, 1 + shoots_count_before
   end
 
+  test 'should not be possible to shoot in bord in game that is not yours' do
+    get :shoot, token: 'player_1_token', id: 4, x: 1, y: 1
+    resp = JSON.parse @response.body
+    assert_equal ['This is not your game'], resp['error'], 'Incorrect error message'
+  end
+
   private
 
   def current_player_board(params)
@@ -226,9 +256,9 @@ class GameControllerTest < ActionController::TestCase
     end
 
     {
-      token: 'fpq3hjf-q39jhg-q304hgr20',
-      id: 5,
-      ships: ships
+        token: 'fpq3hjf-q39jhg-q304hgr20',
+        id: 5,
+        ships: ships
     }
   end
 

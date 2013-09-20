@@ -15,9 +15,9 @@ class GetGameStatsTest < ActionDispatch::IntegrationTest
   test 'should return list of shots' do
     get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 6}
     get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 7}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
     get 'i_have_no_ships/game/4/shoot', {:x => 3, :y => 5}
-    assert_equal '201', @response.code
+    assert_equal '200', @response.code
     shoot = JSON.parse @response.body
     assert_not_nil shoot
     assert_equal 'submarine', shoot['ship_type']
