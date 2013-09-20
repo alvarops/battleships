@@ -68,7 +68,7 @@ class GameController < ApplicationController
     end
 
     render json: game.to_json({include: {
-                                players: {
+                                 players: {
                                    except:  [:token]},
                                  boards: {
                                    include: [:shoots]}}})
