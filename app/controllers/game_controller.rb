@@ -67,18 +67,11 @@ class GameController < ApplicationController
       return
     end
 
-    #TODO: add game status
-    render json: game.to_json(:include => [:players, :boards => {:include => [:shoots]}])
-    # render json: game.to_json(:include => [:players => {:except => :token}, :boards => {:include => :ships}])
-    #render json: game.to_json(:include => {:players => {:except => :token},
-    #                                       :boards  => {:include => {
-    #                                           :ships => {
-    #                                               :include => [:positions]
-    #                                           },
-    #                                           :shoots => {
-    #                                               :include => [:x, :y]
-    #                                           }
-    #                                       }}})
+    render json: game.to_json(:include => {
+                                :players => {
+                                  :except =>  [:token]},
+                                :boards => {
+                                  :include => [:shoots]}})
   end
 
   def set
