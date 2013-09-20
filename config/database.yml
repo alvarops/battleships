@@ -10,11 +10,11 @@ development:
   timeout: 5000
 
 development_mysql:
-    host: localhost
+    host: aa1gsl7tyu89ff0.czxbao8msedn.eu-west-1.rds.amazonaws.com
     adapter: mysql2
     database: battleships_dev
-    username: ships
-    password: ships
+    username: ebroot
+    password: b4ttl3sh1ps
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
