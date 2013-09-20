@@ -67,11 +67,11 @@ class GameController < ApplicationController
       return
     end
 
-    render json: game.to_json(:include => {
-                                :players => {
-                                  :except =>  [:token]},
-                                :boards => {
-                                  :include => [:shoots]}})
+    render json: game.to_json({include: {
+                                players: {
+                                   except:  [:token]},
+                                 boards: {
+                                   include: [:shoots]}}})
   end
 
   def set
