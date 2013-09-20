@@ -11,12 +11,19 @@ ul li {list-style:none;}
 
 .body{margin:auto; max-width:1200px; width:100%;}
 
-.playerContainer{float:left; width:40%;margin:2em;}
+.form-signin {width: 350px;margin: 0 auto;text-align: center}
+.form-signin input {display: block;width:100%;margin-bottom:10px;}
+
+
+/* HERE STARTS OLD CSS */
+
+.playerContainer{float:left; margin:2em;}
+.playerContainer > ul {display:none;}
 
 
 .board{border-collapse: collapse;margin:1em;}
 .board td{border:1px solid #ccc;}
-.board div{width:20px; height:20px;}
+.board div{width:5px; height:5px;}
 .board .hit{background-color:orange;}
 .board .miss{background-color:#ccccff;}
 .board .hitsunk{background-color:red;}
@@ -32,8 +39,8 @@ ul li {list-style:none;}
 }
 
 .available-ships li {
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
     background-color: #ccc;
     float: left;
 }
@@ -41,7 +48,7 @@ ul li {list-style:none;}
     background-color: black;
 }
 .available-ships ul {
-    width: 80px;
+    width: 40px;
     float: left;
     margin: 5px;
 }
