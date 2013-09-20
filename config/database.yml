@@ -9,6 +9,13 @@ development:
   pool: 5
   timeout: 5000
 
+development_amazon:
+    host: aa1vfmgxhe4lg6p.czxbao8msedn.eu-west-1.rds.amazonaws.com 
+    adapter: mysql2
+    database: battleships_dev
+    username: ebroot
+    password: b4ttl3sh1p
+
 development_mysql:
     host: localhost
     adapter: mysql2

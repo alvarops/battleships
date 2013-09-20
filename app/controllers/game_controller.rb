@@ -116,8 +116,14 @@ class GameController < ApplicationController
     end
 
     board.randomize
+    opponent_board = game.opponent_board @current_player.id
+    if opponent_board && opponent_board.ships.length == board.ships.length
+      game.status = 'fight'
+      game.save
+    end
+
     #TODO: add a new board in response
-    render json: game.to_json(:include => {:players => {:except => :token}}), board: board.ships
+    render json: game.to_json(:include => [:players => {:except => :token}, board: board.ships])
   end
 
   def shoot

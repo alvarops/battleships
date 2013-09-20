@@ -49,7 +49,10 @@ $(function () {
                     console.log("List of available games");
                     that.body.empty();
                     $.each(response, function () {
-                        var player1 = this.players[0].name;
+                        var player1 = 'NO PLAYERS';
+                        if (typeof this.players !== 'undefined' && this.players.length > 0) {
+                            player1 = this.players[0].name;
+                        }
                         that.body.append($("<div class='game'>").append($('<button>', {value: this.id, text: 'Join'}))
                             .append("<p>Created by: " + player1 + "</p><p>Game Id= " + this.id + "</p><p>" + this.created_at + "</p>"));
                     });
