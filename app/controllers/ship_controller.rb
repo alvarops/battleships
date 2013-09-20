@@ -1,5 +1,5 @@
 class ShipController < ApplicationController
   def list
-    render json: ShipShapes::SHIP_TYPES
+    render json: ShipModels::SHIP_MODELS
   end
 end

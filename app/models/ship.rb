@@ -1,7 +1,6 @@
-require 'ship_shapes'
-
 class Ship < ActiveRecord::Base
-  include ShipShapes
+  include ShipModels
+
   has_many :positions, dependent: :delete_all
 
   belongs_to :board
@@ -16,45 +15,15 @@ class Ship < ActiveRecord::Base
     write_attribute(:t, value.to_s)
   end
 
-  def self.generate_randomly(type, width, height)
-    ship = Ship.new :t => type
-    variants = ShipShapes::SHIP_TYPES[type.to_sym]
-    coordinates = variants.sample
-    start_x = Random.new.rand(0..width-(ship_width coordinates))
-    start_y = Random.new.rand(0..height-(ship_height coordinates))
-
-    coordinates.each do |c|
-      p = Position.new :x => c[:x] + start_x, :y => c[:y] + start_y
-      ship.positions.push p
-    end
-
-    ship
+  def width
+    1 + (max_value_in_hash self.positions, 'x')
   end
 
-  def self.generate(type, x, y, variant = 0)
-
-    ship = Ship.new t: type.to_sym
-
-    variants = ShipShapes::SHIP_TYPES[type.to_sym]
-    coordinates = variants[variant.to_i]
-
-    coordinates.each do |c|
-      p = Position.new x: (c[:x] + x.to_i), y: (c[:y] + y.to_i)
-      ship.positions.push p
-    end
-
-    ship
+  def height
+    1 + (max_value_in_hash self.positions, 'y')
   end
 
-  def self.ship_width(p)
-    1 + (max_value_in_hash p, 'x')
-  end
-
-  def self.ship_height(p)
-    1 + (max_value_in_hash p, 'y')
-  end
-
-  def print_ship(board_width=20, board_height=20)
+  def print_ship (board_width = 20, board_height = 20)
     #puts self.t
     board_height.times do |y|
       row=''
@@ -89,15 +58,4 @@ class Ship < ActiveRecord::Base
     return :clear
   end
 
-  private
-
-  def self.max_value_in_hash(p, key)
-    max = 0
-    p.each do |pos|
-      if (pos[key.to_sym] > max)
-        max = pos[key.to_sym]
-      end
-    end
-    max
-  end
 end

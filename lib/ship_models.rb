@@ -1,5 +1,24 @@
-module ShipShapes
-  SHIP_TYPES = {
+module ShipModels
+
+  def ship_model_width(p)
+    1 + (max_value_in_hash p, 'x')
+  end
+
+  def ship_model_height(p)
+    1 + (max_value_in_hash p, 'y')
+  end
+
+  def max_value_in_hash(p, key)
+    max = 0
+    p.each do |pos|
+      if (pos[key.to_sym] > max)
+        max = pos[key.to_sym]
+      end
+    end
+    max
+  end
+
+  SHIP_MODELS = {
     carrier: [
       [
         {x: 0, y: 0},

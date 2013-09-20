@@ -1,8 +1,10 @@
 require 'test_helper'
-require 'ship_shapes'
+require 'ship_models'
 
 class ShipTest < ActiveSupport::TestCase
-  include ShipShapes
+  include ShipModels
+  include ShipHelper
+
   test 'should create ship' do
     ship = Ship.create do |s|
       s.t = 'submarine'
@@ -19,13 +21,13 @@ class ShipTest < ActiveSupport::TestCase
   end
 
   test 'ship width and height functions' do
-    s = ShipShapes::SHIP_TYPES[:battleship].first
-    assert (Ship::ship_height s)==4, 'incorect Ship height'
-    assert (Ship::ship_width s)==1, 'incorrect ship width'
+    s = ShipModels::SHIP_MODELS[:battleship].first
+    assert (ship_model_height s) == 4, 'incorect Ship height'
+    assert (ship_model_width  s) == 1, 'incorrect ship width'
 
-    s = ShipShapes::SHIP_TYPES[:patrol].second
-    assert (Ship::ship_height s)==1, 'incorect Ship height'
-    assert (Ship::ship_width s)==2, 'incorrect ship width'
+    s = ShipModels::SHIP_MODELS[:patrol].second
+    assert (ship_model_height s) == 1, 'incorect Ship height'
+    assert (ship_model_width  s) == 2, 'incorrect ship width'
   end
 
   test 'ships can have only certain types' do
@@ -49,8 +51,8 @@ class ShipTest < ActiveSupport::TestCase
     board_width = Random.new.rand(20..30)
     board_height = Random.new.rand(20..30)
 
-    ShipShapes::SHIP_TYPES.each do |t, v|
-      s = Ship.generate_randomly t, board_width, board_height
+    ShipModels::SHIP_MODELS.each do |t, v|
+      s = generate_ship_randomly t, board_width, board_height
       #s.print_ship board_height, board_width
       s.positions.each do |p|
         assert (p.x>=0 && p.x <= board_width && p.y>=0 && p.y <= board_height), 'Ship is NOT on a board ' + t.to_s + ' ' + s.to_json
@@ -59,7 +61,7 @@ class ShipTest < ActiveSupport::TestCase
   end
 
   test 'place ship on board' do
-    ship = Ship.generate 'cruiser', 0, 0, 0
+    ship = generate_ship 'cruiser', 0, 0, 0
 
     assert_equal 3, ship.positions.size
 

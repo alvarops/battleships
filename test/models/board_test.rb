@@ -33,7 +33,7 @@ class BoardTest < ActiveSupport::TestCase
 
   def mock_board
     Board.create do |b|
-      b.game_id = 1234 #game_id must not be null
+      b.game_id   = 1234 #game_id must not be null
       b.player_id = 1234 #palyer_id must not be null
     end
   end

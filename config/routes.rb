@@ -17,6 +17,7 @@ Battleships::Application.routes.draw do
   get  ':token/game/list',    to: 'game#list'
   get  '/game/',    to: 'game#list'
   get  ':token/game/:id',     to: 'game#stats'
+  get  ':token/game/:id/join',     to: 'game#join'
   get  ':token/game/:id/show',     to: 'game#show'
 
   get  ':token/game/:id/set', to: 'game#set'  #you can do ?ships=[<json array here>]

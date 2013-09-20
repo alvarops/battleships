@@ -128,12 +128,6 @@ class GameTest < ActiveSupport::TestCase
     end
   end
 
-  test 'Should list all open games with status \'created\'' do
-    games = Game.where status: 'created'
-
-    assert_equal 2, games.size
-  end
-
   test 'For created game, should return current player board and opponent\'s board too' do
     players = []
 

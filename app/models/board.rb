@@ -1,4 +1,6 @@
 class Board < ActiveRecord::Base
+  include ShipHelper
+
   belongs_to :game
   belongs_to :player
 
@@ -10,21 +12,34 @@ class Board < ActiveRecord::Base
 
   def randomize
     self.ships.destroy_all
-    ShipShapes::SHIP_TYPES.keys.each do |type|
+    ShipModels::SHIP_MODELS.keys.each do |type|
       generate_new_ship type
     end
   end
 
-  def can_place? new_ship
-    self.ships.each do |existing_ship|
-      return false if new_ship.collide? existing_ship
+  def can_place?(new_ship)
+    if collide_with_others?(new_ship) or is_out_of_the_board?(new_ship)
+      return false
     end
     true
   end
 
   private
 
-  def valid_ships(board=self)
+  def collide_with_others?(ship)
+    self.ships.each do |existing_ship|
+      return true if ship.collide? existing_ship
+    end
+    false
+  end
+
+  def is_out_of_the_board?(ship)
+    max_x = ship.positions.map(&:x).max
+    max_y = ship.positions.map(&:y).max
+    max_x > self.game.width or max_y > self.game.height
+  end
+
+  def valid_ships
     self.ships.each do |ship1|
       self.ships.each do |ship2|
         if (ship1 <=> ship2) && (ship1.collide? ship2)
@@ -36,7 +51,7 @@ class Board < ActiveRecord::Base
   end
 
   def generate_new_ship(type)
-    s = Ship.generate_randomly(type, self.game.width, self.game.height)
+    s = generate_ship_randomly(type, self.game.width, self.game.height)
     self.ships.each do |ship|
       if ship.collide? s
         return generate_new_ship type

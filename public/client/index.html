@@ -3,7 +3,7 @@
 <head>
     <title>Battleship turnament on AOL - Example Game client</title>
     <link href='http://fonts.googleapis.com/css?family=Electrolize' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="../ui/css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
 <div class="mainCnt">
@@ -11,8 +11,10 @@
         <h1>Battleship Client</h1>
         <ul class="menu">
             <li><a href="#" id="menuCreateGame">Start new game</a></li>
-            <li><a href="#" id="menuListGames">List games</a></li>
-            <li><a href="#" id="menuApi">API documentation</a></li>
+            <li><a href="#" id="menuListOpenGames">List of games I can join</a></li>
+            <li><a href="#" id="menuListAllGames">List All games</a></li>
+            <li><a target="_new" href="https://docs.google.com/document/d/1iwjkFx5h3VZUvdAOK9Gryzs0Y7uPgobIVwfs-OBnBdo/edit?usp=sharing" id="menuApi">API documentation</a></li>
+            <li class="right"><a href="#" id="menuLogIn">Sign In</a></li>
         </ul>
         <div class="clear"></div>
     </div>
@@ -23,6 +25,7 @@
 
     </div>
     <script src="../ui/js/jquery.js"></script>
+    <script src="../ui/js/jquery.cookie.js"></script>
     <script src="client.js"></script>
 </div>
 </body>

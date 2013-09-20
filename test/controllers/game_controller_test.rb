@@ -18,6 +18,49 @@ class GameControllerTest < ActionController::TestCase
     assert_equal player.id, game_player.id
   end
 
+  test 'shoud return error when try to create a new game with invalid token' do
+    get :new, token: invalid_token
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    assert_equal 'Unknown Token', resp['error'], 'Incorrect error msg'
+  end
+
+  test 'should not list games created by a player' do
+    get :list, token: token
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+
+    resp.each do |game|
+      game['players'].each do |p|
+        assert_not_equal p['id'], 12345, 'game list contains games created by player with id= 12345'
+      end
+    end
+  end
+
+  test 'should list games created by a player' do
+    get :list
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    contains_players_game=false
+    resp.each do |game|
+      game['players'].each do |p|
+        puts p
+        if p['id'] == 12345
+          contains_players_game =true
+        end
+      end
+    end
+
+    assert contains_players_game, 'game list DOES NOT contain games created by player with id= 12345'
+  end
+
+  test 'shoud return error when try to place a ship on board with invalid token' do
+    get :set, params_with_invalid_token
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    assert_equal 'Unknown Token', resp['error'], 'Incorrect error msg'
+  end
+
   test 'GET #new - Board size should not be bigger than expected' do
     20.times do
       games_count_before = Game.all.size
@@ -30,6 +73,41 @@ class GameControllerTest < ActionController::TestCase
       assert board_size <= (GameController::MAX_NUMBER_OF_PIXELS + GameController::VARIABLE_SIZE * created_game.width), 'Game board is too big. Size=' + board_size.to_s + " W=" + created_game.width.to_s + " H=" + created_game.height.to_s
       assert board_size >= (GameController::MAX_NUMBER_OF_PIXELS - (1 + GameController::VARIABLE_SIZE) * created_game.width), 'Game board is too small. Size=' + board_size.to_s + " W=" + created_game.width.to_s + " H=" + created_game.height.to_s
     end
+  end
+
+  test 'should be able to join existing game and game status should be changed to "ready"' do
+    get :join, id: 10, token: token_fred
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME JOIN'
+    assert_equal 'You joined the game with ID=10', resp['msg'], 'unexpected join game response'
+
+    get :stats, id: 10
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME SHOW'
+
+    hasTwoPlayers = false
+    assert_equal 2, resp['players'].length, 'number of players is not equal 2'
+    assert_equal 'ready', resp['status'], 'Game status is wrong'
+
+    resp['players'].each do |p|
+      if p['id']== id_fred
+        hasTwoPlayers = true
+      end
+    end
+    assert hasTwoPlayers, 'unable to find a second player'
+  end
+
+  test 'should get error when joining non-existing game' do
+    get :join, id: 666, token: token_fred
+    resp = JSON.parse @response.body
+    assert_equal 'Unable to find game', resp['error'], 'unexpected join game error response'
+  end
+
+  test 'should return error when requesting game status for non-existing game' do
+    get :stats, id: 666
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    resp = JSON.parse @response.body
+    assert_equal 'Unable to find game', resp['error'], 'Incorrect error response'
   end
 
   test 'GET #new Create game and join a second player with a single request' do
@@ -51,6 +129,18 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 12346, second_game_player.id, 'Second player ID incorrect'
   end
 
+
+  test 'Should list all open games with status \'created\'' do
+    get :list
+    resp = JSON.parse @response.body
+    assert @response.success?, 'Game list failed'
+    game = JSON.parse @response.body
+
+    games_in_db = Game.where status: 'created'
+
+    assert_equal game.length, games_in_db.size, 'Number of games doesn\'t mach whats in db'
+  end
+
   test 'POST #set' do
     post :set, params
 
@@ -67,7 +157,7 @@ class GameControllerTest < ActionController::TestCase
   test 'POST #set, multiple ships' do
     post :set, params_multiple
 
-    player_board = current_player_board(params)
+    player_board = current_player_board(params_multiple)
 
     assert_equal 18, player_board.ships.size
     assert_equal 3, player_board.ships.find_by(t: :submarine).positions.size
@@ -75,19 +165,12 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 5, player_board.ships.find_by(t: :carrier).positions.size
   end
 
-  test 'POST #set, after settings all required ships game changes to ready' do
-
-  end
-
-
   test 'GET #set, ship has to have right size' do
     post :set, params
 
     game = Game.find(params[:id])
 
     assert_equal 1, game.player_board(12345).ships.size
-
-
   end
 
   test 'GET #shoot, {x, y}' do
@@ -109,31 +192,43 @@ class GameControllerTest < ActionController::TestCase
 
   def params
     {
-      token: token, #current player token
-      id: 2, #game id
-      ships: [{
-        type: 'submarine', #type of the boat
-        xy: [1, 1], #position of the boat (we assume game size is 10x10)
-        variant: 0
-      }]
+        token: token, #current player token
+        id: 2, #game id
+        ships: [{
+                    type: 'submarine', #type of the boat
+                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
+                    variant: 0
+                }]
+    }
+  end
+
+  def params_with_invalid_token
+    {
+        token: invalid_token,
+        id: 2, #game id
+        ships: [{
+                    type: 'submarine', #type of the boat
+                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
+                    variant: 0
+                }]
     }
   end
 
   def params_multiple
     ships = []
     offset= 0
-    ShipShapes::SHIP_TYPES.each do |t, st|
+    ShipModels::SHIP_MODELS.each do |t, st|
       ships.push ({
-        type: t.to_s,
-        xy: [offset, 1],
-        variant: 0
+          type: t.to_s,
+          xy: [offset, 1],
+          variant: 0
       })
       offset += 10
     end
 
     {
-      token: token,
-      id: 2,
+      token: 'fpq3hjf-q39jhg-q304hgr20',
+      id: 5,
       ships: ships
     }
   end
