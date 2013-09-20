@@ -1,35 +1,38 @@
 Battleships::Application.routes.draw do
 
-  get  '/ship/list',         to: 'ship#list'
-  get  '/player/new',         to: 'player#new'
-  post '/player/new',         to: 'player#new'
-  get '/player/list',         to: 'player#list'
+  get '/ship/list', to: 'ship#list'
+  get '/player/new', to: 'player#new'
+  post '/player/new', to: 'player#new'
+  get '/player/list', to: 'player#list'
 
-  get  '/player/:id',   to: 'player#stats'
-  get  ':token/player/:id',   to: 'player#stats'
-  get  ':token/mystats',   to: 'player#my_stats'
+  get '/player/:id', to: 'player#stats'
+  get ':token/player/:id', to: 'player#stats'
+  get ':token/mystats', to: 'player#my_stats'
 
-  get  ':token/game/new',     to: 'game#new'
-  get  ':token/game/new/:secondPlayerId',     to: 'game#new'
-  get  '/game/:id/stats',     to: 'game#stats'
-  get  ':token/game/:id/stats',     to: 'game#stats'
-  get  '/game/list',    to: 'game#list'
-  get  ':token/game/list',    to: 'game#list'
-  get  '/game/',    to: 'game#list'
-  get  ':token/game/:id',     to: 'game#stats'
-  get  ':token/game/:id/join',     to: 'game#join'
-  get  ':token/game/:id/show',     to: 'game#show'
+  get ':token/game/new', to: 'game#new'
+  get ':token/game/new/:secondPlayerId', to: 'game#new'
+  get '/game/:id/stats', to: 'game#stats'
+  get ':token/game/:id/stats', to: 'game#stats'
+  get '/game/list', to: 'game#list'
+  get '/game/listfinished', to: 'game#list', status: 'end'
+  get '/game/listongoing', to: 'game#list', status: 'fight'
+  get '/game/listready', to: 'game#list', status: 'ready'
+  get ':token/game/list', to: 'game#list'
+  get '/game/', to: 'game#list'
+  get ':token/game/:id', to: 'game#stats'
+  get ':token/game/:id/join', to: 'game#join'
+  get ':token/game/:id/show', to: 'game#show'
 
-  get  ':token/game/:id/set', to: 'game#set'  #you can do ?ships=[<json array here>]
+  get ':token/game/:id/set', to: 'game#set' #you can do ?ships=[<json array here>]
   post ':token/game/:id/set', to: 'game#set'
 
-  get  ':token/game/:id/randomize', to: 'game#randomize'
+  get ':token/game/:id/randomize', to: 'game#randomize'
   post ':token/game/:id/randomize', to: 'game#randomize'
 
-  get  ':token/game/:id/shoot', to: 'game#shoot'
+  get ':token/game/:id/shoot', to: 'game#shoot'
 
 
-  get  '/error', to: 'error#show'
+  get '/error', to: 'error#show'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -71,7 +74,7 @@ Battleships::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'

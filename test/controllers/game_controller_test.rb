@@ -97,6 +97,30 @@ class GameControllerTest < ActionController::TestCase
     assert hasTwoPlayers, 'unable to find a second player'
   end
 
+  test 'shoud list the finished games' do
+    get :list, status: 'end'
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    finished = Game.where status: 'end'
+    assert_equal resp.length, finished.length, 'Incorrect number of finished games'
+  end
+
+  test 'shoud list the ongoing games' do
+    get :list, status: 'fight'
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    finished = Game.where status: 'fight'
+    assert_equal resp.length, finished.length, 'Incorrect number of ongoing games'
+  end
+
+  test 'shoud list the ready games' do
+    get :list, status: 'ready'
+    resp = JSON.parse @response.body
+    assert @response.success?, 'unsuccessful response from GAME STATUS'
+    finished = Game.where status: 'ready'
+    assert_equal resp.length, finished.length, 'Incorrect number of ready games'
+  end
+
   test 'should get error when joining non-existing game' do
     get :join, id: 666, token: token_fred
     resp = JSON.parse @response.body
@@ -227,9 +251,9 @@ class GameControllerTest < ActionController::TestCase
     end
 
     {
-      token: 'fpq3hjf-q39jhg-q304hgr20',
-      id: 5,
-      ships: ships
+        token: 'fpq3hjf-q39jhg-q304hgr20',
+        id: 5,
+        ships: ships
     }
   end
 
