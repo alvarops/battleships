@@ -24,7 +24,6 @@ class Ship < ActiveRecord::Base
   end
 
   def print_ship (board_width = 20, board_height = 20)
-    #puts self.t
     board_height.times do |y|
       row=''
       board_width.times do |x|
@@ -36,7 +35,6 @@ class Ship < ActiveRecord::Base
         end
         row += pixel ? '[]' : '.^'
       end
-      #puts row
     end
   end
 
