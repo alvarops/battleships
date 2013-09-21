@@ -33,6 +33,12 @@ class ShipTest < ActiveSupport::TestCase
   test 'ships can have only certain types' do
     ship = Ship.new
     ship.board_id = 1 #fake
+
+    ShipModels::SHIP_MODELS.each do |type|
+      ship.t = type[0]
+      assert_equal true, ship.save
+    end
+
     ship.t = 'submarine'
     assert_equal true, ship.save
     ship.t = 'carrier'
