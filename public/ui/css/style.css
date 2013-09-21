@@ -17,7 +17,9 @@ ul li {list-style:none;}
 .playerContainer > ul {display:none;}
 
 
-.board {border-collapse: collapse;margin:1em;overflow:hidden;}
+.board {border-collapse: collapse;margin:1em;overflow:hidden;border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-color: #ccc;}
 .board td{border:1px solid #ccc;}
 .board div{width:5px; height:5px;}
 .board .hit{background-color:orange;}
@@ -38,5 +40,7 @@ ul li {list-style:none;}
 .available-ships li.shape {background-color: black;}
 .available-ships ul {width: 40px;float: left;margin: 5px;}
 .available-ships ul.dragging {opacity: 0.3;}
+
+
 
 

@@ -11,12 +11,12 @@ class GameController < ApplicationController
   VARIABLE_SIZE=1
 
   def new
-    game = Game.create
     player = Player.find_by_token(params[:token])
     if player.nil?
       render json: {error: 'Unknown Token'}
       return
     end
+    game = Game.create
     game.players.push player
     game.width = Random.new.rand(MIN_WIDTH..MAX_WIDTH)
     max_height = MAX_NUMBER_OF_PIXELS / game.width
