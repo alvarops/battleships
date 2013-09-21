@@ -3,7 +3,7 @@ require 'test_helper'
 class GameStatusTest < ActionDispatch::IntegrationTest
 
 
-  test 'full end to end test' do
+  test 'full end to end test with randomized ships' do
     player1, player2 = create_and_verify_players()
     game = create_and_verify_game(player1)
     join_game(game, player2)
@@ -17,11 +17,59 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player2, 'fight')
   end
 
+  test 'full end to end test with 1 manually set and 1 randomized board' do
+    player1, player2 = create_and_verify_players()
+    game = create_and_verify_game(player1)
+    join_game(game, player2)
+
+    request_and_verify_game_status(game, player2, 'ready')
+
+    randomize_ships(game, player1)
+    request_and_verify_game_status(game, player1, 'ready')
+
+    set_ships_manually(game, player2)
+    request_and_verify_game_status(game, player2, 'fight')
+  end
+
+  test 'full end to end test with 1 randomized and 1 manually set board' do
+    player1, player2 = create_and_verify_players()
+    game = create_and_verify_game(player1)
+    join_game(game, player2)
+
+    request_and_verify_game_status(game, player2, 'ready')
+
+    set_ships_manually(game, player1)
+    request_and_verify_game_status(game, player1, 'ready')
+
+    randomize_ships(game, player2)
+    request_and_verify_game_status(game, player2, 'fight')
+  end
+
+  test 'full end to end test with 2 manually set boards' do
+    player1, player2 = create_and_verify_players()
+    game = create_and_verify_game(player1)
+    join_game(game, player2)
+
+    request_and_verify_game_status(game, player2, 'ready')
+
+    set_ships_manually(game, player1)
+    request_and_verify_game_status(game, player1, 'ready')
+
+    set_ships_manually(game, player2)
+    request_and_verify_game_status(game, player2, 'fight')
+  end
+
+
   private
+
+  def set_ships_manually(game, player2)
+    # code here
+  end
 
   def resp_body
     JSON.parse @response.body
   end
+
 
   def resp
     @response
@@ -66,20 +114,20 @@ class GameStatusTest < ActionDispatch::IntegrationTest
   end
 
   def verify_player(player, name)
-    assert_equal 201,  resp.status
+    assert_equal 201, resp.status
     assert_equal name, player['name']
-    assert_equal 22,   player['token'].length
-    assert_equal 0,    player['won']
-    assert_equal 0,    player['lost']
-    assert_not_nil     player['id']
+    assert_equal 22, player['token'].length
+    assert_equal 0, player['won']
+    assert_equal 0, player['lost']
+    assert_not_nil player['id']
   end
 
   def verify_game(game, status, no_of_players)
     assert_equal 200, resp.status
     assert_equal status, game['status'], 'Incorrect game status'
-    assert game['width']  > 0
+    assert game['width'] > 0
     assert game['height'] > 0
-    assert game['id']     > 0
+    assert game['id'] > 0
     assert_equal no_of_players, game['players'].length
   end
 
@@ -92,7 +140,7 @@ class GameStatusTest < ActionDispatch::IntegrationTest
 
     players = game['players']
 
-    assert_equal 2,    players.length
+    assert_equal 2, players.length
     verify_game_player players[0], 'P1'
     verify_game_player players[1], 'P2'
 
@@ -106,15 +154,15 @@ class GameStatusTest < ActionDispatch::IntegrationTest
 
   def verify_game_player(player, name)
     assert_equal name, player['name']
-    assert_nil         player['token'] #token cannot be exposed in the game satus
-    assert_not_nil     player['id']
-    assert_equal 0,    player['won']
-    assert_equal 0,    player['lost']
+    assert_nil player['token'] #token cannot be exposed in the game satus
+    assert_not_nil player['id']
+    assert_equal 0, player['won']
+    assert_equal 0, player['lost']
   end
 
   def verify_board(board, player_id, game_id)
     assert_not_nil board['id']
     assert_equal player_id, board['player_id']
-    assert_equal game_id,   board['game_id']
+    assert_equal game_id, board['game_id']
   end
 end
