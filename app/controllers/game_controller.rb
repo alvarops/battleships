@@ -80,16 +80,26 @@ class GameController < ApplicationController
 
       new_ships = params[:ships]
 
+
+      if new_ships.nil?
+        render json: {error: "'ships' param is missing"}
+        return
+      end
+
+      if new_ships && !new_ships.is_a?(Array)
+        new_ships = JSON.parse(new_ships)
+      end
+
       new_ships.each do |new_ship|
-        type = new_ship[:type]
+        type = new_ship['type']
 
         if ShipModels::SHIP_MODELS[type.to_sym].nil?
           render json: {error: "#{type} ship type is not allowed"}
           return
         end
 
-        x = new_ship[:xy][0]
-        y = new_ship[:xy][1]
+        x = new_ship['xy'][0]
+        y = new_ship['xy'][1]
         variant = new_ship[:variant]
 
         if ShipModels::SHIP_MODELS[type.to_sym][variant.to_i].nil?
@@ -103,7 +113,7 @@ class GameController < ApplicationController
           player_board.ships.push ship
           player_board.save
         else
-          redirect_to :error
+          render json: {error: 'your ship CAN NOT be placed on the board. It collides with others or is out of the board'}
           return
         end
       end
@@ -145,11 +155,11 @@ class GameController < ApplicationController
       if shoot.save
         render_shoot(shoot)
       else
-        @out = {json: shoot.errors, status: :bad_request}
+        @out = {json: shoot.errors}
       end
 
     else
-      @out = {json: {error: ['There is no opponent']}, status: :bad_request}
+      @out = {json: {error: ['There is no opponent']}}
     end
 
     render json: @out[:json], status: @out[:status]

@@ -5,7 +5,7 @@ class Board < ActiveRecord::Base
   belongs_to :player
 
   has_many :ships
-  has_many :shoots, -> {order 'created_at'}
+  has_many :shoots, -> { order 'created_at' }
 
   validates_uniqueness_of :player_id, :scope => :game_id
   validate :valid_ships
@@ -18,13 +18,21 @@ class Board < ActiveRecord::Base
   end
 
   def can_place?(new_ship)
-    if collide_with_others?(new_ship) or is_out_of_the_board?(new_ship)
+    if collide_with_others?(new_ship) or is_out_of_the_board?(new_ship) or already_exist?(new_ship)
       return false
     end
     true
   end
 
+
   private
+
+  def already_exist?(ship)
+    self.ships.each do |existing_ship|
+      return true if ship.t existing_ship.t
+    end
+    false
+  end
 
   def collide_with_others?(ship)
     self.ships.each do |existing_ship|

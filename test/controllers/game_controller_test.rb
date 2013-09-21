@@ -196,6 +196,14 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 1, game.player_board(12345).ships.size
   end
 
+  test 'user token is not returned in the SET request' do
+    post :set, params
+
+    resp = JSON.parse @response.body
+    assert resp['players'][0]['token'].nil?,'User token is in the response'
+
+  end
+
   test 'GET #shoot, {x, y}' do
     shoots_count_before = Shoot.all.size
 
@@ -217,14 +225,40 @@ class GameControllerTest < ActionController::TestCase
     gameId = resp['id']
     assert_not_nil gameId, 'Game ID not found'
     get :set, token: token, id: gameId, ships: [{
-                                                    type: 'unknown',
+                                                    type: 'patrol',
+                                                    xy: [0, 0],
+                                                    variant: 0
+                                                }]
+    assert @response.success?, 'Set request Failed'
+    resp = JSON.parse @response.body
+
+    assert resp['error'].nil?, 'Unexpected an error message'
+
+    get :set, token: token, id: gameId, ships: [{
+                                                    type: 'patrol',
                                                     xy: [10, 10],
                                                     variant: 0
                                                 }]
     assert @response.success?, 'Set request Failed'
     resp = JSON.parse @response.body
-    assert_equal 'unknown ship type is not allowed', resp['error'], 'Expected an error message'
+
+    assert resp['error'], 'Expected an error message'
   end
+
+
+  test 'should get an error msg when issue an incorrect SET request' do
+    get :new, token: token
+    resp = JSON.parse @response.body
+    gameId = resp['id']
+    assert_not_nil gameId, 'Game ID not found'
+    get :set, token: token, id: gameId
+
+    assert @response.success?, 'Set request Failed'
+    resp = JSON.parse @response.body
+    puts resp
+    assert_equal '\'ships\' param is missing', resp['error'], 'Unexpected an error message'
+  end
+
 
   test 'should not be possible to set ship in non-existing variant' do
     get :new, token: token
@@ -241,7 +275,7 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 'patrol ship type in variant 4 is not allowed', resp['error'], 'Expected an error message'
   end
 
-  test 'should not be possible to set not defined ship type' do
+  test 'should not be possible to set undefined ship type' do
     get :new, token: token
     resp = JSON.parse @response.body
     gameId = resp['id']

@@ -122,7 +122,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_equal 'sunk', shoot['ship_status']
 
     get 'i_have_no_ships/game/4/shoot', {:x => 4, :y => 7}
-    assert_equal '400', @response.code
+    assert_equal '200', @response.code
     error = JSON.parse @response.body
     assert_not_nil error
     assert_equal 'All your opponent\'s ships are sunk', error['error'][0]
