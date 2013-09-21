@@ -242,7 +242,7 @@ class GameControllerTest < ActionController::TestCase
     assert @response.success?, 'Set request Failed'
     resp = JSON.parse @response.body
 
-    assert resp['error'], 'Expected an error message'
+    assert_equal 'your ship CAN NOT be placed on the board. It collides with others or is out of the board', resp['error'], 'Incorrect error message'
   end
 
 

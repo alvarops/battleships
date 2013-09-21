@@ -29,7 +29,7 @@ class Board < ActiveRecord::Base
 
   def already_exist?(ship)
     self.ships.each do |existing_ship|
-      return true if ship.t existing_ship.t
+      return true if ship.t == existing_ship.t
     end
     false
   end
