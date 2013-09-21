@@ -62,8 +62,18 @@ class GameStatusTest < ActionDispatch::IntegrationTest
 
   private
 
-  def set_ships_manually(game, player2)
-    # code here
+  def set_ships_manually(game, player)
+
+    ShipModels::SHIP_MODELS.each do |ship|
+      ships = []
+      get "/#{player['token']}/game/#{game['id']}/set", ships: ships
+      assert_equal 200, @response.status
+    end
+
+
+    game_in_db = Game.find game['id']
+    board = game_in_db.player_board player['id']
+    assert_equal ShipModels::SHIP_MODELS.length, board.ships.length, 'Incorrect number of ships on the board'
   end
 
   def resp_body
