@@ -17,7 +17,7 @@ development_amazon:
     password: b4ttl3sh1p
 
 development_mysql:
-    host: localhost
+    host: localhost 
     adapter: mysql2
     database: battleships_dev
     username: ships

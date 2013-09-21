@@ -3,7 +3,7 @@ $(function () {
 
     var CLIENT = {
         token: $.cookie('token'),
-        serverUrl: "http://battleships/",
+        serverUrl: "http://ships.mouseinabox.info/",
         body: $(".body"),
         header: $(".header"),
         name: 'Player',

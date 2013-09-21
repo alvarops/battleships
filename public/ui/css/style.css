@@ -11,78 +11,32 @@ ul li {list-style:none;}
 
 .body{margin:auto; max-width:1200px; width:100%;}
 
-.form-signin {width: 350px;margin: 0 auto;text-align: center}
-.form-signin input {display: block;width:100%;margin-bottom:10px;}
-
-
-/* HERE STARTS OLD CSS */
+.form-signin {width: 350px;margin: 50px auto;text-align: center}
 
 .playerContainer{float:left; margin:2em;}
 .playerContainer > ul {display:none;}
 
 
-.board{border-collapse: collapse;margin:1em;}
+.board {border-collapse: collapse;margin:1em;overflow:hidden;}
 .board td{border:1px solid #ccc;}
 .board div{width:5px; height:5px;}
 .board .hit{background-color:orange;}
 .board .miss{background-color:#ccccff;}
 .board .hitsunk{background-color:red;}
 .board .samespot{background-color:black;}
+.board .position {background-color: black;}
+.board .decision {background-color: green;}
+.board .impossible {background-color: red;}
 
 .hit{color:orange;}
 .miss{color:#ccccff;}
 .hitsunk{color:red;}
 .samespot{color:black;}
 
-.available-ships {
-    overflow: hidden;
-}
+.available-ships {overflow: hidden;}
+.available-ships li {width: 5px;height: 5px;background-color: #ccc;float: left;}
+.available-ships li.shape {background-color: black;}
+.available-ships ul {width: 40px;float: left;margin: 5px;}
+.available-ships ul.dragging {opacity: 0.3;}
 
-.available-ships li {
-    width: 5px;
-    height: 5px;
-    background-color: #ccc;
-    float: left;
-}
-.available-ships li.shape {
-    background-color: black;
-}
-.available-ships ul {
-    width: 40px;
-    float: left;
-    margin: 5px;
-}
 
-.available-ships ul.dragging {
-    opacity: 0.3;
-}
-
-.board {
-    overflow: hidden;
-}
-
-.board ul {
-    border-top: 1px solid #000;
-    border-right: 1px solid #000;
-}
-
-.board ul li {
-    width: 10px;
-    height: 10px;
-    float: left;
-    background-color: #ccc;
-    border-left: 1px solid #000;
-    border-bottom: 1px solid #000;
-}
-
-.board ul li.position {
-    background-color: black;
-}
-
-.board ul li.decision {
-    background-color: green;
-}
-
-.board ul li.impossible {
-    background-color: red;
-}

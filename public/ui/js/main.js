@@ -1,5 +1,9 @@
 $(function(){
     var BS = {
+        _vars: {
+            testToken : 'EScmhnrLvKFZz4Lu0Gb5eA'}
+        ,
+
         _fn : {
             ajaxError : function(xhr, status) {
                 console.log('Something went wrong: ' + status);
@@ -13,15 +17,36 @@ $(function(){
                 });
             },
 
-            showLoginBox : function () {
+            showInitBox : function () {
                 $('.body').load('/ui/dialogs/login.html', function () {
                     $('#show_all_games').click(function () {
                         BS._fn.clearScreen(function () {
                             BS._fn.showAllGames();
                         });
                     });
+                    $('#create_test_game').click(function () {
+                        BS._fn.clearScreen(function () {
+                            BS._fn.createTestGame();
+                        });
+                    });
                 });
             },
+
+            createTestGame : function () {
+                $.ajax('/' + BS._vars.testToken + '/game/new', {
+                    cache: false,
+                    success: function (data) {
+                        if (data.error) {
+                            alert('Error: ' + data.error[0]);
+                        } else {
+                            BS._fn.arrangeTestGame(data);
+                        }
+                    },
+                    error: BS._fn.ajaxError
+
+                });
+            },
+
 
             renderGameList : function(data) {
                 var $gameList = $('<table/>', {class: 'table table-striped table-hover game-list'});
@@ -65,6 +90,110 @@ $(function(){
 
             showGameProgress : function (gameId) {
                 BS._fn.game.displayGame(gameId);
+            },
+
+            arrangeTestGame : function(data) {
+                var gameId = data.id;
+                var $shipTemplate = $('<ul/>').addClass('ship');
+                for (var y = 0; y < 8; y++) {
+                    for (var x = 0; x < 8; x++) {
+                        $('<li/>', {x: x, y: y}).addClass(x.toString() + '-' + y.toString()).appendTo($shipTemplate);
+                    }
+                }
+                $.ajax({
+                    url: '/ship/list',
+                    cache: false,
+                    success : function(data) {
+                        $('.body').append('<h1>Game Id: ' + gameId + '</h1>');
+                        $('.body').append($('<div/>', {class: 'available-ships'}));
+                        $.each(data, function (index, value) {
+                           var type = index;
+                           $.each(value, function(index, value) {
+                               var variant = index; 
+                               var $ship = $shipTemplate.clone();
+                               $ship.attr('type', type);
+                               $ship.attr('variant', variant);
+                               $.each(value, function (index, value) {
+                                   $ship.find('.' + value.x + '-' + value.y).addClass('shape');
+                               });
+                               $('.available-ships').append($ship);
+                           });
+                        });
+                        $('.available-ships .ship').dragdrop({
+                            clone: true,
+                            dragClass: 'dragging',
+                            canDrop : function(dst, src) {
+                                $('.board .decision, .board .impossible').removeClass('decision impossible');
+                                var dstx, dsty, impossible = false;
+                                if (dst.is('.board td')) {
+                                    dstx = parseInt(dst.attr('x'));
+                                    dsty = parseInt(dst.attr('y'));
+                                    src.find('li.shape').each(function () {
+                                        var $field = $('.board .' + (parseInt($(this).attr('x')) + dstx) + '-' + (parseInt($(this).attr('y')) + dsty));
+                                        if ($field.length > 0) {
+                                            $field.addClass('decision'); 
+                                        } else {
+                                            impossible = true;
+                                        }
+                                    });
+                                    if (impossible) {
+                                        $('.board .decision').addClass('impossible');
+                                    } else {
+                                        return true;
+                                    }
+                                } 
+                                return false;
+                            },
+                            didDrop : function(src, dst) {
+                                var dstx = parseInt(dst.attr('x')),
+                                    dsty = parseInt(dst.attr('y')),
+                                    type = src.attr('type'),
+                                    variant = src.attr('variant');
+                                console.log('Dropped ' + type + ' variant ' + variant + ', x=' + dstx + ', y=' + dsty);
+                                console.log(this);
+                                $.ajax({
+                                    url: '/' + BS._vars.testToken + '/game/' + gameId  + '/set?ships[][type]=' + type + '&ships[][variant]=' + variant + '&ships[][xy][]=' + dstx + '&ships[][xy][]=' + dsty,
+                                    cache: false,
+                                    success : function(data) {
+                                        if (data && data.status && data.status == 'created') {
+                                            $('.board .decision').addClass('position').removeClass('decision');
+                                            console.log('Succesfull placement');
+                                        } else {
+                                            $('.board .decision, .board .impossible').removeClass('decision impossible');
+                                            console.log('Placement not possible');
+                                        }
+
+                                    }
+                                });
+                            }
+                        });
+                    },
+                    error : function (a,b,c) {
+                        console.log(a);
+                        console.log(b);
+                        console.log(c);
+                    }
+                });
+
+                BS._fn.game.sizeX = data.width;
+                BS._fn.game.sizeY = data.height;
+                $('.body').append(BS._fn.game.drawBoard(0, 'Test Player'));
+
+//                $.ajax({
+//                    url: '/' + BS._vars.testToken + '/game/' + gameId,
+//                    cache: false,
+//                    //type : 'json', 
+//                    success : function(gameData) {
+//                        $.ajax({
+//                            url: '/' + BS._vars.testToken + '/game/' + gameId + '/show.json',
+//                            cache: false,
+//                            //type : 'json', 
+//                            success : function(positionsData) {
+//                                BS.arrange.drawBoard(gameData.width, gameData.height, positionsData);
+//                            }
+//                        });
+//                    }
+//                });
             },
 
             game : {
@@ -120,7 +249,7 @@ $(function(){
                     for(i = 0; i < this.sizeY; i++){
                         h += '<tr>';
                         for(j = 0; j < this.sizeX; j++){
-                            h += '<td><div class="empty"></div></td>';
+                            h += '<td class="' + j + '-' + i + '" x="' + j + '" y="' + i + '"><div class="empty"></div></td>';
                         }
                         h += '</tr>';
                     }
@@ -150,23 +279,23 @@ $(function(){
                     }
                     
                     //Ad log
-                    var html ='<li class="shotStatus ' + shotStatus + '">Shot ' + num + ' - x:' + data.x + ' y:' + data.y;
-                    switch(shotStatus){
-                        case 'miss' :
-                            html += ' - miss';
-                        break;
-                        case 'hit' :
-                            html += ' - hit ' + data.shipType + '!';
-                        break;
-                        case 'hitsunk' :
-                            html += ' - hit and sunk ' + data.shipType + '!!!';
-                        break;
-                        case 'samespot' :
-                            html += ' - hit spot that was hit before - BUUUUU!';
-                        break;
-                    } 
-                    html += '</li>';
-                    $('#log' + id).prepend(html);
+//                    var html ='<li class="shotStatus ' + shotStatus + '">Shot ' + num + ' - x:' + data.x + ' y:' + data.y;
+//                    switch(shotStatus){
+//                        case 'miss' :
+//                            html += ' - miss';
+//                        break;
+//                        case 'hit' :
+//                            html += ' - hit ' + data.shipType + '!';
+//                        break;
+//                        case 'hitsunk' :
+//                            html += ' - hit and sunk ' + data.shipType + '!!!';
+//                        break;
+//                        case 'samespot' :
+//                            html += ' - hit spot that was hit before - BUUUUU!';
+//                        break;
+//                    } 
+//                    html += '</li>';
+//                    $('#log' + id).prepend(html);
                 },
 
                 displayGame : function (gameId) {
@@ -176,7 +305,7 @@ $(function(){
         },
                 
         init : function () {
-            this._fn.showLoginBox();
+            this._fn.showInitBox();
         }
     };
 
