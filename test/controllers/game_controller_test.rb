@@ -211,6 +211,51 @@ class GameControllerTest < ActionController::TestCase
     assert_equal ['This is not your game'], resp['error'], 'Incorrect error message'
   end
 
+  test 'should not be possible to set the same ship more than once' do
+    get :new, token: token
+    resp = JSON.parse @response.body
+    gameId = resp['id']
+    assert_not_nil gameId, 'Game ID not found'
+    get :set, token: token, id: gameId, ships: [{
+                                                    type: 'unknown',
+                                                    xy: [10, 10],
+                                                    variant: 0
+                                                }]
+    assert @response.success?, 'Set request Failed'
+    resp = JSON.parse @response.body
+    assert_equal 'unknown ship type is not allowed', resp['error'], 'Expected an error message'
+  end
+
+  test 'should not be possible to set ship in non-existing variant' do
+    get :new, token: token
+    resp = JSON.parse @response.body
+    gameId = resp['id']
+    assert_not_nil gameId, 'Game ID not found'
+    get :set, token: token, id: gameId, ships: [{
+                                                    type: 'patrol',
+                                                    xy: [10, 10],
+                                                    variant: 4
+                                                }]
+    assert @response.success?, 'Set request Failed'
+    resp = JSON.parse @response.body
+    assert_equal 'patrol ship type in variant 4 is not allowed', resp['error'], 'Expected an error message'
+  end
+
+  test 'should not be possible to set not defined ship type' do
+    get :new, token: token
+    resp = JSON.parse @response.body
+    gameId = resp['id']
+    assert_not_nil gameId, 'Game ID not found'
+    get :set, token: token, id: gameId, ships: [{
+                                                    type: 'unknown',
+                                                    xy: [10, 10],
+                                                    variant: 0
+                                                }]
+    assert @response.success?, 'Set request Failed'
+    resp = JSON.parse @response.body
+    assert_equal 'unknown ship type is not allowed', resp['error'], 'Expected an error message'
+  end
+
   private
 
   def current_player_board(params)
@@ -221,25 +266,25 @@ class GameControllerTest < ActionController::TestCase
 
   def params
     {
-      token: token, #current player token
-      id: 2, #game id
-      ships: [{
-        type: 'submarine', #type of the boat
-        xy: [1, 1], #position of the boat (we assume game size is 10x10)
-        variant: 0
-      }]
-  }
+        token: token, #current player token
+        id: 2, #game id
+        ships: [{
+                    type: 'submarine', #type of the boat
+                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
+                    variant: 0
+                }]
+    }
   end
 
   def params_with_invalid_token
     {
-      token: invalid_token,
-      id: 2, #game id
-      ships: [{
-        type: 'submarine', #type of the boat
-        xy: [1, 1], #position of the boat (we assume game size is 10x10)
-        variant: 0
-      }]
+        token: invalid_token,
+        id: 2, #game id
+        ships: [{
+                    type: 'submarine', #type of the boat
+                    xy: [1, 1], #position of the boat (we assume game size is 10x10)
+                    variant: 0
+                }]
     }
   end
 
@@ -248,9 +293,9 @@ class GameControllerTest < ActionController::TestCase
     offset= 0
     ShipModels::SHIP_MODELS.each do |t, st|
       ships.push ({
-        type: t.to_s,
-        xy: [offset, 1],
-        variant: 0
+          type: t.to_s,
+          xy: [offset, 1],
+          variant: 0
       })
       offset += 10
     end

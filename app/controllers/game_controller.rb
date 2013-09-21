@@ -82,9 +82,20 @@ class GameController < ApplicationController
 
       new_ships.each do |new_ship|
         type = new_ship[:type]
+
+        if ShipModels::SHIP_MODELS[type.to_sym].nil?
+          render json: {error: "#{type} ship type is not allowed"}
+          return
+        end
+
         x = new_ship[:xy][0]
         y = new_ship[:xy][1]
         variant = new_ship[:variant]
+
+        if ShipModels::SHIP_MODELS[type.to_sym][variant.to_i].nil?
+          render json: {error: "#{type} ship type in variant #{variant} is not allowed"}
+          return
+        end
 
         ship = generate_ship type, x, y, variant
 
