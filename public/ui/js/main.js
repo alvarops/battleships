@@ -34,6 +34,7 @@ $(function(){
 
             createTestGame : function () {
                 $.ajax('/' + BS._vars.testToken + '/game/new', {
+//                $.ajax('/' + BS._vars.testToken + '/game/39/stats', {
                     cache: false,
                     success: function (data) {
                         if (data.error) {
@@ -83,7 +84,7 @@ $(function(){
                 $.ajax('/game/list', {
                     cache: false,
                     success: that.renderGameList,
-                    error: that.ajaxError
+                    error: BS._fn.ajaxError
                 });
 
             },
@@ -105,7 +106,11 @@ $(function(){
                     cache: false,
                     success : function(data) {
                         $('.body').append('<h1>Game Id: ' + gameId + '</h1>');
+                        $('.body').append('<button id="show_shoots" type="button" class="btn btn-primary">Show opponent shoots</button>');
                         $('.body').append($('<div/>', {class: 'available-ships'}));
+                        $('#show_shoots').click(function () {
+                            BS._fn.showOpponentShoots(gameId);   
+                        });
                         $.each(data, function (index, value) {
                            var type = index;
                            $.each(value, function(index, value) {
@@ -155,9 +160,10 @@ $(function(){
                                     url: '/' + BS._vars.testToken + '/game/' + gameId  + '/set?ships[][type]=' + type + '&ships[][variant]=' + variant + '&ships[][xy][]=' + dstx + '&ships[][xy][]=' + dsty,
                                     cache: false,
                                     success : function(data) {
-                                        if (data && data.status && data.status == 'created') {
+                                        if (data && data.status) {
                                             $('.board .decision').addClass('position').removeClass('decision');
                                             console.log('Succesfull placement');
+                                            $('.available-ships .ship[type="' + type + '"]').hide();
                                         } else {
                                             $('.board .decision, .board .impossible').removeClass('decision impossible');
                                             console.log('Placement not possible');
@@ -168,22 +174,13 @@ $(function(){
                             }
                         });
                     },
-                    error : function (a,b,c) {
-                        console.log(a);
-                        console.log(b);
-                        console.log(c);
-                    }
+                    error: BS._fn.ajaxError
                 });
 
                 BS._fn.game.sizeX = data.width;
                 BS._fn.game.sizeY = data.height;
                 $('.body').append(BS._fn.game.drawBoard(0, 'Test Player'));
 
-//                $.ajax({
-//                    url: '/' + BS._vars.testToken + '/game/' + gameId,
-//                    cache: false,
-//                    //type : 'json', 
-//                    success : function(gameData) {
 //                        $.ajax({
 //                            url: '/' + BS._vars.testToken + '/game/' + gameId + '/show.json',
 //                            cache: false,
@@ -192,8 +189,31 @@ $(function(){
 //                                BS.arrange.drawBoard(gameData.width, gameData.height, positionsData);
 //                            }
 //                        });
-//                    }
-//                });
+            },
+
+            showOpponentShoots : function(gameId) {
+                $.ajax({
+                    url: '/' + BS._vars.testToken + '/game/' + gameId + '/stats',
+                    cache: false,
+                    success : function(shootsData) {
+                        if (shootsData.players.length === 1) {
+                            alert('There\'s no opponent in this game');
+                        } else {
+                            BS._fn.game.data = shootsData;
+                            BS._fn.game.gameId = gameId;
+                            BS._fn.game.interval = 100;
+                            BS._fn.game.currentUser = 0;
+                            BS._fn.game.currentShot = 0;
+                            BS._fn.game.numOfFields = shootsData.width * shootsData.height;
+                            BS._fn.game.data.boards.splice(1,1);
+                            BS._fn.game.data.boards[0].id = 0;
+                            BS._fn.game.showNextShot();
+                            
+                        }
+
+                    },
+                    error: BS._fn.ajaxError
+                });
             },
 
             game : {
@@ -220,11 +240,7 @@ $(function(){
                             that.drawBoards();
                             that.showNextShot();
                         },
-                        error : function (a,b,c) {
-                            console.log(a);
-                            console.log(b);
-                            console.log(c);
-                        }
+                        error: BS._fn.ajaxError
                     });
                 },
                 
