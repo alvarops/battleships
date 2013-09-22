@@ -132,6 +132,17 @@ class GameController < ApplicationController
         if player_board.can_place? ship
           player_board.ships.push ship
           player_board.save
+
+          if player_board.ships.length == ShipModels::SHIP_MODELS.length
+            g = Game.find_by_id game['id']
+            if g
+              opponent_board = g.opponent_board @current_player.id
+              if opponent_board && opponent_board.ships && opponent_board.ships.length == ShipModels::SHIP_MODELS.length
+                  g.status='fight'
+                  g.save
+              end
+            end
+          end
         else
           render json: {error: 'your ship CAN NOT be placed on the board. It collides with others or is out of the board'}
           return

@@ -106,8 +106,6 @@ class GameStatusTest < ActionDispatch::IntegrationTest
       puts "Placed #{s[0]}"
     end
 
-    request_and_verify_game_status(game, player, 'fight')
-
     board = g.player_board player['id']
     assert_equal ShipModels::SHIP_MODELS.length, board.ships.length, 'Incorrect number of ships on the board'
   end
