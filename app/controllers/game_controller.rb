@@ -61,6 +61,11 @@ class GameController < ApplicationController
     filtered_games = []
     current_player = Player.find_by_token(params[:token])
 
+    if params[:token] && current_player.nil?
+      render json: {error: 'Unknown Token'}
+      return
+    end
+
     if current_player
       games.each do |game|
         my_game = false
@@ -69,7 +74,7 @@ class GameController < ApplicationController
             my_game=true
           end
         end
-        if not my_game
+        if my_game
           filtered_games.push game
         end
       end
