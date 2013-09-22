@@ -255,7 +255,6 @@ class GameControllerTest < ActionController::TestCase
 
     assert @response.success?, 'Set request Failed'
     resp = JSON.parse @response.body
-    puts resp
     assert_equal '\'ships\' param is missing', resp['error'], 'Unexpected an error message'
   end
 
@@ -288,6 +287,51 @@ class GameControllerTest < ActionController::TestCase
     assert @response.success?, 'Set request Failed'
     resp = JSON.parse @response.body
     assert_equal 'unknown ship type is not allowed', resp['error'], 'Expected an error message'
+  end
+
+  test 'game is finished if it\'s status is "finished"' do
+    game = Game.create({width: 5, height: 5})
+
+    #game is not finishe if it's in state any other than fight/or finished
+
+    assert_equal false, game.finished?
+
+    game.status = 'ready'
+
+    assert_equal false, game.finished?
+
+
+    #game should be finished if it's status is 'finished'
+    game.status = 'finished'
+    assert_equal true, game.finished?
+  end
+
+  test 'game is finished if both players shoot all their shoots' do
+    game = Game.create({width: 2, height: 2})
+    p1 = Player.create({name: 'Bob'})
+    p2 = Player.create({name: 'Frank'})
+
+    game.players.push p1
+    game.players.push p2
+    game.status = 'fight'
+
+    p1_board = game.boards.first
+    p2_board = game.boards.last
+
+    p1_board.ships.push Ship.new({t: 'cruiser'})
+    p2_board.ships.push Ship.new({t: 'cruiser'})
+
+    (0..1).each do |i|
+      (0..1).each do |j|
+        p1_shoot = Shoot.new({x: i, y: j, player_id: p1.id})
+        p1_board.shoots.push p1_shoot
+
+        p2_shoot = Shoot.create({x: i, y: j, player_id: p2.id})
+        p2_board.shoots.push p2_shoot
+      end
+    end
+
+    assert_equal true, game.finished?
   end
 
   private

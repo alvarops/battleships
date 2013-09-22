@@ -149,6 +149,11 @@ class NewShootTest < ActionDispatch::IntegrationTest
 
     game.boards.first.ships.push ship
 
+    ship = Ship.new({t: 'cruiser'})
+    ship.positions.push Position.new({x: 0, y: 0})
+
+    game.boards.last.ships.push ship
+
 
     game.status = 'fight' #just assuming
     game.save
@@ -156,20 +161,14 @@ class NewShootTest < ActionDispatch::IntegrationTest
 
     assert_equal 'fight', game.status
 
-
-    (0...5).each do |i|
-      (0...7).each do |j|
-        get "#{p1.token}/game/#{game.id}/shoot", {:x => i, :y => j}
-        puts @response.body
-        puts "#{i}x#{j}"
-      end
-    end
-
     (0...5).each do |i|
       (0...5).each do |j|
+        get "#{p1.token}/game/#{game.id}/shoot", {:x => i, :y => j}
         get "#{p2.token}/game/#{game.id}/shoot", {:x => i, :y => j}
       end
     end
+
+    assert_equal 'finished', game.status
 
   end
 

@@ -198,6 +198,10 @@ class GameController < ApplicationController
       @out = {json: {error: ['There is no opponent']}}
     end
 
+    if game.finished?
+      game.finalize
+    end
+
     render json: @out[:json], status: @out[:status]
 
   end

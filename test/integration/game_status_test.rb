@@ -103,7 +103,6 @@ class GameStatusTest < ActionDispatch::IntegrationTest
       assert resp['error'].nil?, "ERROR when setting a ship: #{resp['error']}"
       assert_equal game['id'], resp['id'], 'ship was not set'
       x += 15
-      puts "Placed #{s[0]}"
     end
 
     board = g.player_board player['id']

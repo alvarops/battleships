@@ -10,9 +10,25 @@ class Game < ActiveRecord::Base
     Board.find_by player_id: current_player_id, game_id: self.id
   end
 
-
   def opponent_board current_player_id
     self.boards.select { |b| b.player_id != current_player_id }.first
+  end
+
+  def finished?
+    return true if self.status == 'finished'
+    return false if self.status != 'fight'
+
+    all_shoots = true
+
+    self.boards.each do |board|
+      all_shots &&= (board.shoots.size == self.width * self.height)
+    end
+
+    all_shoots
+  end
+
+  def finalize
+    self.status = 'finished'
   end
 
   private
@@ -32,4 +48,5 @@ class Game < ActiveRecord::Base
       errors.add :game, 'has many players'
     end
   end
+
 end
