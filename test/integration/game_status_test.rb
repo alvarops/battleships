@@ -17,6 +17,24 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player2, 'fight')
   end
 
+  test 'full end to end test with randomized ships and GAME RESTART' do
+    player1, player2 = create_and_verify_players()
+    game = create_and_verify_game(player1)
+    join_game(game, player2)
+
+    request_and_verify_game_status(game, player2, 'ready')
+
+    randomize_ships(game, player1)
+    request_and_verify_game_status(game, player1, 'ready')
+
+    randomize_ships(game, player2)
+    request_and_verify_game_status(game, player2, 'fight')
+
+    get "/#{player1['token']}/game/#{game['id']}/restart/#{player2['token']}"
+    request_and_verify_game_status(game, player2, 'fight')
+
+  end
+
   test 'full end to end test with 1 manually set and 1 randomized board' do
     player1, player2 = create_and_verify_players()
     game = create_and_verify_game(player1)
@@ -63,16 +81,34 @@ class GameStatusTest < ActionDispatch::IntegrationTest
   private
 
   def set_ships_manually(game, player)
+    # change game width so it will be easier to set ships manually in this test
+    g = Game.find game['id']
+    g.width = 500
+    g.height = 10
+    g.save
 
-    ShipModels::SHIP_MODELS.each do |ship|
-      ships = []
-      get "/#{player['token']}/game/#{game['id']}/set", ships: ships
+    x = 0
+    y = 0
+
+    ShipModels::SHIP_MODELS.each do |s|
+      ships = [{
+                   type: s[0],
+                   xy: [x, y],
+                   variant: 0
+               }]
+
+      post "/#{player['token']}/game/#{game['id']}/set", ships: ships
       assert_equal 200, @response.status
+      resp = JSON.parse @response.body
+      assert resp['error'].nil?, "ERROR when setting a ship: #{resp['error']}"
+      assert_equal game['id'], resp['id'], 'ship was not set'
+      x += 15
+      puts "Placed #{s[0]}"
     end
 
+    request_and_verify_game_status(game, player, 'fight')
 
-    game_in_db = Game.find game['id']
-    board = game_in_db.player_board player['id']
+    board = g.player_board player['id']
     assert_equal ShipModels::SHIP_MODELS.length, board.ships.length, 'Incorrect number of ships on the board'
   end
 

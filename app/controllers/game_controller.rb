@@ -10,6 +10,26 @@ class GameController < ApplicationController
   MIN_WIDTH=10
   VARIABLE_SIZE=1
 
+  def restart
+    player2 = Player.find_by_token(params[:token_2])
+    if player2.nil?
+      render json: {error: 'Unknown Token 2'}
+      return
+    end
+
+    game = Game.find_by_id params[:id]
+    if game && game.opponent_board(player2.id) && game.player_board(@current_player) && (game.status=='fight' || game.status =='end')
+      game.boards.each do |board|
+        board.shoots.delete_all
+      end
+      game.status = 'fight'
+      game.save
+      render json: {msg: 'Game restarted'}
+    else
+      render json: {error: 'Game not found'}
+    end
+  end
+
   def new
     player = Player.find_by_token(params[:token])
     if player.nil?
@@ -68,10 +88,10 @@ class GameController < ApplicationController
     end
 
     render json: game.to_json({include: {
-                                 players: {
-                                   except:  [:token]},
-                                 boards: {
-                                   include: [:shoots]}}})
+        players: {
+            except: [:token]},
+        boards: {
+            include: [:shoots]}}})
   end
 
   def set

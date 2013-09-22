@@ -32,6 +32,8 @@ Battleships::Application.routes.draw do
   get ':token/game/:id/randomize', to: 'game#randomize'
   post ':token/game/:id/randomize', to: 'game#randomize'
 
+  get ':token/game/:id/restart/:token_2', to: 'game#restart'
+
   get ':token/game/:id/shoot', to: 'game#shoot'
 
 
