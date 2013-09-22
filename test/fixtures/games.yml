@@ -20,7 +20,7 @@ ready_game_to_shoot:
   id: 4
   width: 10
   height: 10
-  status: ready
+  status: fight
 
 big_game:
   id: 5
