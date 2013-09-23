@@ -3,7 +3,7 @@ $(function () {
 
     var CLIENT = {
         token: $.cookie('token'),
-        serverUrl: "http://ships.mouseinabox.info/",
+        serverUrl: "http://battleships/",
         body: $(".body"),
         header: $(".header"),
         name: 'Player',
@@ -42,9 +42,11 @@ $(function () {
         },
         listGames: function (url, callback) {
             var that = this;
-            $.getJSON(url + "game/list?callback=?", function (response) {
+            $.getJSON(url + "?callback=?", function (response) {
                 if (typeof response.error !== 'undefined') {
                     console.error(response.error)
+                } else if (response.length == 0) {
+                    alert('No games on the list');
                 } else {
                     console.log("List of available games");
                     that.body.empty();
@@ -63,11 +65,11 @@ $(function () {
             });
         },
         listOpenGames: function () {
-            this.listGames(this.serverUrlWithToken());
+            this.listGames(this.serverUrlWithToken() + "game/list");
         },
         listAllGames: function () {
             var that = this;
-            this.listGames(this.serverUrl, function () {
+            this.listGames(this.serverUrl + "game/list", function () {
                 that.body.find("button").remove();
             });
         },
@@ -89,6 +91,12 @@ $(function () {
                 that.body.empty();
             });
         },
+        listMyCurrentGames: function () {
+            this.listGames(this.serverUrlWithToken() + "game/listongoing");
+        },
+        listReadyGames: function () {
+            this.listGames(this.serverUrlWithToken() + "game/listready");
+        },
         bindEvents: function () {
             var that = this;
             $("#menuCreateGame").click(function () {
@@ -99,6 +107,12 @@ $(function () {
             });
             $("#menuListAllGames").click(function () {
                 that.listAllGames();
+            });
+            $("#menuListCurrentGames").click(function () {
+                that.listMyCurrentGames();
+            });
+            $("#menuListReadyGames").click(function () {
+                that.listReadyGames();
             });
             $("#menuLogIn").click(function () {
                 that.logIn();
@@ -155,8 +169,8 @@ $(function () {
             // TODO: implement your algorithm here
             var that = this;
             this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame.id) + "</p>");
-            for (var y = 0; y < 10; y++) {
-                for (var x = 0; x < 10; x++) {
+            for (var y = 0; y < this.currentGame.height; y++) {
+                for (var x = 0; x < this.currentGame.width; x++) {
                     var self = this;
                     var url = that.shootUrl(x, y) + "&callback=?";
                     // SYNCHRONOUS AJAX CALL
@@ -168,7 +182,7 @@ $(function () {
                             console.log("Shooting at: " + this.x + "x" + this.y);
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
-                            console.error("Something went wrong while shooting at: " + this.x + "x" + this.y);
+                            console.error("Something is wrong");
                             console.error(textStatus + " - " + errorThrown);
                         }
                     });

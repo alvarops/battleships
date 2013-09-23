@@ -35,9 +35,81 @@ ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidd
 
 .available-ships {overflow: hidden;}
 .available-ships li {width: 5px;height: 5px;background-color: #ccc;float: left;}
-.available-ships li.shape {background-color: black;}
+.available-ships .ship li.shape {background-color: black;}
 .available-ships ul {width: 40px;float: left;margin: 5px;}
 .available-ships ul.dragging {opacity: 0.3;}
+
+.ship.s3 li {
+    background: #1ab0ff;
+}
+
+.ship.enterprise li {
+    background: #c2ffe9;
+}
+
+.ship.chess li {
+    background: #ff4bbc;
+}
+
+.ship.kursk li {
+    background: #ff9821;
+}
+
+.ship.crab li {
+    background: #c2d0ff;
+}
+
+.ship.death_star li {
+    background: #02a616;
+}
+
+.ship.worm li {
+    background: #febbc0;
+}
+
+.ship.a li {
+    background: #cb00d3;
+}
+
+.ship.ubot li {
+    background: #ff331f;
+}
+
+.ship.o li {
+    background: #fffb01;
+}
+
+.ship.l li {
+    background: #b01d26;
+}
+
+.ship.tie_fighter li {
+    background: #666666;
+}
+
+.ship.carrier li {
+    background: #3a468c;
+}
+
+.ship.s1 li {
+    background: #ffbcf1;
+}
+
+.ship.battleship li {
+    background: wheat;
+}
+
+.ship.submarine li {
+    background: #8c8b20;
+}
+
+.ship.cruiser li {
+    background: #ffacac;
+}
+
+.ship.patrol li {
+    background: #ff4bbc;
+}
 
 
 

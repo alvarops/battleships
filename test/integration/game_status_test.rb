@@ -77,8 +77,73 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player2, 'fight')
   end
 
+  test 'perfect shooting' do
+    player1, player2 = create_and_verify_players()
+    game = create_and_verify_game(player1)
+    join_game(game, player2)
+    request_and_verify_game_status(game, player2, 'ready')
+    set_ships_manually(game, player1)
+    request_and_verify_game_status(game, player1, 'ready')
+    randomize_ships(game, player2)
+    request_and_verify_game_status(game, player2, 'fight')
+
+    perfect_shoot_to_board_and_sink_all_ships player1, game
+    request_and_verify_game_status(game, player1, 'fight')
+    perfect_shoot_to_board_and_sink_all_ships player2, game
+    request_and_verify_game_status(game, player2, 'finished')
+  end
+
+
 
   private
+
+  def poor_shoot_to_board_and_sink_all_ships(player, game)
+    gameModel = Game.find game['id']
+    opponent_board = gameModel.opponent_board player['id']
+    shoot_count = shoot_everywhere_in_the_board(opponent_board, game, player)
+    number_of_shots_to_board1_saved_in_db = opponent_board.shoots.length
+    assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
+    get "/#{player['token']}/game/#{game['id']}/shoot/?x=0&y=0"
+    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
+    assert_equal number_of_shots_to_board1_saved_in_db, opponent_board.shoots.length, 'Unexpected number of shoots'
+    opponent_board.shoots.each do |s|
+      assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
+    end
+  end
+
+  def shoot_everywhere_in_the_board(opponent_board, game, player)
+    shoot_count = 0
+
+
+    shoot_count
+  end
+
+  def perfect_shoot_to_board_and_sink_all_ships(player, game)
+    gameModel = Game.find game['id']
+    opponent_board = gameModel.opponent_board player['id']
+    shoot_count = shoot_all_ships(opponent_board, game, player)
+    number_of_shots_to_board1_saved_in_db = opponent_board.shoots.length
+    assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
+    get "/#{player['token']}/game/#{game['id']}/shoot/?x=0&y=0"
+    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
+    assert_equal number_of_shots_to_board1_saved_in_db, opponent_board.shoots.length, 'Unexpected number of shoots'
+    opponent_board.shoots.each do |s|
+      assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
+    end
+  end
+
+  def shoot_all_ships(board, game, player)
+    shoot_count = 0
+    board.ships.each do |s|
+      s.positions.each do |p|
+        get "/#{player['token']}/game/#{game['id']}/shoot/?x=#{p.x}&y=#{p.y}"
+        assert resp_body['ship_status'].include?('hit') || resp_body['ship_status'].include?('sunk'), "Unexpected miss: Resp=#{resp_body['ship_status']}"
+        shoot_count +=1
+      end
+    end
+    shoot_count
+  end
+
 
   def set_ships_manually(game, player)
     # change game width so it will be easier to set ships manually in this test

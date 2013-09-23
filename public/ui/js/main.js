@@ -1,7 +1,7 @@
 $(function(){
     var BS = {
         _vars: {
-            testToken : 'EScmhnrLvKFZz4Lu0Gb5eA'}
+            testToken : 'wpcfku7s19obfk1KyDPvqw'}
         ,
 
         _fn : {
@@ -166,6 +166,7 @@ $(function(){
                                var $ship = $shipTemplate.clone();
                                $ship.attr('type', type);
                                $ship.attr('variant', variant);
+                               $ship.addClass(type);
                                $.each(value, function (index, value) {
                                    $ship.find('.' + value.x + '-' + value.y).addClass('shape');
                                });
