@@ -77,43 +77,60 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player2, 'fight')
   end
 
-  test 'shooting test' do
+  test 'perfect shooting' do
     player1, player2 = create_and_verify_players()
     game = create_and_verify_game(player1)
     join_game(game, player2)
-
     request_and_verify_game_status(game, player2, 'ready')
-
     set_ships_manually(game, player1)
     request_and_verify_game_status(game, player1, 'ready')
-
     randomize_ships(game, player2)
     request_and_verify_game_status(game, player2, 'fight')
 
-    gameModel = Game.find game['id']
-
-    board2 = gameModel.opponent_board player1['id']
-    shoot_count = shoot_all_ships(board2, game, player1)
-    assert_equal shoot_count, board2.shoots.length, 'Number of logged shoots doesnt match number of actual shoots'
+    perfect_shoot_to_board_and_sink_all_ships player1, game
     request_and_verify_game_status(game, player1, 'fight')
-    get "/#{player1['token']}/game/#{game['id']}/shoot/?x=0&y=0"
-    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], "Missing error message: #{resp_body}"
-
-    board1 = gameModel.opponent_board player2['id']
-    shoot_count = shoot_all_ships(board1, game, player2)
-    number_of_shots_to_board1_saved_in_db = board1.shoots.length
-    assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
-
-    get "/#{player2['token']}/game/#{game['id']}/shoot/?x=0&y=0"
-    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
-
-    assert_equal number_of_shots_to_board1_saved_in_db, board1.shoots.length, 'Unexpected number of shoots'
-
-    request_and_verify_game_status(game, player2, 'end')
+    perfect_shoot_to_board_and_sink_all_ships player2, game
+    request_and_verify_game_status(game, player2, 'finished')
   end
 
 
+
   private
+
+  def poor_shoot_to_board_and_sink_all_ships(player, game)
+    gameModel = Game.find game['id']
+    opponent_board = gameModel.opponent_board player['id']
+    shoot_count = shoot_everywhere_in_the_board(opponent_board, game, player)
+    number_of_shots_to_board1_saved_in_db = opponent_board.shoots.length
+    assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
+    get "/#{player['token']}/game/#{game['id']}/shoot/?x=0&y=0"
+    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
+    assert_equal number_of_shots_to_board1_saved_in_db, opponent_board.shoots.length, 'Unexpected number of shoots'
+    opponent_board.shoots.each do |s|
+      assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
+    end
+  end
+
+  def shoot_everywhere_in_the_board(opponent_board, game, player)
+    shoot_count = 0
+
+
+    shoot_count
+  end
+
+  def perfect_shoot_to_board_and_sink_all_ships(player, game)
+    gameModel = Game.find game['id']
+    opponent_board = gameModel.opponent_board player['id']
+    shoot_count = shoot_all_ships(opponent_board, game, player)
+    number_of_shots_to_board1_saved_in_db = opponent_board.shoots.length
+    assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
+    get "/#{player['token']}/game/#{game['id']}/shoot/?x=0&y=0"
+    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
+    assert_equal number_of_shots_to_board1_saved_in_db, opponent_board.shoots.length, 'Unexpected number of shoots'
+    opponent_board.shoots.each do |s|
+      assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
+    end
+  end
 
   def shoot_all_ships(board, game, player)
     shoot_count = 0
