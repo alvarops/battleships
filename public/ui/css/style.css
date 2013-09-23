@@ -14,10 +14,12 @@ ul li {list-style:none;}
 .form-signin {width: 350px;margin: 50px auto;text-align: center}
 
 .playerContainer{float:left; margin:2em;}
+.playerContainer .player-name {font-weight: bold;font-size: 18px;line-height: 18px;margin-right:20px;}
+.playerContainer .badge {vertical-align:top;}
 .playerContainer .log {display:none;}
 
-ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;}
-.board li{border-left:1px solid #ccc;border-top:1px solid #ccc;width:10px; height:10px;float:left;}
+ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;margin-top:10px;}
+.board li{border-left:1px solid #ccc;border-top:1px solid #ccc;width:5px; height:5px;float:left;}
 .board .hit{background-color:orange;}
 .board .miss{background-color:#ccccff;}
 .board .hitsunk{background-color:red;}
@@ -31,10 +33,10 @@ ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidd
 .hitsunk{color:red;}
 .samespot{color:black;}
 
-.available-ships {overflow: hidden;height: 300px}
-.available-ships li {width: 10px;height: 10px;background-color: #ccc;float: left;}
+.available-ships {overflow: hidden;}
+.available-ships li {width: 5px;height: 5px;background-color: #ccc;float: left;}
 .available-ships li.shape {background-color: black;}
-.available-ships ul {width: 80px;float: left;margin: 5px;}
+.available-ships ul {width: 40px;float: left;margin: 5px;}
 .available-ships ul.dragging {opacity: 0.3;}
 
 
