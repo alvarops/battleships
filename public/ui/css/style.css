@@ -14,14 +14,10 @@ ul li {list-style:none;}
 .form-signin {width: 350px;margin: 50px auto;text-align: center}
 
 .playerContainer{float:left; margin:2em;}
-.playerContainer > ul {display:none;}
+.playerContainer .log {display:none;}
 
-
-.board {border-collapse: collapse;margin:1em;overflow:hidden;border-right: 2px solid;
-    border-bottom: 2px solid;
-    border-color: #ccc;}
-.board td{border:1px solid #ccc;}
-.board div{width:5px; height:5px;}
+ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;}
+.board li{border-left:1px solid #ccc;border-top:1px solid #ccc;width:5px; height:5px;float:left;}
 .board .hit{background-color:orange;}
 .board .miss{background-color:#ccccff;}
 .board .hitsunk{background-color:red;}

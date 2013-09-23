@@ -219,6 +219,10 @@ class GameController < ApplicationController
         @positions.push p
       end
     end
+
+    if params[:format] == 'json'
+      render json: @positions
+    end
   end
 
   def join

@@ -107,9 +107,21 @@ $(function(){
                     success : function(data) {
                         $('.body').append('<h1>Game Id: ' + gameId + '</h1>');
                         $('.body').append('<button id="show_shoots" type="button" class="btn btn-primary">Show opponent shoots</button>');
+                        $('.body').append('<button id="randomize_ships" type="button" class="btn btn-primary">Randomize ships</button>');
                         $('.body').append($('<div/>', {class: 'available-ships'}));
                         $('#show_shoots').click(function () {
                             BS._fn.showOpponentShoots(gameId);   
+                        });
+                        $('#randomize_ships').click(function () {
+                            console.log('Randomizing ships placement');
+                            $.ajax({
+                                url: '/' + BS._vars.testToken + '/game/' + gameId + '/randomize',
+                                cache: false,
+                                success: function (data) {
+                                    BS._fn.showShipPlacement(gameId);
+                                },
+                                error: BS._fn.ajaxError
+                            });
                         });
                         $.each(data, function (index, value) {
                            var type = index;
@@ -130,7 +142,7 @@ $(function(){
                             canDrop : function(dst, src) {
                                 $('.board .decision, .board .impossible').removeClass('decision impossible');
                                 var dstx, dsty, impossible = false;
-                                if (dst.is('.board td')) {
+                                if (dst.is('.board li')) {
                                     dstx = parseInt(dst.attr('x'));
                                     dsty = parseInt(dst.attr('y'));
                                     src.find('li.shape').each(function () {
@@ -181,14 +193,22 @@ $(function(){
                 BS._fn.game.sizeY = data.height;
                 $('.body').append(BS._fn.game.drawBoard(0, 'Test Player'));
 
-//                        $.ajax({
-//                            url: '/' + BS._vars.testToken + '/game/' + gameId + '/show.json',
-//                            cache: false,
-//                            //type : 'json', 
-//                            success : function(positionsData) {
-//                                BS.arrange.drawBoard(gameData.width, gameData.height, positionsData);
-//                            }
-//                        });
+            },
+
+            showShipPlacement : function(gameId) {
+                console.log('Drawing ships placement');
+                $.ajax({
+                    url: '/' + BS._vars.testToken + '/game/' + gameId + '/show.json',
+                    cache: false,
+                    //type : 'json', 
+                    success : function(positionsData) {
+                        console.log(positionsData);
+                        $.each(positionsData, function () {
+                            $('.board li.' + this.x + '-' + this.y).addClass('position'); 
+                        });
+                    }
+                });
+
             },
 
             showOpponentShoots : function(gameId) {
@@ -261,15 +281,15 @@ $(function(){
                 drawBoard : function (id, name) {
                     var i = 0;
                     var j = 0;
-                    var h = '<div class="playerContainer" id="container' + id + '"><h2>' + name + '</h2><table class="board" id="board' + id + '">';
+                    var h = '<div class="playerContainer" id="container' + id + '"><h2>' + name + '</h2><ul style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
                     for(i = 0; i < this.sizeY; i++){
-                        h += '<tr>';
+                        //h += '<tr>';
                         for(j = 0; j < this.sizeX; j++){
-                            h += '<td class="' + j + '-' + i + '" x="' + j + '" y="' + i + '"><div class="empty"></div></td>';
+                            h += '<li class="' + j + '-' + i + '" x="' + j + '" y="' + i + '"><div class="empty"></div></li>';
                         }
-                        h += '</tr>';
+                        //h += '</tr>';
                     }
-                    h += '</table><h3>Game log</h3><ul id="log' + id + '"></ul></div>';
+                    h += '</ul><div class="log"><h3>Game log</h3><ul id="log' + id + '"></ul></div></div>';
                     return h;
                 },
                 
@@ -282,12 +302,12 @@ $(function(){
                 },
 
                 shot : function (id, data, num) {
-                    var elem=$('#board' + id + ' tr').eq(data.y).find('td').eq(data.x);
+                    var elem=$('#board' + id + ' li.' + data.x + '-' + data.y);
                     var shotStatus = data.result;
                     if ($(elem).find('div.empty').length === 0){
                         shotStatus = 'samespot';
                     }
-                    $(elem).html('<div class="ship_' + data.shipId + ' '  + shotStatus + '"></div>');
+                    $(elem).addClass(shotStatus); //html('<div class="ship_' + data.shipId + ' '  + shotStatus + '"></div>');
                     console.log(shotStatus);
                     if (shotStatus === 'sunk') {
                         console.log(shotStatus);
