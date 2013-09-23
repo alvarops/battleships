@@ -118,9 +118,15 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     shoot_count = shoot_everywhere_in_the_board(game, player)
     number_of_shots_to_board1_saved_in_db = opponent_board.shoots.length
     assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
+
+    opponent_board.shoots.each do |s|
+      assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
+    end
+
     get "/#{player['token']}/game/#{game['id']}/shoot/?x=#{gameModel.width}&y=#{gameModel.height}"
     assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
     assert_equal number_of_shots_to_board1_saved_in_db, opponent_board.shoots.length, 'Unexpected number of shoots'
+
     opponent_board.shoots.each do |s|
       assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
     end
@@ -155,6 +161,11 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     shoot_count = shoot_all_ships(opponent_board, game, player)
     number_of_shots_to_board1_saved_in_db = opponent_board.shoots.length
     assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
+    opponent_board.shoots.each do |s|
+      assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
+    end
+
+
     get "/#{player['token']}/game/#{game['id']}/shoot/?x=0&y=0"
     assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
     assert_equal number_of_shots_to_board1_saved_in_db, opponent_board.shoots.length, 'Unexpected number of shoots'

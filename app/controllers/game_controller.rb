@@ -143,8 +143,8 @@ class GameController < ApplicationController
             if g
               opponent_board = g.opponent_board @current_player.id
               if opponent_board && opponent_board.ships && opponent_board.ships.length == ShipModels::SHIP_MODELS.length
-                  g.status='fight'
-                  g.save
+                g.status='fight'
+                g.save
               end
             end
           end
@@ -185,11 +185,11 @@ class GameController < ApplicationController
       shoot = create_shoot(opponents_board)
 
       #FIXME: game status has to be known at this point
-
+      #GAME STATUS
       shoot.status = game.status
 
       if shoot.save
-        render_shoot(shoot)
+        update_shoot_result_and_render(shoot)
       else
         @out = {json: shoot.errors}
       end
@@ -247,7 +247,7 @@ class GameController < ApplicationController
 
   private
 
-  def render_shoot(shoot)
+  def update_shoot_result_and_render(shoot)
     positions = Array.new
     shoot.board.ships.each do |s|
       s.positions.all? { |p| positions.push p }
@@ -275,6 +275,10 @@ class GameController < ApplicationController
       shoot.save
       @out = {json: {board_id: shoot.board.id, x: shoot.x, y: shoot.y, ship_status: shoot.result, status: shoot.status}}
     end
+
+    if shoot.result.nil?
+      puts shoot.to_json
+    end
   end
 
   def create_shoot(opponents_board)
@@ -283,6 +287,7 @@ class GameController < ApplicationController
       s.board_id = opponents_board.id
       s.x = params[:x]
       s.y = params[:y]
+      s.result = 'hitsunk'
     end
   end
 
