@@ -1,7 +1,7 @@
 $(function(){
     var BS = {
         _vars: {
-            testToken : 'EScmhnrLvKFZz4Lu0Gb5eA'}
+            testToken : prompt("Please enter your token", "wpcfku7s19obfk1KyDPvqw")}
         ,
 
         _fn : {
@@ -81,7 +81,7 @@ $(function(){
 
             showAllGames : function () {
                 that = this;
-                $.ajax('/game/list', {
+                $.ajax('/game/listforpreview', {
                     cache: false,
                     success: that.renderGameList,
                     error: BS._fn.ajaxError
@@ -281,7 +281,8 @@ $(function(){
                 drawBoard : function (id, name) {
                     var i = 0;
                     var j = 0;
-                    var h = '<div class="playerContainer" id="container' + id + '"><h2>' + name + '</h2><ul style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
+                    var PIXEL_WIDTH = 10;
+                    var h = '<div class="playerContainer" id="container' + id + '"><h2>' + name + '</h2><ul style="width: ' + ((this.sizeX * PIXEL_WIDTH) + 1) + 'px;" class="board" id="board' + id + '">';
                     for(i = 0; i < this.sizeY; i++){
                         //h += '<tr>';
                         for(j = 0; j < this.sizeX; j++){
