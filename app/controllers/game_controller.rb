@@ -74,7 +74,7 @@ class GameController < ApplicationController
             my_game=true
           end
         end
-        if my_game
+        if not my_game
           filtered_games.push game
         end
       end
