@@ -77,8 +77,56 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player2, 'fight')
   end
 
+  test 'shooting test' do
+    player1, player2 = create_and_verify_players()
+    game = create_and_verify_game(player1)
+    join_game(game, player2)
+
+    request_and_verify_game_status(game, player2, 'ready')
+
+    set_ships_manually(game, player1)
+    request_and_verify_game_status(game, player1, 'ready')
+
+    randomize_ships(game, player2)
+    request_and_verify_game_status(game, player2, 'fight')
+
+    gameModel = Game.find game['id']
+
+    board2 = gameModel.opponent_board player1['id']
+    shoot_count = shoot_all_ships(board2, game, player1)
+    assert_equal shoot_count, board2.shoots.length, 'Number of logged shoots doesnt match number of actual shoots'
+    request_and_verify_game_status(game, player1, 'fight')
+    get "/#{player1['token']}/game/#{game['id']}/shoot/?x=0&y=0"
+    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], "Missing error message: #{resp_body}"
+
+    board1 = gameModel.opponent_board player2['id']
+    shoot_count = shoot_all_ships(board1, game, player2)
+    number_of_shots_to_board1_saved_in_db = board1.shoots.length
+    assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
+
+    get "/#{player2['token']}/game/#{game['id']}/shoot/?x=0&y=0"
+    assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
+
+    assert_equal number_of_shots_to_board1_saved_in_db, board1.shoots.length, 'Unexpected number of shoots'
+
+    request_and_verify_game_status(game, player2, 'end')
+  end
+
 
   private
+
+  def shoot_all_ships(board, game, player)
+    shoot_count = 0
+    board.ships.each do |s|
+      s.positions.each do |p|
+        get "/#{player['token']}/game/#{game['id']}/shoot/?x=#{p.x}&y=#{p.y}"
+        assert resp_body['ship_status'].include?('hit') || resp_body['ship_status'].include?('sunk'), "Unexpected miss: Resp=#{resp_body['ship_status']}"
+        shoot_count +=1
+      end
+    end
+    shoot_count
+  end
+
 
   def set_ships_manually(game, player)
     # change game width so it will be easier to set ships manually in this test

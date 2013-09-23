@@ -45,6 +45,8 @@ $(function () {
             $.getJSON(url + "?callback=?", function (response) {
                 if (typeof response.error !== 'undefined') {
                     console.error(response.error)
+                } else if (response.length == 0) {
+                    alert('No games on the list');
                 } else {
                     console.log("List of available games");
                     that.body.empty();
@@ -92,6 +94,9 @@ $(function () {
         listMyCurrentGames: function () {
             this.listGames(this.serverUrlWithToken() + "game/listongoing");
         },
+        listReadyGames: function () {
+            this.listGames(this.serverUrlWithToken() + "game/listready");
+        },
         bindEvents: function () {
             var that = this;
             $("#menuCreateGame").click(function () {
@@ -105,6 +110,9 @@ $(function () {
             });
             $("#menuListCurrentGames").click(function () {
                 that.listMyCurrentGames();
+            });
+            $("#menuListReadyGames").click(function () {
+                that.listReadyGames();
             });
             $("#menuLogIn").click(function () {
                 that.logIn();
