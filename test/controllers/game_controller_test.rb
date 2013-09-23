@@ -97,10 +97,10 @@ class GameControllerTest < ActionController::TestCase
   end
 
   test 'shoud list the finished games' do
-    get :list, status: 'end'
+    get :list, status: 'finished'
     resp = JSON.parse @response.body
     assert @response.success?, 'unsuccessful response from GAME STATUS'
-    finished = Game.where status: 'end'
+    finished = Game.where status: 'finished'
     assert_equal resp.length, finished.length, 'Incorrect number of finished games'
   end
 
@@ -330,6 +330,28 @@ class GameControllerTest < ActionController::TestCase
         p2_board.shoots.push p2_shoot
       end
     end
+
+    assert_equal true, game.finished?
+  end
+
+
+  test 'game is finished if both players sunk all their ships' do
+    game = Game.create({width: 2, height: 2})
+    p1 = Player.create({name: 'Bob'})
+    p2 = Player.create({name: 'Frank'})
+
+    game.players.push p1
+    game.players.push p2
+    game.status = 'fight'
+
+    p1_board = game.boards.first
+    p2_board = game.boards.last
+
+    p1_board.ships.push Ship.new({t: 'cruiser'})
+    p2_board.ships.push Ship.new({t: 'cruiser'})
+
+    p1_board.ships.first.positions.push Position.new({x: 0, y: 0, hit: true })
+    p2_board.ships.first.positions.push Position.new({x: 0, y: 0, hit: true })
 
     assert_equal true, game.finished?
   end

@@ -18,7 +18,7 @@ class GameController < ApplicationController
     end
 
     game = Game.find_by_id params[:id]
-    if game && game.opponent_board(player2.id) && game.player_board(@current_player) && (game.status=='fight' || game.status =='end')
+    if game && game.opponent_board(player2.id) && game.player_board(@current_player) && (game.status=='fight' || game.status =='finished')
       game.boards.each do |board|
         board.shoots.delete_all
       end
@@ -55,7 +55,7 @@ class GameController < ApplicationController
       status = params[:status]
       games = Game.where status: status
     elsif params[:forpreview] == 'true'
-      games = Game.where("status = 'fight' OR status = 'end'")
+      games = Game.where("status = 'fight' OR status = 'finished'")
     end
 
     filtered_games = []

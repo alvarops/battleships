@@ -16,8 +16,8 @@ Battleships::Application.routes.draw do
 
   get '/game/list', to: 'game#list', status: 'created'
 
-  get '/game/listfinished', to: 'game#list', status: 'end'
-  get ':token/game/listfinished', to: 'game#list', status: 'end'
+  get '/game/listfinished', to: 'game#list', status: 'finished'
+  get ':token/game/listfinished', to: 'game#list', status: 'finished'
 
   get '/game/listongoing', to: 'game#list', status: 'fight'
   get ':token/game/listongoing', to: 'game#list', status: 'fight'

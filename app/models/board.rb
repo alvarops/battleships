@@ -25,7 +25,21 @@ class Board < ActiveRecord::Base
   end
 
 
+
+  def finished?
+    all_shots_fired? or all_ships_sunk?
+  end
+
   private
+
+  def all_shots_fired?
+    (self.shoots.size == self.game.width * self.game.height)
+  end
+
+  def all_ships_sunk?
+    (self.ships.all? { |s| s.status == :sunk })
+  end
+
 
   def already_exist?(ship)
     self.ships.each do |existing_ship|

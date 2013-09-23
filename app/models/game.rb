@@ -18,23 +18,24 @@ class Game < ActiveRecord::Base
     return true if self.status == 'finished'
     return false if self.status != 'fight'
 
-    all_shoots = true
+    game_finished = true
 
     self.boards.each do |board|
-      all_shots &&= (board.shoots.size == self.width * self.height)
+      game_finished &&= board.finished?
     end
 
-    all_shoots
+    game_finished
   end
 
   def finalize
     self.status = 'finished'
+    save
   end
 
   private
 
   def update_state
-    if self.status != 'end' && self.status != 'fight'
+    if self.status != 'finished' and self.status != 'fight'
       if self.players.size == 2
         self.status = 'ready'
       elsif self.players.size < 2

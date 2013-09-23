@@ -13,7 +13,7 @@ class Shoot < ActiveRecord::Base
       errors.add :error, 'You shoot out of the board'
     elsif !self.board.game.players.find_by(id:self.player.id)
       errors.add :error, 'This is not your game'
-    elsif self.board.game.status != 'fight'
+    elsif self.board.game.status != 'fight' and self.board.game.status != 'finished'
       errors.add  :error, 'Game is not ready'
     elsif board.ships.size == 0
       errors.add  :error, 'Opponent\'s ships are not ready'
