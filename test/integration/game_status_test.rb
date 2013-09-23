@@ -93,17 +93,32 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player2, 'finished')
   end
 
+  test 'poor shooting' do
+    player1, player2 = create_and_verify_players()
+    game = create_and_verify_game(player1)
+    join_game(game, player2)
+    request_and_verify_game_status(game, player2, 'ready')
+    randomize_ships(game, player1)
+    request_and_verify_game_status(game, player1, 'ready')
+    randomize_ships(game, player2)
+    request_and_verify_game_status(game, player2, 'fight')
 
+    poor_shoot_to_board_and_sink_all_ships player1, game
+    request_and_verify_game_status(game, player1, 'fight')
+    poor_shoot_to_board_and_sink_all_ships player2, game
+    request_and_verify_game_status(game, player2, 'finished')
+
+  end
 
   private
 
   def poor_shoot_to_board_and_sink_all_ships(player, game)
     gameModel = Game.find game['id']
     opponent_board = gameModel.opponent_board player['id']
-    shoot_count = shoot_everywhere_in_the_board(opponent_board, game, player)
+    shoot_count = shoot_everywhere_in_the_board(game, player)
     number_of_shots_to_board1_saved_in_db = opponent_board.shoots.length
     assert_equal shoot_count, number_of_shots_to_board1_saved_in_db, 'Number of logged shoots doesnt match number of actual shoots'
-    get "/#{player['token']}/game/#{game['id']}/shoot/?x=0&y=0"
+    get "/#{player['token']}/game/#{game['id']}/shoot/?x=#{gameModel.width}&y=#{gameModel.height}"
     assert_equal "All your opponent's ships are sunk", resp_body['error'][0], 'Missing error message'
     assert_equal number_of_shots_to_board1_saved_in_db, opponent_board.shoots.length, 'Unexpected number of shoots'
     opponent_board.shoots.each do |s|
@@ -111,9 +126,25 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     end
   end
 
-  def shoot_everywhere_in_the_board(opponent_board, game, player)
+  def shoot_everywhere_in_the_board(game, player)
     shoot_count = 0
-
+    x=0
+    y=0
+    game['height'].times do
+      game['width'].times do
+        get "/#{player['token']}/game/#{game['id']}/shoot/?x=#{x}&y=#{y}"
+        if resp_body['ship_status']
+          shoot_count+=1
+        elsif resp_body['error']
+          return shoot_count
+        else
+          fail_on "Unknowe response: #{resp_body}"
+        end
+        x +=1
+      end
+      x = 0
+      y +=1
+    end
 
     shoot_count
   end
