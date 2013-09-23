@@ -14,9 +14,11 @@ ul li {list-style:none;}
 .form-signin {width: 350px;margin: 50px auto;text-align: center}
 
 .playerContainer{float:left; margin:2em;}
+.playerContainer .player-name {font-weight: bold;font-size: 18px;line-height: 18px;margin-right:20px;}
+.playerContainer .badge {vertical-align:top;}
 .playerContainer .log {display:none;}
 
-ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;}
+ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;margin-top:10px;}
 .board li{border-left:1px solid #ccc;border-top:1px solid #ccc;width:5px; height:5px;float:left;}
 .board .hit{background-color:orange;}
 .board .miss{background-color:#ccccff;}

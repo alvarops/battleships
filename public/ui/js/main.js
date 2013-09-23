@@ -81,7 +81,7 @@ $(function(){
 
             showAllGames : function () {
                 that = this;
-                $.ajax('/game/list', {
+                $.ajax('/game/listforpreview', {
                     cache: false,
                     success: that.renderGameList,
                     error: BS._fn.ajaxError
@@ -91,6 +91,29 @@ $(function(){
 
             showGameProgress : function (gameId) {
                 BS._fn.game.displayGame(gameId);
+            },
+
+            canDrop : function(dst, src) {
+                $('.board .decision, .board .impossible').removeClass('decision impossible');
+                var dstx, dsty, impossible = false;
+                if (dst.is('.board li')) {
+                    dstx = parseInt(dst.attr('x'));
+                    dsty = parseInt(dst.attr('y'));
+                    src.find('li.shape').each(function () {
+                        var $field = $('.board .' + (parseInt($(this).attr('x')) + dstx) + '-' + (parseInt($(this).attr('y')) + dsty));
+                        if ($field.length > 0) {
+                            $field.addClass('decision'); 
+                        } else {
+                            impossible = true;
+                        }
+                    });
+                    if (impossible) {
+                        $('.board .decision').addClass('impossible');
+                    } else {
+                        return true;
+                    }
+                } 
+                return false;
             },
 
             arrangeTestGame : function(data) {
@@ -104,10 +127,12 @@ $(function(){
                 $.ajax({
                     url: '/ship/list',
                     cache: false,
+                    async: false,
                     success : function(data) {
                         $('.body').append('<h1>Game Id: ' + gameId + '</h1>');
                         $('.body').append('<button id="show_shoots" type="button" class="btn btn-primary">Show opponent shoots</button>');
                         $('.body').append('<button id="randomize_ships" type="button" class="btn btn-primary">Randomize ships</button>');
+                        $('.body').append('<button id="reset_game" type="button" class="btn btn-primary">Reset this game</button>');
                         $('.body').append($('<div/>', {class: 'available-ships'}));
                         $('#show_shoots').click(function () {
                             BS._fn.showOpponentShoots(gameId);   
@@ -116,6 +141,17 @@ $(function(){
                             console.log('Randomizing ships placement');
                             $.ajax({
                                 url: '/' + BS._vars.testToken + '/game/' + gameId + '/randomize',
+                                cache: false,
+                                success: function (data) {
+                                    $('.board li').removeClass('position');
+                                    BS._fn.showShipPlacement(gameId);
+                                },
+                                error: BS._fn.ajaxError
+                            });
+                        });
+                        $('#reset_game').click(function () {
+                            $.ajax({
+                                url: '/' + BS._vars.testToken + '/game/' + gameId + '/restart',
                                 cache: false,
                                 success: function (data) {
                                     BS._fn.showShipPlacement(gameId);
@@ -139,28 +175,7 @@ $(function(){
                         $('.available-ships .ship').dragdrop({
                             clone: true,
                             dragClass: 'dragging',
-                            canDrop : function(dst, src) {
-                                $('.board .decision, .board .impossible').removeClass('decision impossible');
-                                var dstx, dsty, impossible = false;
-                                if (dst.is('.board li')) {
-                                    dstx = parseInt(dst.attr('x'));
-                                    dsty = parseInt(dst.attr('y'));
-                                    src.find('li.shape').each(function () {
-                                        var $field = $('.board .' + (parseInt($(this).attr('x')) + dstx) + '-' + (parseInt($(this).attr('y')) + dsty));
-                                        if ($field.length > 0) {
-                                            $field.addClass('decision'); 
-                                        } else {
-                                            impossible = true;
-                                        }
-                                    });
-                                    if (impossible) {
-                                        $('.board .decision').addClass('impossible');
-                                    } else {
-                                        return true;
-                                    }
-                                } 
-                                return false;
-                            },
+                            canDrop : BS._fn.canDrop,
                             didDrop : function(src, dst) {
                                 var dstx = parseInt(dst.attr('x')),
                                     dsty = parseInt(dst.attr('y')),
@@ -192,17 +207,18 @@ $(function(){
                 BS._fn.game.sizeX = data.width;
                 BS._fn.game.sizeY = data.height;
                 $('.body').append(BS._fn.game.drawBoard(0, 'Test Player'));
+                BS._fn.events.attachResizeEvents();
 
             },
 
             showShipPlacement : function(gameId) {
                 console.log('Drawing ships placement');
+                $('.board li').removeClass('position');
                 $.ajax({
                     url: '/' + BS._vars.testToken + '/game/' + gameId + '/show.json',
                     cache: false,
                     //type : 'json', 
                     success : function(positionsData) {
-                        console.log(positionsData);
                         $.each(positionsData, function () {
                             $('.board li.' + this.x + '-' + this.y).addClass('position'); 
                         });
@@ -235,6 +251,29 @@ $(function(){
                     error: BS._fn.ajaxError
                 });
             },
+
+            events : {
+                attachResizeEvents : function () {
+                    $(document).off('click', '.playerContainer .badge').on('click', '.playerContainer .badge', function () {
+                        var $board = $('ul.board'),
+                            boardWidth = parseInt($board.attr('width')),
+                            currentLiWidth = parseInt($board.find('li').first().css('width').slice(0,-2));
+                        if ($(this).hasClass('smaller')) {
+                            if (currentLiWidth < 10) {
+                                console.log('The board piece cannot be smaller');
+                            } else {
+                                $board.find('li').css({width: (currentLiWidth - 5) + 'px', height: (currentLiWidth - 5) + 'px'});
+                                $board.css('width', ((currentLiWidth - 5) * boardWidth + 1) + 'px');
+                            }
+                        } else {
+                            console.log('Bigger');
+                            $board.find('li').css({width: (currentLiWidth + 5) + 'px', height: (currentLiWidth + 5) + 'px'});
+                            $board.css('width', ((currentLiWidth + 5) * boardWidth + 1) + 'px');
+                        }
+                    });
+                }
+            },
+                
 
             game : {
                 gameId : 0,
@@ -281,7 +320,7 @@ $(function(){
                 drawBoard : function (id, name) {
                     var i = 0;
                     var j = 0;
-                    var h = '<div class="playerContainer" id="container' + id + '"><h2>' + name + '</h2><ul style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
+                    var h = '<div class="playerContainer" id="container' + id + '"><span class="player-name">' + name + '</span><span class="badge bigger"><i class="glyphicon-plus"></i></span>/<span class="badge smaller"><i class="glyphicon-minus"></i></span><ul width="' + this.sizeX + '" style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
                     for(i = 0; i < this.sizeY; i++){
                         //h += '<tr>';
                         for(j = 0; j < this.sizeX; j++){
@@ -292,13 +331,14 @@ $(function(){
                     h += '</ul><div class="log"><h3>Game log</h3><ul id="log' + id + '"></ul></div></div>';
                     return h;
                 },
-                
+
                 drawBoards : function () {
                     var i = 0;
                     for(i = 0; i < this.data.boards.length; i++){
                         $('.body').append(this.drawBoard(this.data.boards[i].id, this.data.players[i].name));
                     }
                     $('.body').append('<div class="clear"></div>');
+                    BS._fn.events.attachResizeEvents();
                 },
 
                 shot : function (id, data, num) {
