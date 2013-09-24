@@ -29,7 +29,7 @@ class Game < ActiveRecord::Base
 
   def finalize
     self.status = 'finished'
-    save
+    save!
   end
 
   private

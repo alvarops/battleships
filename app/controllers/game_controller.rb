@@ -181,29 +181,25 @@ class GameController < ApplicationController
     opponents_board = game.opponent_board @current_player.id
 
     if !opponents_board.nil? #is there is anything to shot at?
-
       shoot = create_shoot(opponents_board)
-
-      #FIXME: game status has to be known at this point
-      #GAME STATUS
       shoot.status = game.status
-
       if shoot.save
         update_shoot_result_and_render(shoot)
       else
-        @out = {json: shoot.errors}
+        @out = {json: shoot.errors, game_status: shoot.status}
       end
-
     else
       @out = {json: {error: ['There is no opponent']}}
     end
 
-    if game.finished?
+    if game.finished? && @out['error'].nil?
       game.finalize
+      @out[:json]['game_status'] = game.status
+      render json: @out[:json]
+      return
     end
 
-    render json: @out[:json], status: @out[:status]
-
+    render json: @out[:json]
   end
 
   def show
@@ -269,11 +265,11 @@ class GameController < ApplicationController
         shoot.result='hit'
       end
       shoot.save
-      @out = {json: {x: shoot.x, y: shoot.y, ship_type: found.ship.t, ship_status: found.ship.status, status: shoot.status}}
+      @out = {json: {board_id: shoot.board.id, x: shoot.x, y: shoot.y, ship_status: found.ship.status, game_status: shoot.status, ship_type: found.ship.t}}
     else
       shoot.result= 'miss'
       shoot.save
-      @out = {json: {board_id: shoot.board.id, x: shoot.x, y: shoot.y, ship_status: shoot.result, status: shoot.status}}
+      @out = {json: {board_id: shoot.board.id, x: shoot.x, y: shoot.y, ship_status: shoot.result, game_status: shoot.status}}
     end
 
     if shoot.result.nil?

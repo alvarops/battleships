@@ -52,7 +52,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_not_nil shoot
     assert_nil shoot['ship_type']
     assert_equal 'miss', shoot['ship_status']
-    assert_equal 'fight', shoot['status']
+    assert_equal 'fight', shoot['game_status']
   end
 
   test 'should get the ship description if hit' do
@@ -128,7 +128,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
     assert_equal 'All your opponent\'s ships are sunk', error['error'][0]
   end
 
-  test 'game status should be set to "finish" after all shoots are fired'  do
+  test 'game status should be finish after all shoots are fired' do
     game = Game.create do |g|
       g.width = 5
       g.height = 5
@@ -141,16 +141,18 @@ class NewShootTest < ActionDispatch::IntegrationTest
       p.name = 'Frank'
     end
 
+    assert p2, 'Player 2 doesnt exist'
+
     game.players.push p1
     game.players.push p2
 
     ship = Ship.new({t: 'cruiser'})
-    ship.positions.push Position.new({x: 4, y: 4})
+    ship.positions.push Position.new({x: 2, y: 2})
 
     game.boards.first.ships.push ship
 
     ship = Ship.new({t: 'cruiser'})
-    ship.positions.push Position.new({x: 0, y: 0})
+    ship.positions.push Position.new({x: 2, y: 2})
 
     game.boards.last.ships.push ship
 
@@ -167,10 +169,7 @@ class NewShootTest < ActionDispatch::IntegrationTest
         get "#{p2.token}/game/#{game.id}/shoot", {:x => i, :y => j}
       end
     end
-
-    assert_equal 'finished', game.status
-
+    assert_equal 'finished', Game.find(game.id).status, 'wrong game status'
   end
-
 
 end
