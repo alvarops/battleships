@@ -128,6 +128,10 @@ $(function () {
                 that.currentGameId = this.value;
                 that.playGame();
             });
+            this.body.on('click', 'button.startShooting', function () {
+                that.currentGameId = this.value;
+                that.startShooting();
+            });
         },
         updateActiveGameStatus: function (callback) {
             var that = this;
@@ -161,14 +165,15 @@ $(function () {
             that.body.empty();
             that.updateActiveGameStatus(function () {
                 that.setShips(function () {
-                    that.startShooting();
+                    that.body.append("<button class='startShooting' value='" + that.currentGameId + "'>START SHOOTING</button>");
                 });
             });
         },
         startShooting: function () {
             // TODO: implement your algorithm here
             var that = this;
-            this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame.id) + "</p>");
+            this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame.id) + " DONE</p>");
+            this.body.find("button.startShooting").remove();
             for (var y = 0; y < this.currentGame.height; y++) {
                 for (var x = 0; x < this.currentGame.width; x++) {
                     var self = this;

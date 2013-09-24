@@ -5,9 +5,9 @@ class GameController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotUnique, :with => :rescue_duplicate
 
-  MAX_NUMBER_OF_PIXELS = 800
-  MAX_WIDTH = 80
-  MIN_WIDTH=10
+  MAX_NUMBER_OF_PIXELS = 600
+  MAX_WIDTH = 50
+  MIN_WIDTH=20
   VARIABLE_SIZE=1
 
   def restart
