@@ -3,7 +3,7 @@ $(function () {
 
     var CLIENT = {
         token: $.cookie('token'),
-        serverUrl: "http://battleships/",
+        serverUrl: "http://battleships-master-env-kummkavdrx.elasticbeanstalk.com/",    /* UPDATE HERE */
         body: $(".body"),
         header: $(".header"),
         name: 'Player',
