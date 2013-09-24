@@ -20,11 +20,11 @@ ul li {list-style:none;}
 
 ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;margin-top:10px;}
 .board li{border-left:1px solid #ccc;border-top:1px solid #ccc;width:5px; height:5px;float:left;}
+.board .position {background-color: black;}
 .board .hit{background-color:orange;}
 .board .miss{background-color:#ccccff;}
 .board .hitsunk{background-color:red;}
 .board .samespot{background-color:black;}
-.board .position {background-color: black;}
 .board .decision {background-color: green;}
 .board .impossible {background-color: red;}
 

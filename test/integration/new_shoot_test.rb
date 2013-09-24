@@ -161,8 +161,8 @@ class NewShootTest < ActionDispatch::IntegrationTest
 
     assert_equal 'fight', game.status
 
-    (0...5).each do |i|
-      (0...5).each do |j|
+    (0..4).each do |i|
+      (0..4).each do |j|
         get "#{p1.token}/game/#{game.id}/shoot", {:x => i, :y => j}
         get "#{p2.token}/game/#{game.id}/shoot", {:x => i, :y => j}
       end
