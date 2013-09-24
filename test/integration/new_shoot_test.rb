@@ -149,12 +149,12 @@ class NewShootTest < ActionDispatch::IntegrationTest
     ship = Ship.new({t: 'cruiser'})
     ship.positions.push Position.new({x: 2, y: 2})
 
-    game.boards.first.ships.push ship
+    game.player_board(p1.id).ships.push ship
 
     ship = Ship.new({t: 'cruiser'})
-    ship.positions.push Position.new({x: 2, y: 2})
+    ship.positions.push Position.new({x: 0, y: 0})
 
-    game.boards.last.ships.push ship
+    game.player_board(p2.id).ships.push ship
 
 
     game.status = 'fight' #just assuming
@@ -166,10 +166,13 @@ class NewShootTest < ActionDispatch::IntegrationTest
     (0..4).each do |i|
       (0..4).each do |j|
         get "#{p1.token}/game/#{game.id}/shoot", {:x => i, :y => j}
+        puts @response.body
         get "#{p2.token}/game/#{game.id}/shoot", {:x => i, :y => j}
+        puts @response.body
       end
     end
     assert_equal 'finished', Game.find(game.id).status, 'wrong game status'
+    assert_equal p1.id, Game.find(game.id).winner, 'wrong game status'
   end
 
 end

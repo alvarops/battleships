@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130924171214) do
+ActiveRecord::Schema.define(version: 20130924214423) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id",    null: false
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 20130924171214) do
     t.datetime "updated_at"
   end
 
-  add_index "boards", ["game_id"], name: "index_boards_on_game_id", using: :btree
-  add_index "boards", ["player_id"], name: "index_boards_on_player_id", using: :btree
+  add_index "boards", ["game_id"], name: "index_boards_on_game_id"
+  add_index "boards", ["player_id"], name: "index_boards_on_player_id"
 
   create_table "games", force: true do |t|
     t.string   "status",     default: "created"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20130924171214) do
     t.integer  "height",     default: 10
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "winner"
   end
 
   create_table "players", force: true do |t|
@@ -49,7 +50,7 @@ ActiveRecord::Schema.define(version: 20130924171214) do
     t.boolean  "hit",        default: false
   end
 
-  add_index "positions", ["ship_id"], name: "index_positions_on_ship_id", using: :btree
+  add_index "positions", ["ship_id"], name: "index_positions_on_ship_id"
 
   create_table "ships", force: true do |t|
     t.string   "t",          null: false
@@ -58,7 +59,7 @@ ActiveRecord::Schema.define(version: 20130924171214) do
     t.datetime "updated_at"
   end
 
-  add_index "ships", ["board_id"], name: "index_ships_on_board_id", using: :btree
+  add_index "ships", ["board_id"], name: "index_ships_on_board_id"
 
   create_table "shoots", force: true do |t|
     t.integer  "x",          null: false
@@ -72,8 +73,8 @@ ActiveRecord::Schema.define(version: 20130924171214) do
     t.string   "status"
   end
 
-  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true, using: :btree
-  add_index "shoots", ["board_id"], name: "index_shoots_on_board_id", using: :btree
-  add_index "shoots", ["player_id"], name: "index_shoots_on_player_id", using: :btree
+  add_index "shoots", ["board_id", "x", "y"], name: "index_shoots_on_board_id_and_x_and_y", unique: true
+  add_index "shoots", ["board_id"], name: "index_shoots_on_board_id"
+  add_index "shoots", ["player_id"], name: "index_shoots_on_player_id"
 
 end

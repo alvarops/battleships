@@ -29,7 +29,20 @@ class Game < ActiveRecord::Base
 
   def finalize
     self.status = 'finished'
-    save!
+    determine_winner
+    save
+  end
+
+  def determine_winner
+    count_p1 = boards.first.shoots.count
+    count_p2 = boards.last.shoots.count
+    if count_p1 > count_p2
+      self.winner = boards.first.player_id
+    elsif count_p1 < count_p2
+      self.winner = boards.last.player_id
+    else
+      self.winner = -1 # DRAW
+    end
   end
 
   private

@@ -193,9 +193,8 @@ class GameController < ApplicationController
     end
 
     if game.finished? && @out['error'].nil?
-      game.finalize
-      @out[:json]['game_status'] = game.status
-      render json: @out[:json]
+      game.finalize if game.status !='finished'
+      render json: @out[:json].to_hash.merge(game_status: game.status).merge(winner: game.winner)
       return
     end
 
