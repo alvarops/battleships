@@ -1,30 +1,90 @@
 $(function () {
     var BS = {
         _vars: {
-            testToken: (typeof $.cookie('token_test_player') !== "undefined" ? $.cookie('token_test_player') : prompt("Please enter your token", "-orsGMSc789m-Jk_97jivA"))},
+            testToken: (typeof $.cookie('token_test_player') !== "undefined" ? $.cookie('token_test_player') : prompt("Please enter your token", "-orsGMSc789m-Jk_97jivA")),
+            gameId : 0
+        },
 
-        _fn: {
-            ajaxError: function (xhr, status) {
-                console.log('Something went wrong: ' + status);
+        _fn : {
+            board : {
+                showShipPlacement : function() {
+                    console.log('Drawing ships placement');
+                    $('.board li').removeClass('position');
+                    $.ajax({
+                        url: '/' + BS._vars.testToken + '/game/' + BS._vars.gameId + '/show.json',
+                        cache: false,
+                        success : function(positionsData) {
+                            $.each(positionsData, function () {
+                                $('.board li.' + this.x + '-' + this.y).addClass('position'); 
+                            });
+                        }
+                    });
+
+                },
+
+                showOpponentShoots : function() {
+                    $.ajax({
+                        url: '/' + BS._vars.testToken + '/game/' + BS._vars.gameId + '/stats',
+                        cache: false,
+                        success : function(shootsData) {
+                            if (shootsData.players.length === 1) {
+                                alert('There\'s no opponent in this game');
+                            } else {
+                                BS._fn.game.data = shootsData;
+                                BS._fn.game.gameId = gameId;
+                                BS._fn.game.interval = 100;
+                                BS._fn.game.currentUser = 0;
+                                BS._fn.game.currentShot = 0;
+                                BS._fn.game.numOfFields = shootsData.width * shootsData.height;
+                                BS._fn.game.data.boards.splice(1,1);
+                                BS._fn.game.data.boards[0].id = 0;
+                                BS._fn.game.showNextShot();
+                                
+                            }
+
+                        },
+                        error: BS._fn.common.ajaxError
+                    });
+                },
+
+
+                randomizeShips : function () {
+                    console.log('Randomizing ships placement');
+                    $.ajax({
+                        url: '/' + BS._vars.testToken + '/game/' + BS._vars.gameId + '/randomize',
+                        cache: false,
+                        success: function (data) {
+                            $('.board li').removeClass('position');
+                            BS._fn.board.showShipPlacement();
+                        },
+                        error: BS._fn.common.ajaxError
+                    });
+                }
             },
 
-            clearScreen: function (completeCallback) {
-                $('.body').fadeOut(function () {
-                    $(this).html('');
-                    completeCallback();
-                    $(this).fadeIn();
-                });
+            common : {
+                ajaxError : function(xhr, status) {
+                    console.log('Something went wrong: ' + status);
+                },
+
+                clearScreen : function (completeCallback) {
+                    $('.body').fadeOut(function () {
+                        $(this).html('');
+                        completeCallback();
+                        $(this).fadeIn();
+                    });
+                }
             },
 
             showInitBox: function () {
                 $('.body').load('/ui/dialogs/login.html', function () {
                     $('#show_all_games').click(function () {
-                        BS._fn.clearScreen(function () {
+                        BS._fn.common.clearScreen(function () {
                             BS._fn.showAllGames();
                         });
                     });
                     $('#create_test_game').click(function () {
-                        BS._fn.clearScreen(function () {
+                        BS._fn.common.clearScreen(function () {
                             BS._fn.createTestGame();
                         });
                     });
@@ -33,7 +93,6 @@ $(function () {
 
             createTestGame: function () {
                 $.ajax('/' + BS._vars.testToken + '/game/new', {
-//                $.ajax('/' + BS._vars.testToken + '/game/39/stats', {
                     cache: false,
                     success: function (data) {
                         if (data.error) {
@@ -42,7 +101,7 @@ $(function () {
                             BS._fn.arrangeTestGame(data);
                         }
                     },
-                    error: BS._fn.ajaxError
+                    error: BS._fn.common.ajaxError
 
                 });
             },
@@ -72,8 +131,8 @@ $(function () {
 
                 $('.show-game-progress').click(function () {
                     var gameId = $(this).parent().parent().attr("id");
-                    BS._fn.clearScreen(function () {
-                        BS._fn.showGameProgress(gameId);
+                    BS._fn.common.clearScreen(function () {
+                        BS._fn.game.displayGame(gameId);
                     });
                 });
             },
@@ -83,16 +142,12 @@ $(function () {
                 $.ajax('/game/listforpreview', {
                     cache: false,
                     success: that.renderGameList,
-                    error: BS._fn.ajaxError
+                    error: BS._fn.common.ajaxError
                 });
 
             },
 
-            showGameProgress: function (gameId) {
-                BS._fn.game.displayGame(gameId);
-            },
-
-            canDrop: function (dst, src) {
+            canDrop : function(dst, src) {
                 $('.board .decision, .board .impossible').removeClass('decision impossible');
                 var dstx, dsty, impossible = false;
                 if (dst.is('.board li')) {
@@ -117,6 +172,7 @@ $(function () {
 
             arrangeTestGame: function (data) {
                 var gameId = data.id;
+                BS._vars.gameId = gameId;
                 var $shipTemplate = $('<ul/>').addClass('ship');
                 for (var y = 0; y < 8; y++) {
                     for (var x = 0; x < 8; x++) {
@@ -134,28 +190,17 @@ $(function () {
                         $('.body').append('<button id="reset_game" type="button" class="btn btn-primary">Reset this game</button>');
                         $('.body').append($('<div/>', {class: 'available-ships'}));
                         $('#show_shoots').click(function () {
-                            BS._fn.showOpponentShoots(gameId);
+                            BS._fn.board.showOpponentShoots(gameId);   
                         });
-                        $('#randomize_ships').click(function () {
-                            console.log('Randomizing ships placement');
-                            $.ajax({
-                                url: '/' + BS._vars.testToken + '/game/' + gameId + '/randomize',
-                                cache: false,
-                                success: function (data) {
-                                    $('.board li').removeClass('position');
-                                    BS._fn.showShipPlacement(gameId);
-                                },
-                                error: BS._fn.ajaxError
-                            });
-                        });
+                        $('#randomize_ships').click(BS._fn.board.randomizeShips);
                         $('#reset_game').click(function () {
                             $.ajax({
                                 url: '/' + BS._vars.testToken + '/game/' + gameId + '/restart',
                                 cache: false,
                                 success: function (data) {
-                                    BS._fn.showShipPlacement(gameId);
+                                    BS._fn.board.showShipPlacement(gameId);
                                 },
-                                error: BS._fn.ajaxError
+                                error: BS._fn.common.ajaxError
                             });
                         });
                         $.each(data, function (index, value) {
@@ -201,7 +246,7 @@ $(function () {
                             }
                         });
                     },
-                    error : BS._fn.ajaxError
+                    error : BS._fn.common.ajaxError
                 });
 
                 BS._fn.game.sizeX = data.width;
@@ -209,47 +254,6 @@ $(function () {
                 $('.body').append(BS._fn.game.drawBoard(0, 'Test Player'));
                 BS._fn.events.attachResizeEvents();
 
-            },
-
-            showShipPlacement: function (gameId) {
-                console.log('Drawing ships placement');
-                $('.board li').removeClass('position');
-                $.ajax({
-                    url: '/' + BS._vars.testToken + '/game/' + gameId + '/show.json',
-                    cache: false,
-                    //type : 'json', 
-                    success: function (positionsData) {
-                        $.each(positionsData, function () {
-                            $('.board li.' + this.x + '-' + this.y).addClass('position');
-                        });
-                    }
-                });
-
-            },
-
-            showOpponentShoots: function (gameId) {
-                $.ajax({
-                    url: '/' + BS._vars.testToken + '/game/' + gameId + '/stats',
-                    cache: false,
-                    success: function (shootsData) {
-                        if (shootsData.players.length === 1) {
-                            alert('There\'s no opponent in this game');
-                        } else {
-                            BS._fn.game.data = shootsData;
-                            BS._fn.game.gameId = gameId;
-                            BS._fn.game.interval = 100;
-                            BS._fn.game.currentUser = 0;
-                            BS._fn.game.currentShot = 0;
-                            BS._fn.game.numOfFields = shootsData.width * shootsData.height;
-                            BS._fn.game.data.boards.splice(1, 1);
-                            BS._fn.game.data.boards[0].id = 0;
-                            BS._fn.game.showNextShot();
-
-                        }
-
-                    },
-                    error: BS._fn.ajaxError
-                });
             },
 
             events: {
@@ -299,7 +303,7 @@ $(function () {
                             that.drawBoards();
                             that.showNextShot();
                         },
-                        error: BS._fn.ajaxError
+                        error: BS._fn.common.ajaxError
                     });
                 },
 
