@@ -31,7 +31,7 @@ $(function () {
                                 alert('There\'s no opponent in this game');
                             } else {
                                 BS._fn.game.data = shootsData;
-                                BS._fn.game.gameId = gameId;
+                                BS._fn.game.gameId = BS._vars.gameId;
                                 BS._fn.game.interval = 100;
                                 BS._fn.game.currentUser = 0;
                                 BS._fn.game.currentShot = 0;
@@ -92,7 +92,8 @@ $(function () {
             },
 
             createTestGame: function () {
-                $.ajax('/' + BS._vars.testToken + '/game/new', {
+//                $.ajax('/' + BS._vars.testToken + '/game/new', {
+                $.ajax('/game/7/stats', {
                     cache: false,
                     success: function (data) {
                         if (data.error) {
@@ -307,19 +308,45 @@ $(function () {
                     });
                 },
 
+                pollAndMergeNewShoots : function () {
+                    var that = this;
+                    $.ajax('/game/' + this.gameId + '/stats', {
+                        cache : false,
+                        success : function (data) {
+                            if (that.data.boards.length == 1) {
+                                data.boards.splice(1,1);
+                                data.boards[0].id = 0;
+                            }
+                            $.extend(that.data, data);
+                        },
+                        error : BS._fn.common.ajaxError
+                    }); 
+
+                },
+
                 showNextShot: function () {
                     var i = 0;
                     for (i = 0; i < this.data.boards.length; i++) {
                         if (typeof(this.data.boards[i].shoots[this.currentShot]) !== 'undefined') {
+                            console.log('drawing shot');
                             this.shot(this.data.boards[i].id, this.data.boards[i].shoots[this.currentShot], this.currentShot + 1);
                         }
                     }
-                    this.currentShot += 1;
-                    if (this.currentShot <= this.numOfFields) {
+                    if (this.currentShot < this.data.boards[0].shoots.length && (this.data.boards[1] ? this.currentShot < this.data.boards[1].shoots.length : true)) {
                         var that = this;
                         var t = setTimeout(function () {
                             that.showNextShot();
                         }, that.interval);
+                        this.currentShot += 1;
+                    } else if (!this.data.winner) {
+                        console.log('Polling new shoots');
+                        this.pollAndMergeNewShoots();
+                        var that = this;
+                        setTimeout(function () {
+                            that.showNextShot();
+                        }, 2000);
+                    } else {
+                        console.log('Game finished. The winner is ' + this.data.winner + '!');
                     }
                 },
 
@@ -348,12 +375,13 @@ $(function () {
                 },
 
                 shot: function (id, data, num) {
+                    console.log('Shotting x: ' + data.x + ', y: ' + data.y);
                     var elem = $('#board' + id + ' li.' + data.x + '-' + data.y);
                     var shotStatus = data.result;
-                    if ($(elem).find('div.empty').length === 0) {
-                        shotStatus = 'samespot';
-                    }
-                    $(elem).addClass(shotStatus); //html('<div class="ship_' + data.shipId + ' '  + shotStatus + '"></div>');
+//                    if ($(elem).find('div.empty').length === 0) {
+//                        shotStatus = 'samespot';
+//                    }
+                    $(elem).addClass(shotStatus).html('<div class="' + shotStatus + '"></div>');
                     console.log(shotStatus);
                     if (shotStatus === 'sunk') {
                         console.log(shotStatus);
