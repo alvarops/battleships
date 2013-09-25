@@ -202,7 +202,7 @@ $(function(){
                             }
                         });
                     },
-                    error: BS._fn.ajaxError
+                    error : BS._fn.ajaxError
                 });
 
                 BS._fn.game.sizeX = data.width;
