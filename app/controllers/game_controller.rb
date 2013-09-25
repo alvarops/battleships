@@ -5,9 +5,9 @@ class GameController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotUnique, :with => :rescue_duplicate
 
-  MAX_NUMBER_OF_PIXELS = 800
-  MAX_WIDTH = 80
-  MIN_WIDTH=10
+  MAX_NUMBER_OF_PIXELS = 600
+  MAX_WIDTH = 50
+  MIN_WIDTH=20
   VARIABLE_SIZE=1
 
   def restart
@@ -193,9 +193,8 @@ class GameController < ApplicationController
     end
 
     if game.finished? && @out['error'].nil?
-      game.finalize
-      @out[:json]['game_status'] = game.status
-      render json: @out[:json]
+      game.finalize if game.status !='finished'
+      render json: @out[:json].to_hash.merge(game_status: game.status).merge(winner: game.winner)
       return
     end
 
