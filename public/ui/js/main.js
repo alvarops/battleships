@@ -92,8 +92,7 @@ $(function () {
             },
 
             createTestGame: function () {
-//                $.ajax('/' + BS._vars.testToken + '/game/new', {
-                $.ajax('/game/7/stats', {
+                $.ajax('/' + BS._vars.testToken + '/game/new', {
                     cache: false,
                     success: function (data) {
                         if (data.error) {
@@ -281,19 +280,18 @@ $(function () {
 
 
             game: {
-                gameId: 0,
-                interval: 100,
-                currentUser: 0,
-                currentShot: 0,
+                gameId : 0,
+                interval : 100,
+                currentUser : 0,
+                currentShot : 0,
                 data: {},
                 getData: function (gameId) {
                     console.log('Getting data');
                     this.gameId = gameId;
                     var that = this;
                     $.ajax({
-                        url: '/game/' + gameId + '/stats',
-                        cache: false,
-                        //type : 'json', 
+                        url : '/game/' + gameId + '/stats',
+                        cache : false,
                         success: function (data) {
                             console.log('HERE');
                             that.data = data;
@@ -308,16 +306,22 @@ $(function () {
                     });
                 },
 
-                pollAndMergeNewShoots : function () {
+                pollNewShoots : function () {
                     var that = this;
-                    $.ajax('/game/' + this.gameId + '/stats', {
+                    $.ajax({
+                        url : '/game/' + this.gameId + '/stats',
                         cache : false,
                         success : function (data) {
+                            console.log(data.boards[0].shoots[data.boards[0].shoots.length - 1]);
                             if (that.data.boards.length == 1) {
                                 data.boards.splice(1,1);
                                 data.boards[0].id = 0;
                             }
-                            $.extend(that.data, data);
+                            that.data = data;
+                            console.log(that.data.boards[0].shoots[that.data.boards[0].shoots.length - 1]);
+                            setTimeout(function () {
+                                BS._fn.game.showNextShot();
+                            }, 2000);
                         },
                         error : BS._fn.common.ajaxError
                     }); 
@@ -325,28 +329,21 @@ $(function () {
                 },
 
                 showNextShot: function () {
-                    var i = 0;
-                    for (i = 0; i < this.data.boards.length; i++) {
-                        if (typeof(this.data.boards[i].shoots[this.currentShot]) !== 'undefined') {
-                            console.log('drawing shot');
+                    if (this.data.boards[0].shoots[this.currentShot] && (this.data.boards[1] ? this.data.boards[1].shoots[this.currentShot] : true)) {
+                        console.log(this.data);
+                        var i = 0;
+                        var that = this;
+                        for (i = 0; i < this.data.boards.length; i++) {
                             this.shot(this.data.boards[i].id, this.data.boards[i].shoots[this.currentShot], this.currentShot + 1);
                         }
-                    }
-                    if (this.currentShot < this.data.boards[0].shoots.length && (this.data.boards[1] ? this.currentShot < this.data.boards[1].shoots.length : true)) {
-                        var that = this;
-                        var t = setTimeout(function () {
-                            that.showNextShot();
-                        }, that.interval);
-                        this.currentShot += 1;
-                    } else if (!this.data.winner) {
-                        console.log('Polling new shoots');
-                        this.pollAndMergeNewShoots();
-                        var that = this;
+                        that.currentShot += 1;
                         setTimeout(function () {
                             that.showNextShot();
-                        }, 2000);
-                    } else {
-                        console.log('Game finished. The winner is ' + this.data.winner + '!');
+                        }, that.interval);
+                    }
+                    if (!this.data.winner) {
+                        console.log('Polling new shoots');
+                        this.pollNewShoots();
                     }
                 },
 
@@ -381,12 +378,8 @@ $(function () {
 //                    if ($(elem).find('div.empty').length === 0) {
 //                        shotStatus = 'samespot';
 //                    }
-                    $(elem).addClass(shotStatus).html('<div class="' + shotStatus + '"></div>');
+                    $(elem).addClass(shotStatus);
                     console.log(shotStatus);
-                    if (shotStatus === 'sunk') {
-                        console.log(shotStatus);
-                        $('#board' + id + ' .ship_' + data.shipId).removeClass('hit').addClass('hitsunk');
-                    }
 
                     //Ad log
 //                    var html ='<li class="shotStatus ' + shotStatus + '">Shot ' + num + ' - x:' + data.x + ' y:' + data.y;
