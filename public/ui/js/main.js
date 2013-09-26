@@ -38,6 +38,7 @@ $(function () {
                                 BS._fn.game.numOfFields = shootsData.width * shootsData.height;
                                 BS._fn.game.data.boards.splice(1,1);
                                 BS._fn.game.data.boards[0].id = 0;
+                                BS._fn.game.firstFinished = true;
                                 BS._fn.game.showNextShot(0);
                                 
                             }
@@ -297,10 +298,11 @@ $(function () {
 
             game: {
                 gameId : 0,
-                interval : 300,
+                interval : 100,
                 currentUser : 0,
                 currentShot : [0, 0],
                 data: {},
+                firstFinished : false,
                 getData: function (gameId) {
                     console.log('Getting data');
                     this.gameId = gameId;
@@ -309,6 +311,7 @@ $(function () {
                         url : '/game/' + gameId + '/stats',
                         cache : false,
                         success: function (data) {
+                            console.log(data);
                             console.log('HERE');
                             that.data = data;
                             console.log(that.data);
@@ -357,14 +360,30 @@ $(function () {
                             BS._fn.game.pollNewShoots(boardId);
                         }, 2000);
                     } else {
-                        console.log('Game finished. The winner is: ' + this.data.winner + '!');
+                        if (this.firstFinished) {
+                            console.log('Game finished. The winner is: ' + this.data.winner + '!');
+                            if (this.data.winner == -1) {
+                                $('.body').append('<div id="winner"><b class="winner">DRAW</b><br/>Both players scored <b>0</b> shoots</div>');
+                            } else {
+                                var players = this.data.players;
+                                var loserId = players[0].id == this.data.winner ? players[1].id : players[0].id;
+                                var winnerName = $('.playerContainer.player' + this.data.winner + ' .player-name').text();
+                                var winnerScore = $('.playerContainer.player' + loserId + ' .shoots b').text();
+                                var loserScore = $('.playerContainer.player' + this.data.winner + ' .shoots b').text();
+
+                                $('.body').append('<div id="winner">And the winner is<br/><b class="winner">' + winnerName + '</b><br/> with <b class="win-shoots">' + winnerScore + '</b> shoots against <b class="lose-shoots">' + loserScore + '</b></div>');
+                            }
+                        } else {
+                            console.log('First player finished shooting');
+                            this.firstFinished = true;
+                        }
                     }
                 },
 
-                drawBoard: function (id, name) {
+                drawBoard: function (id, name, playerId) {
                     var i = 0;
                     var j = 0;
-                    var h = '<div class="playerContainer" id="container' + id + '"><span class="player-name">' + name + '</span><span class="badge bigger"><i class="glyphicon-plus"></i></span><span class="badge smaller"><i class="glyphicon-minus"></i></span><span class="shoots">Shots #<b>0</b></span><ul width="' + this.sizeX + '" style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
+                    var h = '<div class="playerContainer player' + playerId + '" id="container' + id + '"><span class="player-name">' + name + '</span><span class="badge bigger"><i class="glyphicon-plus"></i></span>/<span class="badge smaller"><i class="glyphicon-minus"></i></span><br/><span class="shoots">Shoots #<b>0</b></span><ul width="' + this.sizeX + '" style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
                     for (i = 0; i < this.sizeY; i++) {
                         for (j = 0; j < this.sizeX; j++) {
                             h += '<li class="' + j + '-' + i + '" x="' + j + '" y="' + i + '"><div class="empty"></div></li>';
@@ -377,7 +396,7 @@ $(function () {
                 drawBoards: function () {
                     var that = this;
                     $.each(this.data.boards, function (index) {
-                            $('.body').append(that.drawBoard(index, that.data.players[index].name));
+                            $('.body').append(that.drawBoard(index, that.data.players[index].name, that.data.players[index].id));
                     });
                     $('.body').append('<div class="clear"></div>');
                     BS._fn.events.attachResizeEvents();

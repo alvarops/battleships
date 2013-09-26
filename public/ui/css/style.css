@@ -30,12 +30,9 @@ ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidd
 .board .decision {background-color: green;}
 .board .impossible {background-color: red;}
 
-/*
-.hit{color:orange;}
-.miss{color:#ccccff;}
-.hitsunk{color:red;}
-.samespot{color:black;}
-*/
+#winner {position: absolute;width: 500px;height: 150px;top: 50%;left: 50%;margin-top: -75px;margin-left: -250px;background-color: #fff;text-align: center;padding: 20px 0;font-size: 20px;border: 2px solid #000;}
+#winner .winner {font-size: 26px;color: green;}
+
 .available-ships {overflow: hidden;}
 .available-ships li {width: 5px;height: 5px;background-color: #ccc;float: left;}
 .available-ships .ship li.shape {background-color: black;}
