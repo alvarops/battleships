@@ -187,7 +187,7 @@ $(function () {
                         $('.body').append('<h1>Game Id: ' + gameId + '</h1>');
                         $('.body').append('<button id="show_shoots" type="button" class="btn btn-primary">Show opponent shoots</button>');
                         $('.body').append('<button id="randomize_ships" type="button" class="btn btn-primary">Randomize ships</button>');
-                        $('.body').append('<button id="reset_game" type="button" class="btn btn-primary">Reset this game</button>');
+//                        $('.body').append('<button id="reset_game" type="button" class="btn btn-primary">Reset this game</button>');
                         $('.body').append($('<div/>', {class: 'available-ships'}));
                         $('#show_shoots').click(function () {
                             BS._fn.board.showOpponentShoots(gameId);   
@@ -281,7 +281,7 @@ $(function () {
 
             game: {
                 gameId : 0,
-                interval : 100,
+                interval : 300,
                 currentUser : 0,
                 currentShot : 0,
                 data: {},
@@ -317,8 +317,13 @@ $(function () {
                                 data.boards.splice(1,1);
                                 data.boards[0].id = 0;
                             }
+                            if (!data.winner) {
+                                data.boards[0].shoots.splice(data.boards[0].shoots.length - 1, 1);
+                                if (data.boards[1]) {
+                                    data.boards[1].shoots.splice(data.boards[1].shoots.length - 1, 1);
+                                }
+                            }
                             that.data = data;
-                            console.log(that.data.boards[0].shoots[that.data.boards[0].shoots.length - 1]);
                             setTimeout(function () {
                                 BS._fn.game.showNextShot();
                             }, 2000);
@@ -330,7 +335,6 @@ $(function () {
 
                 showNextShot: function () {
                     if (this.data.boards[0].shoots[this.currentShot] && (this.data.boards[1] ? this.data.boards[1].shoots[this.currentShot] : true)) {
-                        console.log(this.data);
                         var i = 0;
                         var that = this;
                         for (i = 0; i < this.data.boards.length; i++) {
