@@ -15,8 +15,10 @@ ul li {list-style:none;}
 
 .playerContainer{float:left; margin-top:20px;margin-right:10px;}
 .playerContainer .player-name {font-weight: bold;font-size: 18px;line-height: 18px;margin-right:20px;}
-.playerContainer .badge {vertical-align:top;}
+.playerContainer .badge {}
 .playerContainer .log {display:none;}
+.playerContainer .shoots b{font-size: 30px;}
+.playerContainer .shoots {float: right}
 
 ul.board {border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;margin-top:10px;}
 .board li{border-left:1px solid #ccc;border-top:1px solid #ccc;width:5px; height:5px;float:left;}

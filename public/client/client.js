@@ -174,6 +174,8 @@ $(function () {
         },
         startShooting: function () {
             // TODO: implement your algorithm here
+            this.nextShootX = -1;
+            this.nextShootY = -1;
             var that = this;
             this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame.id) + " DONE</p>");
             this.body.find("button.startShooting").remove();

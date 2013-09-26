@@ -364,7 +364,7 @@ $(function () {
                 drawBoard: function (id, name) {
                     var i = 0;
                     var j = 0;
-                    var h = '<div class="playerContainer" id="container' + id + '"><span class="player-name">' + name + '</span><span class="badge bigger"><i class="glyphicon-plus"></i></span>/<span class="badge smaller"><i class="glyphicon-minus"></i></span><br/><span class="shoots">Shots #<b>0</b></span><ul width="' + this.sizeX + '" style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
+                    var h = '<div class="playerContainer" id="container' + id + '"><span class="player-name">' + name + '</span><span class="badge bigger"><i class="glyphicon-plus"></i></span><span class="badge smaller"><i class="glyphicon-minus"></i></span><span class="shoots">Shots #<b>0</b></span><ul width="' + this.sizeX + '" style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
                     for (i = 0; i < this.sizeY; i++) {
                         for (j = 0; j < this.sizeX; j++) {
                             h += '<li class="' + j + '-' + i + '" x="' + j + '" y="' + i + '"><div class="empty"></div></li>';
