@@ -91,6 +91,10 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player1, 'fight')
     perfect_shoot_to_board_and_sink_all_ships player2, game
     request_and_verify_game_status(game, player2, 'finished')
+
+    get "/#{player1['token']}/game/#{game['id']}"
+    assert_equal 200, resp.status
+    assert_equal -1,resp_body['winner'], 'Expected Draw'
   end
 
   test 'poor shooting' do
@@ -107,6 +111,9 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player1, 'fight')
     poor_shoot_to_board_and_sink_all_ships player2, game
     request_and_verify_game_status(game, player2, 'finished')
+    get "/#{player1['token']}/game/#{game['id']}"
+    assert_equal 200, resp.status
+    assert resp_body['winner'], 'Expected winner'
 
   end
 
