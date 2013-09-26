@@ -13,7 +13,7 @@ ul li {list-style:none;}
 
 .form-signin {width: 350px;margin: 50px auto;text-align: center}
 
-.playerContainer{float:left; margin-top:20px;}
+.playerContainer{float:left; margin-top:20px;margin-right:10px;}
 .playerContainer .player-name {font-weight: bold;font-size: 18px;line-height: 18px;margin-right:20px;}
 .playerContainer .badge {vertical-align:top;}
 .playerContainer .log {display:none;}
