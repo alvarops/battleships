@@ -347,6 +347,7 @@ $(function () {
                         var that = this;
                         this.shot(boardId, this.data.boards[boardId].shoots[this.currentShot[boardId]], this.currentShot[boardId] + 1);
                         this.currentShot[boardId] += 1;
+                        $('#container' + boardId + ' span.shoots b').html(this.currentShot[boardId]);
                         var t = setTimeout(function () {
                             that.showNextShot(boardId);
                         }, that.interval);
@@ -363,7 +364,7 @@ $(function () {
                 drawBoard: function (id, name) {
                     var i = 0;
                     var j = 0;
-                    var h = '<div class="playerContainer" id="container' + id + '"><span class="player-name">' + name + '</span><span class="badge bigger"><i class="glyphicon-plus"></i></span>/<span class="badge smaller"><i class="glyphicon-minus"></i></span><ul width="' + this.sizeX + '" style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
+                    var h = '<div class="playerContainer" id="container' + id + '"><span class="player-name">' + name + '</span><span class="badge bigger"><i class="glyphicon-plus"></i></span>/<span class="badge smaller"><i class="glyphicon-minus"></i></span><br/><span class="shoots">Shots #<b>0</b></span><ul width="' + this.sizeX + '" style="width: ' + ((this.sizeX * 5) + 1) + 'px;" class="board" id="board' + id + '">';
                     for (i = 0; i < this.sizeY; i++) {
                         for (j = 0; j < this.sizeX; j++) {
                             h += '<li class="' + j + '-' + i + '" x="' + j + '" y="' + i + '"><div class="empty"></div></li>';
