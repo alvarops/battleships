@@ -311,6 +311,7 @@ $(function () {
                     $.ajax({
                         url : '/game/' + this.gameId + '/stats',
                         cache : false,
+                        async: true,
                         success : function (data) {
                             console.log(data.boards[0].shoots[data.boards[0].shoots.length - 1]);
                             if (that.data.boards.length == 1) {
@@ -324,9 +325,7 @@ $(function () {
                                 }
                             }
                             that.data = data;
-                            setTimeout(function () {
-                                BS._fn.game.showNextShot();
-                            }, 2000);
+                            BS._fn.game.showNextShot();
                         },
                         error : BS._fn.common.ajaxError
                     }); 
@@ -341,13 +340,16 @@ $(function () {
                             this.shot(this.data.boards[i].id, this.data.boards[i].shoots[this.currentShot], this.currentShot + 1);
                         }
                         that.currentShot += 1;
-                        setTimeout(function () {
+                        var t = setTimeout(function () {
                             that.showNextShot();
                         }, that.interval);
-                    }
-                    if (!this.data.winner) {
+                    } else if (!this.data.winner) {
                         console.log('Polling new shoots');
-                        this.pollNewShoots();
+                        var t = setTimeout(function () {
+                            BS._fn.game.pollNewShoots();
+                        }, 2000);
+                    } else {
+                        console.log('Game finished. The winner is: ' + this.data.winner + '!');
                     }
                 },
 
