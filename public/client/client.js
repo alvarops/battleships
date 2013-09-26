@@ -3,12 +3,15 @@ $(function () {
 
     var CLIENT = {
         token: $.cookie('token'),
-        serverUrl: "http://battleships-master-env-kummkavdrx.elasticbeanstalk.com/",    /* UPDATE HERE */
+        serverUrl: "http://battleships/", /* UPDATE HERE */
+//        serverUrl: "http://battleships-master-env-kummkavdrx.elasticbeanstalk.com/", /* UPDATE HERE */
         body: $(".body"),
         header: $(".header"),
         name: 'Player',
         currentGame: "",
         currentGameId: "",
+        nextShootX: -1,
+        nextShootY: -1,
         serverUrlWithToken: function () {
             return this.serverUrl + this.token + "/";
         },
@@ -174,25 +177,40 @@ $(function () {
             var that = this;
             this.body.append("<p>" + "Shooting to board " + JSON.stringify(this.currentGame.id) + " DONE</p>");
             this.body.find("button.startShooting").remove();
-            for (var y = 0; y < this.currentGame.height; y++) {
-                for (var x = 0; x < this.currentGame.width; x++) {
-                    var self = this;
-                    var url = that.shootUrl(x, y) + "&callback=?";
-                    // SYNCHRONOUS AJAX CALL
-                    $.ajax({
-                        url: url,
-                        dataType: 'jsonp',
-                        async: false,
-                        success: function (data) {
-                            console.log("Shooting at: " + this.x + "x" + this.y);
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            console.error("Something is wrong");
-                            console.error(textStatus + " - " + errorThrown);
-                        }
-                    });
-                }
+            this.determineNextShootXY(function () {
+                that.shootRequest(that.nextShootX, that.nextShootY);
+            });
+        },
+        determineNextShootXY: function (callback) {
+            if (this.nextShootX + 1 < this.currentGame.width) {
+                this.nextShootX++;
+                callback();
+            } else if (this.nextShootY + 1 < this.currentGame.height) {
+                this.nextShootX = 0;
+                this.nextShootY++;
+                callback();
+            }else {
+                alert('end of shooting');
             }
+        },
+        shootRequest: function (x, y) {
+            var that = this;
+            var url = this.shootUrl(x, y) + "&callback=?";
+            $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                async: false,
+                success: function (data) {
+                    console.log("Shooting at: " + that.nextShootX + "x" + this.nextShootY);
+                    that.determineNextShootXY(function () {
+                        that.shootRequest(that.nextShootX, that.nextShootY);
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("Something is wrong");
+                    console.error(textStatus + " - " + errorThrown);
+                }
+            });
         },
         init: function () {
             this.bindEvents();
