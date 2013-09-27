@@ -21,6 +21,7 @@ $(function () {
         createGame: function () {
             var that = this;
             console.log("create game");
+            that.body.empty().append('<p>Creating a new game...</p>');
             $.getJSON(that.serverUrlWithToken() + "game/new?callback=?", function (response) {
                 console.log("success");
                 console.log("response=" + response);
@@ -103,9 +104,11 @@ $(function () {
         },
         listMyCurrentGames: function () {
             this.listGames(this.serverUrlWithToken() + "game/listongoing");
+            alert("Join button not implemented");
         },
         listReadyGames: function () {
             this.listGames(this.serverUrlWithToken() + "game/listready");
+            alert("Join button not implemented");
         },
         bindEvents: function () {
             var that = this;
@@ -171,11 +174,12 @@ $(function () {
             });
         },
         playGame: function () {
+            this.body.empty().append('<p>Loading...</p>');
             var that = this;
             that.body.empty();
             that.updateActiveGameStatus(function () {
                 that.setShips(function () {
-                    that.body.append("<button class='startShooting' value='" + that.currentGameId + "'>START SHOOTING</button>");
+                    that.body.append("<p>MAKE SURE THE SECOND PLAYER HAS JOINED THE GAME BEFORE YOU START SHOOTING</p><button class='startShooting' value='" + that.currentGameId + "'>START SHOOTING</button>");
                 });
             });
         },
