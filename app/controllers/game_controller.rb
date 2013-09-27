@@ -23,6 +23,7 @@ class GameController < ApplicationController
         board.shoots.delete_all
       end
       game.status = 'fight'
+      game.winner = nil
       game.save
       render json: {msg: 'Game restarted'}
     else
