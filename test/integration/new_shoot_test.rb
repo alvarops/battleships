@@ -18,6 +18,11 @@ class NewShootTest < ActionDispatch::IntegrationTest
     error = JSON.parse @response.body
     assert_not_nil error
     assert_equal 'You shoot out of the board', error['error'][0]
+
+    get '23j0f023912309r5u11fas/game/2/shoot', {:x => -1, :y => -5}
+    error = JSON.parse @response.body
+    assert_not_nil error
+    assert_equal 'You shoot out of the board', error['error'][0]
   end
 
   test 'should shoot started games' do
