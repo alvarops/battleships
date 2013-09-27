@@ -3,8 +3,11 @@ $(function () {
 
     var CLIENT = {
         token: $.cookie('token'),
-//        serverUrl: "http://battleships/", /* UPDATE HERE */
-        serverUrl: "http://battleships-master-env-kummkavdrx.elasticbeanstalk.com/", /* UPDATE HERE */
+        /* UPDATE HERE */
+        serverUrl: "/",
+        /* serverUrl: "http://battleships/",
+         serverUrl: "http://battleship-env-1.elasticbeanstalk.com/",
+         serverUrl: "http://battleships-master-env-kummkavdrx.elasticbeanstalk.com/", */
         body: $(".body"),
         header: $(".header"),
         name: 'Player',
@@ -61,7 +64,7 @@ $(function () {
                         var player2 = '-';
                         if (typeof this.players !== 'undefined' && this.players.length > 0) {
                             player1 = this.players[0].name;
-                            if(this.players.length==2){
+                            if (this.players.length == 2) {
                                 player2 = this.players[1].name;
                             }
                         }
@@ -204,7 +207,7 @@ $(function () {
                 this.nextShootX = 0;
                 this.nextShootY++;
                 callback();
-            }else {
+            } else {
                 alert('end of shooting');
             }
         },
