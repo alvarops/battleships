@@ -30,9 +30,7 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     randomize_ships(game, player2)
     request_and_verify_game_status(game, player2, 'fight')
 
-    get "/#{player1['token']}/game/#{game['id']}/restart/#{player2['token']}"
-    request_and_verify_game_status(game, player2, 'fight')
-
+    restart_game_and_verify_status(game, player1, player2)
   end
 
   test 'full end to end test with 1 manually set and 1 randomized board' do
@@ -77,7 +75,8 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     request_and_verify_game_status(game, player2, 'fight')
   end
 
-  test 'perfect shooting' do
+
+  test 'perfect shooting with restart' do
     player1, player2 = create_and_verify_players()
     game = create_and_verify_game(player1)
     join_game(game, player2)
@@ -94,10 +93,12 @@ class GameStatusTest < ActionDispatch::IntegrationTest
 
     get "/#{player1['token']}/game/#{game['id']}"
     assert_equal 200, resp.status
-    assert_equal -1,resp_body['winner'], 'Expected Draw'
+    assert_equal -1, resp_body['winner'], 'Expected Draw'
+
+    restart_game_and_verify_status(game, player1, player2)
   end
 
-  test 'poor shooting' do
+  test 'poor shooting with restart' do
     player1, player2 = create_and_verify_players()
     game = create_and_verify_game(player1)
     join_game(game, player2)
@@ -115,9 +116,18 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     assert_equal 200, resp.status
     assert resp_body['winner'], 'Expected winner'
 
+    restart_game_and_verify_status(game, player1, player2)
   end
 
   private
+
+  def restart_game_and_verify_status(game, player1, player2)
+    get "/#{player1['token']}/game/#{game['id']}/restart/#{player2['token']}"
+    request_and_verify_game_status(game, player2, 'fight')
+    get "/#{player1['token']}/game/#{game['id']}"
+    assert_equal 200, resp.status
+    assert_equal nil, resp_body['winner'], 'Expected NULL'
+  end
 
   def poor_shoot_to_board_and_sink_all_ships(player, game)
     gameModel = Game.find game['id']
@@ -138,6 +148,7 @@ class GameStatusTest < ActionDispatch::IntegrationTest
       assert s.result.in?(["hit", "sunk", "miss", "hitsunk"]), "Incorrect shoot result=#{s.result}"
     end
   end
+
 
   def shoot_everywhere_in_the_board(game, player)
     shoot_count = 0
