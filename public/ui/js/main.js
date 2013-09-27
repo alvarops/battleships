@@ -111,6 +111,25 @@ $(function () {
             },
 
             common : {
+                logIn: function () {
+                    BS._vars.testToken = prompt("Please enter your token", "-orsGMSc789m-Jk_97jivA");
+                    $.cookie('token_test_player', BS._vars.testToken);
+                    BS._fn.common.updateLoginUi();
+                },
+                updateLoginUi: function () {
+                    var that = this;
+                    $.getJSON(BS._fn.common.serverUrlWithToken() + "mystats?callback=?", function (response) {
+                        if (response.error) {
+                            alert("Unable to Sign In: " + response.error);
+                            $("#menuLogIn").text("Sign In");
+                            return
+                        }
+                        $("#menuLogIn").text("Sign out " + response.name);
+                    });
+                },
+                serverUrlWithToken: function () {
+                    return "../" + BS._vars.testToken + "/";
+                },
                 ajaxError : function(xhr, status) {
                     console.log('Something went wrong: ' + status);
                 },
@@ -437,7 +456,12 @@ $(function () {
 
         init: function () {
             $.cookie('token_test_player', this._vars.testToken);
+            var that = this;
+            $("#menuLogIn").click(function () {
+                that._fn.common.logIn();
+            });
             this._fn.showInitBox();
+            this._fn.common.updateLoginUi();
         }
     };
 
