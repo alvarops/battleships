@@ -75,7 +75,7 @@ class GameController < ApplicationController
             my_game=true
           end
         end
-        if not my_game
+        if (my_game && status!='created') || ((not my_game) && game.status =='created' && game.players.length==1)
           filtered_games.push game
         end
       end

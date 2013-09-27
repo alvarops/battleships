@@ -36,3 +36,18 @@ Bobs_created_game_waiting_for_fred:
   id: 10007
   player_id: 12346
   game_id: 10
+
+Freds_created_game_waiting_for_fred:
+  id: 11111
+  player_id: 12345 #fred's id
+  game_id: 1
+
+
+Bobs222:
+  id: 10301
+  player_id: 12345
+  game_id: 123
+Freds3333:
+  id: 12002
+  player_id: 12346
+  game_id: 123

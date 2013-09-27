@@ -6,8 +6,8 @@ class GetGameStatsTest < ActionDispatch::IntegrationTest
 
     game = JSON.parse @response.body
 
-    assert_equal 0, game['players'].size
-    assert_equal 0, game['boards'].size
+    assert_equal 1, game['players'].size
+    assert_equal 1, game['boards'].size
 
 
   end

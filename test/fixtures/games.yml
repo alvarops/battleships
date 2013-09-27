@@ -46,4 +46,16 @@ game_end:
   id: 12
   width: 321
   height: 123
-  status: end
+  status: finished
+
+game_end2:
+  id: 122
+  width: 321
+  height: 123
+  status: finished
+
+game_end3:
+  id: 123
+  width: 321
+  height: 123
+  status: finished

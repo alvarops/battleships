@@ -25,19 +25,83 @@ class GameControllerTest < ActionController::TestCase
     assert_equal 'Unknown Token', resp['error'], 'Incorrect error msg'
   end
 
-  test 'should not list games created by a player' do
+  test 'should not list games created by a player in status CREATED' do
     get :list, token: token, status: 'created'
     assert @response.success?, 'response failed'
     resp = JSON.parse @response.body
-
     resp.each do |game|
       game['players'].each do |p|
         assert_not_equal p['id'], 12345, 'game list contains games created by player with id= 12345'
       end
+      assert_equal 'created', game['status'], 'Incorrect Game status'
     end
   end
 
-  test 'should list games created by a player' do
+  test 'should list ALL games in status CREATED' do
+    get :list, status: 'created'
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    resp.each do |game|
+      assert_equal 'created', game['status'], 'Incorrect Game status'
+    end
+    game_created = Game.where status: 'created'
+    assert_equal game_created.length, resp.length, 'Incorrect number of games'
+  end
+
+  test 'should ONLY list player games in status FIGHT' do
+    get :list, status: 'fight', token: token_fred
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    resp.each do |game|
+      players_game = false
+      game['players'].each do |p|
+        if 12345 == p['id']
+          players_game = true
+        end
+      end
+      assert players_game, 'game list DOES NOT contain games created by player with id= 12345'
+      assert_equal 'fight', game['status'], 'Incorrect Game status'
+    end
+  end
+
+  test 'should ONLY list games in status FIGHT OR FINISHED' do
+    get :list, forpreview: 'true'
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    resp.each do |game|
+      assert game['status'].in?(['fight', 'finished']), 'Incorrect Game status'
+    end
+  end
+
+  test 'should ONLY list player games in status FINISHED' do
+    get :list, status: 'finished', token: token_fred
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+
+    assert_not_empty resp, 'Empty response'
+    resp.each do |game|
+      players_game = false
+      game['players'].each do |p|
+        if id_fred == p['id']
+          players_game = true
+        end
+      end
+      assert players_game, "game list DOES NOT contain games created by player with id=#{id_fred}"
+      assert_equal 'finished', game['status'], 'Incorrect Game status'
+    end
+  end
+
+  test 'should list ONLY games in status CREATED a player can join' do
+    get :list, status: 'created', token: token_fred
+    assert @response.success?, 'response failed'
+    resp = JSON.parse @response.body
+    resp.each do |game|
+      assert_equal 1, game['players'].length, 'more than one player in the game'
+      assert_not_equal '12345', game['players'][0]['id'], 'game list DOES contain games created by player with id= 12345'
+    end
+  end
+
+  test 'should list ALL games with status = created ' do
     get :list, status: 'created'
     assert @response.success?, 'response failed'
     resp = JSON.parse @response.body
@@ -200,7 +264,7 @@ class GameControllerTest < ActionController::TestCase
     post :set, params
 
     resp = JSON.parse @response.body
-    assert resp['players'][0]['token'].nil?,'User token is in the response'
+    assert resp['players'][0]['token'].nil?, 'User token is in the response'
 
   end
 
@@ -350,8 +414,8 @@ class GameControllerTest < ActionController::TestCase
     p1_board.ships.push Ship.new({t: 'cruiser'})
     p2_board.ships.push Ship.new({t: 'cruiser'})
 
-    p1_board.ships.first.positions.push Position.new({x: 0, y: 0, hit: true })
-    p2_board.ships.first.positions.push Position.new({x: 0, y: 0, hit: true })
+    p1_board.ships.first.positions.push Position.new({x: 0, y: 0, hit: true})
+    p2_board.ships.first.positions.push Position.new({x: 0, y: 0, hit: true})
 
     assert_equal true, game.finished?
   end

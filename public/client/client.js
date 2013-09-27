@@ -45,21 +45,28 @@ $(function () {
         },
         listGames: function (url, callback) {
             var that = this;
+            that.body.empty().append('<p>Loading...</p>');
             $.getJSON(url + "?callback=?", function (response) {
                 if (typeof response.error !== 'undefined') {
                     console.error(response.error)
                 } else if (response.length == 0) {
+                    that.body.empty();
                     alert('No games on the list');
                 } else {
                     console.log("List of available games");
                     that.body.empty();
                     $.each(response, function () {
-                        var player1 = 'NO PLAYERS';
+                        var player1 = 'NO PLAYER 1';
+                        var player2 = '-';
                         if (typeof this.players !== 'undefined' && this.players.length > 0) {
                             player1 = this.players[0].name;
+                            if(this.players.length==2){
+                                player2 = this.players[1].name;
+                            }
                         }
+
                         that.body.append($("<div class='game'>").append($('<button>', {value: this.id, text: 'Join'}))
-                            .append("<p>Created by: " + player1 + "</p><p>Game Id= " + this.id + "</p><p>" + this.created_at + "</p>"));
+                            .append("<p>Player1: " + player1 + "</p><p>Player2: " + player2 + "</p><p>Game Id= " + this.id + "</p><p>STATUS: " + this.status + "</p>"));
                     });
                 }
                 if (typeof callback !== 'undefined') {
@@ -174,6 +181,8 @@ $(function () {
         },
         startShooting: function () {
             // TODO: implement your algorithm here
+
+
             this.nextShootX = -1;
             this.nextShootY = -1;
             var that = this;

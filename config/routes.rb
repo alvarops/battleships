@@ -1,9 +1,11 @@
 Battleships::Application.routes.draw do
 
   get '/ship/list', to: 'ship#list'
+  get '/ship', to: 'ship#list'
   get '/player/new', to: 'player#new'
   post '/player/new', to: 'player#new'
   get '/player/list', to: 'player#list'
+  get '/player', to: 'player#list'
 
   get '/player/:id', to: 'player#stats'
   get ':token/player/:id', to: 'player#stats'
@@ -14,7 +16,6 @@ Battleships::Application.routes.draw do
   get '/game/:id/stats', to: 'game#stats'
   get ':token/game/:id/stats', to: 'game#stats'
 
-  get '/game/list', to: 'game#list', status: 'created'
 
   get '/game/listfinished', to: 'game#list', status: 'finished'
   get ':token/game/listfinished', to: 'game#list', status: 'finished'
@@ -28,6 +29,7 @@ Battleships::Application.routes.draw do
   get '/game/listready', to: 'game#list', status: 'ready'
   get ':token/game/listready', to: 'game#list', status: 'ready'
 
+  get '/game/list', to: 'game#list', status: 'created'
   get ':token/game/list', to: 'game#list', status: 'created'
   get '/game/listforpreview', to: 'game#list', forpreview: 'true'
 
