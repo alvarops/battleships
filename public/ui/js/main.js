@@ -245,22 +245,22 @@ $(function () {
                         $('.body').append('<h1>Game Id: ' + BS._vars.gameId + '</h1>');
                         $('.body').append('<button id="show_shoots" type="button" class="btn btn-primary">Show opponent shoots</button>');
                         $('.body').append('<button id="randomize_ships" type="button" class="btn btn-primary">Randomize ships</button>');
-//                        $('.body').append('<button id="reset_game" type="button" class="btn btn-primary">Reset this game</button>');
+                        $('.body').append('<button id="reset_game" type="button" class="btn btn-primary">Reset this game</button>');
                         $('.body').append($('<div/>', {class: 'available-ships'}));
                         $('#show_shoots').click(function () {
                             BS._fn.board.showOpponentShoots(BS._vars.gameId);   
                         });
                         $('#randomize_ships').click(BS._fn.board.randomizeShips);
-//                        $('#reset_game').click(function () {
-//                            $.ajax({
-//                                url: '/' + BS._vars.testToken + '/game/' + gameId + '/restart',
-//                                cache: false,
-//                                success: function (data) {
-//                                    BS._fn.board.showShipPlacement(gameId);
-//                                },
-//                                error: BS._fn.common.ajaxError
-//                            });
-//                        });
+                        $('#reset_game').click(function () {
+                            $.ajax({
+                                url: '/' + BS._vars.testToken + '/game/' + BS._vars.gameId + '/restart/' + prompt("Please enter Player 2", ""),
+                                cache: false,
+                                success: function (data) {
+                                    BS._fn.board.showShipPlacement(BS._vars.gameId);
+                                },
+                                error: BS._fn.common.ajaxError
+                            });
+                        });
             },
 
             arrangeTestGame: function (data) {
@@ -371,7 +371,7 @@ $(function () {
                         this.currentShot[boardId] += 1;
                         $('#container' + boardId + ' span.shoots b').html(this.currentShot[boardId]);
                         var t = setTimeout(function () {
-                            that.showNextShot(boardId);
+                            that.showNextShot(boardId);                                                                                                                     po
                         }, that.interval);
                     } else if (!this.data.winner) {
                         console.log('Polling new shoots');
