@@ -354,7 +354,7 @@ $(function () {
 
             game: {
                 gameId : 0,
-                interval : 300,
+                interval : 10,
                 currentUser : 0,
                 currentShot : [0, 0],
                 data: {},

@@ -96,6 +96,12 @@ class GameStatusTest < ActionDispatch::IntegrationTest
     assert_equal -1, resp_body['winner'], 'Expected Draw'
 
     restart_game_and_verify_status(game, player1, player2)
+    g = Game.find game['id']
+
+    g.boards.first.ships.each do |s|
+      assert_equal :clear, s.status
+    end
+
   end
 
   test 'poor shooting with restart' do

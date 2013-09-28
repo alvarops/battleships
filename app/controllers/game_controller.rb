@@ -21,9 +21,16 @@ class GameController < ApplicationController
     if game && game.opponent_board(player2.id) && game.player_board(@current_player) && (game.status=='fight' || game.status =='finished')
       game.boards.each do |board|
         board.shoots.delete_all
+        board.ships.each do |s|
+          s.positions.each do |p|
+            p.hit = false
+            p.save
+          end
+        end
       end
       game.status = 'fight'
       game.winner = nil
+
       game.save
       render json: {msg: 'Game restarted'}
     else
