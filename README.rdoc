@@ -1,5 +1,8 @@
 == README
 
+LICENCE: GPL v2
+http://www.gnu.org/licenses/gpl-2.0.html
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
